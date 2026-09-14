@@ -1,0 +1,360 @@
+{
+  "pbtResults": {},
+  "executionHistory": {
+    "1.1 Scaffold the Next.js app and install dependencies": [
+      {
+        "executionId": "c577b794-6106-4158-8551-40d45da7bff0",
+        "chatSessionId": "sess_e580cdfb-4f61-4199-bf6b-fca321262b0d",
+        "timestamp": 1789404609183
+      },
+      {
+        "executionId": "c577b794-6106-4158-8551-40d45da7bff0",
+        "chatSessionId": "sess_e580cdfb-4f61-4199-bf6b-fca321262b0d",
+        "timestamp": 1789404627728
+      },
+      {
+        "executionId": "c577b794-6106-4158-8551-40d45da7bff0",
+        "chatSessionId": "sess_e580cdfb-4f61-4199-bf6b-fca321262b0d",
+        "timestamp": 1789405933685
+      }
+    ],
+    "1.2 Define style tokens, globals, and Tailwind theme": [
+      {
+        "executionId": "c577b794-6106-4158-8551-40d45da7bff0",
+        "chatSessionId": "sess_e580cdfb-4f61-4199-bf6b-fca321262b0d",
+        "timestamp": 1789404610680
+      },
+      {
+        "executionId": "c577b794-6106-4158-8551-40d45da7bff0",
+        "chatSessionId": "sess_e580cdfb-4f61-4199-bf6b-fca321262b0d",
+        "timestamp": 1789405940228
+      },
+      {
+        "executionId": "c577b794-6106-4158-8551-40d45da7bff0",
+        "chatSessionId": "sess_e580cdfb-4f61-4199-bf6b-fca321262b0d",
+        "timestamp": 1789406088191
+      }
+    ],
+    "1.3 Implement pure helpers in `lib/format.ts`": [
+      {
+        "executionId": "c577b794-6106-4158-8551-40d45da7bff0",
+        "chatSessionId": "sess_e580cdfb-4f61-4199-bf6b-fca321262b0d",
+        "timestamp": 1789404613703
+      },
+      {
+        "executionId": "c577b794-6106-4158-8551-40d45da7bff0",
+        "chatSessionId": "sess_e580cdfb-4f61-4199-bf6b-fca321262b0d",
+        "timestamp": 1789405941169
+      },
+      {
+        "executionId": "c577b794-6106-4158-8551-40d45da7bff0",
+        "chatSessionId": "sess_e580cdfb-4f61-4199-bf6b-fca321262b0d",
+        "timestamp": 1789406089563
+      }
+    ],
+    "1.5 Create static content module `lib/data.ts`": [
+      {
+        "executionId": "c577b794-6106-4158-8551-40d45da7bff0",
+        "chatSessionId": "sess_e580cdfb-4f61-4199-bf6b-fca321262b0d",
+        "timestamp": 1789404613923
+      },
+      {
+        "executionId": "c577b794-6106-4158-8551-40d45da7bff0",
+        "chatSessionId": "sess_e580cdfb-4f61-4199-bf6b-fca321262b0d",
+        "timestamp": 1789405942097
+      },
+      {
+        "executionId": "c577b794-6106-4158-8551-40d45da7bff0",
+        "chatSessionId": "sess_e580cdfb-4f61-4199-bf6b-fca321262b0d",
+        "timestamp": 1789406090542
+      }
+    ],
+    "1.6 Implement the shared `useReveal` hook in `lib/reveal.ts`": [
+      {
+        "executionId": "c577b794-6106-4158-8551-40d45da7bff0",
+        "chatSessionId": "sess_e580cdfb-4f61-4199-bf6b-fca321262b0d",
+        "timestamp": 1789404614005
+      },
+      {
+        "executionId": "c577b794-6106-4158-8551-40d45da7bff0",
+        "chatSessionId": "sess_e580cdfb-4f61-4199-bf6b-fca321262b0d",
+        "timestamp": 1789405943032
+      },
+      {
+        "executionId": "c577b794-6106-4158-8551-40d45da7bff0",
+        "chatSessionId": "sess_e580cdfb-4f61-4199-bf6b-fca321262b0d",
+        "timestamp": 1789406091498
+      }
+    ],
+    "1.8 Implement `SmoothScrollProvider` and mount in layout": [
+      {
+        "executionId": "c577b794-6106-4158-8551-40d45da7bff0",
+        "chatSessionId": "sess_e580cdfb-4f61-4199-bf6b-fca321262b0d",
+        "timestamp": 1789404614095
+      },
+      {
+        "executionId": "c577b794-6106-4158-8551-40d45da7bff0",
+        "chatSessionId": "sess_e580cdfb-4f61-4199-bf6b-fca321262b0d",
+        "timestamp": 1789406099406
+      },
+      {
+        "executionId": "c577b794-6106-4158-8551-40d45da7bff0",
+        "chatSessionId": "sess_e580cdfb-4f61-4199-bf6b-fca321262b0d",
+        "timestamp": 1789406243864
+      }
+    ],
+    "1.9 Implement `SafeImage` and create initial `app/page.tsx` shell": [
+      {
+        "executionId": "c577b794-6106-4158-8551-40d45da7bff0",
+        "chatSessionId": "sess_e580cdfb-4f61-4199-bf6b-fca321262b0d",
+        "timestamp": 1789404614177
+      },
+      {
+        "executionId": "c577b794-6106-4158-8551-40d45da7bff0",
+        "chatSessionId": "sess_e580cdfb-4f61-4199-bf6b-fca321262b0d",
+        "timestamp": 1789406101922
+      },
+      {
+        "executionId": "c577b794-6106-4158-8551-40d45da7bff0",
+        "chatSessionId": "sess_e580cdfb-4f61-4199-bf6b-fca321262b0d",
+        "timestamp": 1789406244880
+      }
+    ],
+    "2. Checkpoint - skeleton renders and scrolls": [
+      {
+        "executionId": "c577b794-6106-4158-8551-40d45da7bff0",
+        "chatSessionId": "sess_e580cdfb-4f61-4199-bf6b-fca321262b0d",
+        "timestamp": 1789404614328
+      },
+      {
+        "executionId": "c577b794-6106-4158-8551-40d45da7bff0",
+        "chatSessionId": "sess_e580cdfb-4f61-4199-bf6b-fca321262b0d",
+        "timestamp": 1789406263083
+      },
+      {
+        "executionId": "c577b794-6106-4158-8551-40d45da7bff0",
+        "chatSessionId": "sess_e580cdfb-4f61-4199-bf6b-fca321262b0d",
+        "timestamp": 1789406331192
+      }
+    ],
+    "3.1 Implement `Hero` and wire into `app/page.tsx`": [
+      {
+        "executionId": "c577b794-6106-4158-8551-40d45da7bff0",
+        "chatSessionId": "sess_e580cdfb-4f61-4199-bf6b-fca321262b0d",
+        "timestamp": 1789404614433
+      },
+      {
+        "executionId": "c577b794-6106-4158-8551-40d45da7bff0",
+        "chatSessionId": "sess_e580cdfb-4f61-4199-bf6b-fca321262b0d",
+        "timestamp": 1789406353318
+      },
+      {
+        "executionId": "c577b794-6106-4158-8551-40d45da7bff0",
+        "chatSessionId": "sess_e580cdfb-4f61-4199-bf6b-fca321262b0d",
+        "timestamp": 1789408086521
+      }
+    ],
+    "4.1 Implement `Marquee` and wire into `app/page.tsx`": [
+      {
+        "executionId": "c577b794-6106-4158-8551-40d45da7bff0",
+        "chatSessionId": "sess_e580cdfb-4f61-4199-bf6b-fca321262b0d",
+        "timestamp": 1789404614524
+      },
+      {
+        "executionId": "c577b794-6106-4158-8551-40d45da7bff0",
+        "chatSessionId": "sess_e580cdfb-4f61-4199-bf6b-fca321262b0d",
+        "timestamp": 1789408213385
+      },
+      {
+        "executionId": "c577b794-6106-4158-8551-40d45da7bff0",
+        "chatSessionId": "sess_e580cdfb-4f61-4199-bf6b-fca321262b0d",
+        "timestamp": 1789408366642
+      }
+    ],
+    "5.1 Implement `WorkCard` (reveal + hover + image fallback)": [
+      {
+        "executionId": "c577b794-6106-4158-8551-40d45da7bff0",
+        "chatSessionId": "sess_e580cdfb-4f61-4199-bf6b-fca321262b0d",
+        "timestamp": 1789404614631
+      },
+      {
+        "executionId": "c577b794-6106-4158-8551-40d45da7bff0",
+        "chatSessionId": "sess_e580cdfb-4f61-4199-bf6b-fca321262b0d",
+        "timestamp": 1789406354060
+      },
+      {
+        "executionId": "c577b794-6106-4158-8551-40d45da7bff0",
+        "chatSessionId": "sess_e580cdfb-4f61-4199-bf6b-fca321262b0d",
+        "timestamp": 1789408212447
+      }
+    ],
+    "5.2 Implement `WorkGrid` and wire into `app/page.tsx`": [
+      {
+        "executionId": "c577b794-6106-4158-8551-40d45da7bff0",
+        "chatSessionId": "sess_e580cdfb-4f61-4199-bf6b-fca321262b0d",
+        "timestamp": 1789404614720
+      },
+      {
+        "executionId": "c577b794-6106-4158-8551-40d45da7bff0",
+        "chatSessionId": "sess_e580cdfb-4f61-4199-bf6b-fca321262b0d",
+        "timestamp": 1789408368485
+      },
+      {
+        "executionId": "c577b794-6106-4158-8551-40d45da7bff0",
+        "chatSessionId": "sess_e580cdfb-4f61-4199-bf6b-fca321262b0d",
+        "timestamp": 1789408476608
+      }
+    ],
+    "6. Checkpoint - Hero, Marquee, and Work render and reveal": [
+      {
+        "executionId": "c577b794-6106-4158-8551-40d45da7bff0",
+        "chatSessionId": "sess_e580cdfb-4f61-4199-bf6b-fca321262b0d",
+        "timestamp": 1789404614810
+      },
+      {
+        "executionId": "c577b794-6106-4158-8551-40d45da7bff0",
+        "chatSessionId": "sess_e580cdfb-4f61-4199-bf6b-fca321262b0d",
+        "timestamp": 1789408482253
+      },
+      {
+        "executionId": "c577b794-6106-4158-8551-40d45da7bff0",
+        "chatSessionId": "sess_e580cdfb-4f61-4199-bf6b-fca321262b0d",
+        "timestamp": 1789408970983
+      }
+    ],
+    "7.1 Implement `StatBlock` with count-up run-once": [
+      {
+        "executionId": "c577b794-6106-4158-8551-40d45da7bff0",
+        "chatSessionId": "sess_e580cdfb-4f61-4199-bf6b-fca321262b0d",
+        "timestamp": 1789404614890
+      },
+      {
+        "executionId": "c577b794-6106-4158-8551-40d45da7bff0",
+        "chatSessionId": "sess_e580cdfb-4f61-4199-bf6b-fca321262b0d",
+        "timestamp": 1789408214286
+      },
+      {
+        "executionId": "c577b794-6106-4158-8551-40d45da7bff0",
+        "chatSessionId": "sess_e580cdfb-4f61-4199-bf6b-fca321262b0d",
+        "timestamp": 1789408367722
+      }
+    ],
+    "7.2 Implement `Numbers` and wire into `app/page.tsx`": [
+      {
+        "executionId": "c577b794-6106-4158-8551-40d45da7bff0",
+        "chatSessionId": "sess_e580cdfb-4f61-4199-bf6b-fca321262b0d",
+        "timestamp": 1789404615018
+      },
+      {
+        "executionId": "c577b794-6106-4158-8551-40d45da7bff0",
+        "chatSessionId": "sess_e580cdfb-4f61-4199-bf6b-fca321262b0d",
+        "timestamp": 1789408972008
+      },
+      {
+        "executionId": "c577b794-6106-4158-8551-40d45da7bff0",
+        "chatSessionId": "sess_e580cdfb-4f61-4199-bf6b-fca321262b0d",
+        "timestamp": 1789409064878
+      }
+    ],
+    "8.1 Implement `Contact` and wire into `app/page.tsx`": [
+      {
+        "executionId": "c577b794-6106-4158-8551-40d45da7bff0",
+        "chatSessionId": "sess_e580cdfb-4f61-4199-bf6b-fca321262b0d",
+        "timestamp": 1789404615218
+      },
+      {
+        "executionId": "c577b794-6106-4158-8551-40d45da7bff0",
+        "chatSessionId": "sess_e580cdfb-4f61-4199-bf6b-fca321262b0d",
+        "timestamp": 1789409065839
+      },
+      {
+        "executionId": "c577b794-6106-4158-8551-40d45da7bff0",
+        "chatSessionId": "sess_e580cdfb-4f61-4199-bf6b-fca321262b0d",
+        "timestamp": 1789409155382
+      }
+    ],
+    "9.1 Verify full-page composition and visual system": [
+      {
+        "executionId": "c577b794-6106-4158-8551-40d45da7bff0",
+        "chatSessionId": "sess_e580cdfb-4f61-4199-bf6b-fca321262b0d",
+        "timestamp": 1789404615339
+      },
+      {
+        "executionId": "c577b794-6106-4158-8551-40d45da7bff0",
+        "chatSessionId": "sess_e580cdfb-4f61-4199-bf6b-fca321262b0d",
+        "timestamp": 1789409156277
+      },
+      {
+        "executionId": "c577b794-6106-4158-8551-40d45da7bff0",
+        "chatSessionId": "sess_e580cdfb-4f61-4199-bf6b-fca321262b0d",
+        "timestamp": 1789409262393
+      }
+    ],
+    "10. Final checkpoint - Ensure all tests pass": [
+      {
+        "executionId": "c577b794-6106-4158-8551-40d45da7bff0",
+        "chatSessionId": "sess_e580cdfb-4f61-4199-bf6b-fca321262b0d",
+        "timestamp": 1789404615440
+      },
+      {
+        "executionId": "c577b794-6106-4158-8551-40d45da7bff0",
+        "chatSessionId": "sess_e580cdfb-4f61-4199-bf6b-fca321262b0d",
+        "timestamp": 1789409267372
+      },
+      {
+        "executionId": "c577b794-6106-4158-8551-40d45da7bff0",
+        "chatSessionId": "sess_e580cdfb-4f61-4199-bf6b-fca321262b0d",
+        "timestamp": 1789409368611
+      }
+    ],
+    "1. Scaffold project and shared foundation": [
+      {
+        "executionId": "c577b794-6106-4158-8551-40d45da7bff0",
+        "chatSessionId": "sess_e580cdfb-4f61-4199-bf6b-fca321262b0d",
+        "timestamp": 1789406245178
+      }
+    ],
+    "3. Build Hero section": [
+      {
+        "executionId": "c577b794-6106-4158-8551-40d45da7bff0",
+        "chatSessionId": "sess_e580cdfb-4f61-4199-bf6b-fca321262b0d",
+        "timestamp": 1789408086797
+      }
+    ],
+    "4. Build Marquee section": [
+      {
+        "executionId": "c577b794-6106-4158-8551-40d45da7bff0",
+        "chatSessionId": "sess_e580cdfb-4f61-4199-bf6b-fca321262b0d",
+        "timestamp": 1789408366931
+      }
+    ],
+    "5. Build Work grid section": [
+      {
+        "executionId": "c577b794-6106-4158-8551-40d45da7bff0",
+        "chatSessionId": "sess_e580cdfb-4f61-4199-bf6b-fca321262b0d",
+        "timestamp": 1789408476815
+      }
+    ],
+    "7. Build Numbers section": [
+      {
+        "executionId": "c577b794-6106-4158-8551-40d45da7bff0",
+        "chatSessionId": "sess_e580cdfb-4f61-4199-bf6b-fca321262b0d",
+        "timestamp": 1789409064958
+      }
+    ],
+    "8. Build Contact section": [
+      {
+        "executionId": "c577b794-6106-4158-8551-40d45da7bff0",
+        "chatSessionId": "sess_e580cdfb-4f61-4199-bf6b-fca321262b0d",
+        "timestamp": 1789409155515
+      }
+    ],
+    "9. Final wiring, visual system, and polish": [
+      {
+        "executionId": "c577b794-6106-4158-8551-40d45da7bff0",
+        "chatSessionId": "sess_e580cdfb-4f61-4199-bf6b-fca321262b0d",
+        "timestamp": 1789409262532
+      }
+    ]
+  }
+}
