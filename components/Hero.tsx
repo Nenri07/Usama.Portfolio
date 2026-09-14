@@ -1,9 +1,9 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { animate, stagger } from 'animejs';
 import SafeImage from './SafeImage';
-import { splitWords } from '@/lib/format';
+import { gsap } from '@/lib/gsapSetup';
+import { prefersReducedMotion, splitText, parallax } from '@/lib/motion';
 
 /**
  * Hero — the first section (Req 2).
@@ -12,17 +12,24 @@ import { splitWords } from '@/lib/format';
  *   object-cover, covering 100% of the section (Req 2.1). On load failure or a
  *   >3s timeout SafeImage swaps to a solid `--color-base` fallback while the
  *   foreground (headline, subheadline, scroll cue) stays visible (Req 2.2).
- * - The headline is split into words; each word is wrapped in a <span>. On
- *   mount an anime.js animation fades each word 0→1 and translates it from 20px
- *   below to its final position, 600ms per word with a 100ms stagger (Req 2.3).
+ * - The headline is split into word spans via `splitText(el, 'words')` and a
+ *   GSAP timeline fades each unit opacity 0→1 and translates it from 20px below
+ *   to its final position — 600ms per unit with a 100ms stagger (Req 2.3).
+ *   This is the PRIMARY engine (GSAP), replacing the former anime.js stagger.
+ * - Background PARALLAX via `parallax(bgEl, { yPercent: 15 })` is applied ONLY
+ *   to the background image container, never the text, so the headline,
+ *   subheadline, and scroll cue stay fully readable at every scroll position
+ *   (Req 2.6).
  * - The subheadline is a single line ≤120 chars with whitespace-nowrap (Req 2.4).
  * - A scroll cue is anchored to the section bottom, visible in the first
  *   viewport (Req 2.5).
  *
- * Animation safety: the DEFAULT (unanimated) DOM state is the final visible
- * state (opacity 1, translateY 0). The hidden start state is only applied by JS
- * after mount, immediately before the animation runs, and the whole effect is
- * wrapped so any anime.js failure leaves the headline fully readable.
+ * Animation safety (Req 9.7, 9.8): the DEFAULT (unanimated) DOM state is the
+ * final visible state (opacity 1, translateY 0, no parallax offset). The hidden
+ * start state is only applied by JS after mount, and the whole effect is wrapped
+ * in try/catch so any GSAP failure leaves the headline fully readable. Under
+ * `prefersReducedMotion()` neither the split animation nor the parallax runs —
+ * everything renders in its final visible state.
  */
 
 const HEADLINE = 'We turn Qatar into the moment.';
@@ -32,38 +39,60 @@ const SUBHEADLINE =
 
 export default function Hero() {
   const headlineRef = useRef<HTMLHeadingElement>(null);
-  const words = splitWords(HEADLINE);
+  const bgRef = useRef<HTMLDivElement>(null);
 
+  // Split-text headline animation (Req 2.3) — GSAP primary engine.
   useEffect(() => {
     const el = headlineRef.current;
-    if (!el) return;
+    if (!el || prefersReducedMotion()) return;
 
-    const spans = el.querySelectorAll<HTMLElement>('[data-word]');
-    if (spans.length === 0) return;
-
+    let spans: HTMLElement[] = [];
     try {
-      // Apply the hidden START state via JS (not static CSS) so that if
-      // anime.js never runs the words remain at their visible default state.
-      spans.forEach((span) => {
-        span.style.opacity = '0';
-        span.style.transform = 'translateY(20px)';
+      // Wrap each word in an inline-block span (returns [] under reduced motion
+      // / SSR, leaving the text untouched and readable).
+      spans = splitText(el, 'words');
+      if (spans.length === 0) return;
+
+      // Apply the hidden START state via JS (not static CSS) so that if GSAP
+      // never runs the words remain at their visible default state.
+      gsap.set(spans, { opacity: 0, y: 20 });
+
+      const tl = gsap.timeline();
+      tl.to(spans, {
+        opacity: 1,
+        y: 0,
+        duration: 0.6, // ≤600ms per unit (Req 2.3)
+        stagger: 0.1, // 100ms between consecutive words, in [0.08, 0.12] (Req 2.3)
+        ease: 'power3.out',
       });
 
-      animate(spans, {
-        opacity: [0, 1],
-        translateY: [20, 0],
-        duration: 600, // ≤600ms per word (Req 2.3)
-        delay: stagger(100), // 100ms between consecutive words (Req 2.3)
-        ease: 'out(3)',
-      });
+      return () => {
+        tl.kill();
+      };
     } catch {
-      // If anime.js fails, restore the final visible state so the headline
-      // stays readable (Req 2.3 graceful default).
-      spans.forEach((span) => {
-        span.style.opacity = '1';
-        span.style.transform = 'none';
-      });
+      // If GSAP fails, restore the final visible state so the headline stays
+      // readable (Req 2.3 / 9.7 graceful default).
+      try {
+        if (spans.length > 0) {
+          gsap.set(spans, { clearProps: 'all' });
+        }
+      } catch {
+        spans.forEach((span) => {
+          span.style.opacity = '1';
+          span.style.transform = 'none';
+        });
+      }
     }
+  }, []);
+
+  // Background parallax (Req 2.6) — applied ONLY to the background container so
+  // the foreground text stays readable at every scroll position.
+  useEffect(() => {
+    const bg = bgRef.current;
+    if (!bg) return;
+    // `parallax` no-ops under reduced motion / SSR and returns a no-op cleanup.
+    const cleanup = parallax(bg, { yPercent: 15 });
+    return cleanup;
   }, []);
 
   return (
@@ -72,8 +101,9 @@ export default function Hero() {
       className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-6 py-24 text-center"
     >
       {/* Full-bleed background image (Req 2.1) with solid --color-base fallback
-          on failure / >3s timeout (Req 2.2). Sits behind all foreground. */}
-      <div className="absolute inset-0 -z-10">
+          on failure / >3s timeout (Req 2.2). Sits behind all foreground. This
+          container is the ONLY element the parallax translates (Req 2.6). */}
+      <div ref={bgRef} className="absolute inset-0 -z-10 will-change-transform">
         <SafeImage
           src="/work/img-000.png"
           alt=""
@@ -92,23 +122,13 @@ export default function Hero() {
         />
       </div>
 
-      {/* Foreground content — always visible (Req 2.2). */}
+      {/* Foreground content — always visible (Req 2.2, 2.6). Not parallaxed. */}
       <h1
         ref={headlineRef}
         className="max-w-5xl text-[var(--color-text)]"
         style={{ fontSize: 'clamp(40px, 9vw, 88px)', lineHeight: 1.05 }}
       >
-        {words.map((word, i) => (
-          <span
-            key={`${word}-${i}`}
-            data-word
-            className="inline-block"
-            style={{ willChange: 'opacity, transform' }}
-          >
-            {word}
-            {i < words.length - 1 ? '\u00A0' : ''}
-          </span>
-        ))}
+        {HEADLINE}
       </h1>
 
       {/* Subheadline: single line, ≤120 chars, no wrapping (Req 2.4). */}
@@ -117,7 +137,7 @@ export default function Hero() {
       </p>
 
       {/* Scroll cue anchored to the section bottom, within the first viewport
-          (Req 2.5). */}
+          (Req 2.5). Stays fully readable at every scroll position (Req 2.6). */}
       <div className="pointer-events-none absolute inset-x-0 bottom-8 flex flex-col items-center gap-2 text-[var(--color-muted)]">
         <span className="text-xs uppercase tracking-[0.3em]">Scroll</span>
         <span

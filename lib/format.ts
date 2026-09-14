@@ -25,6 +25,16 @@ export function imagePathForIndex(i: number): string {
 }
 
 /**
+ * Resolve the image path for a project: prefer an explicit `image` override,
+ * otherwise fall back to the sequential path for its definition index (Req 4.2).
+ * @example resolveImagePath({ image: '/work/custom.png' }, 3) // '/work/custom.png'
+ * @example resolveImagePath({}, 3)                            // '/work/img-003.png'
+ */
+export function resolveImagePath(project: { image?: string }, i: number): string {
+  return project.image ?? imagePathForIndex(i);
+}
+
+/**
  * Duplicate a wordmark list into a seamless marquee track.
  * The first and second halves are identical, so a translateX 0 -> -50%
  * loop has no visible seam.

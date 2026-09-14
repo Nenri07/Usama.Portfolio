@@ -1,22 +1,23 @@
 import StatBlock from './StatBlock';
-import { numbers } from '@/lib/data';
+import { results } from '@/lib/data';
 
 /**
- * Numbers — the Numbers bar: exactly three StatBlocks rendered from the static
- * `numbers` data (Req 5.1). The three read "13+ Activations",
- * "3.75M+ Visitors at peak event", and "3 FIFA World Cup 2022 activations".
+ * Numbers — the Results section: one StatBlock per `results` entry (5 total,
+ * Req 5.1). The stats read "3.75M peak visitors", "13+ activations", "3 FIFA
+ * World Cup 2022 activations", "7,000+ prize winners", and "12,000 balloons
+ * across 8 Qatar landmarks".
  *
- * Only the visitor/activation counts in `lib/data.ts` are rendered — there are
- * no revenue or profit figures anywhere in this section (Req 5.5).
+ * Only Public_Metric counts from `lib/data.ts` are rendered — there are no
+ * revenue, cost, or profit figures anywhere in this section (Req 5.5, 8.6).
  *
- * Server component: it maps static `numbers` data to StatBlock (a `'use client'`
- * component) children, so the count-up/animation work lives in StatBlock while
- * this wrapper — and page.tsx — stay server components.
+ * Server component: it maps the static `results` data to StatBlock (a
+ * `'use client'` component) children, so the count-up/animation work lives in
+ * StatBlock while this wrapper — and page.tsx — stay server components.
  *
- * Visual system: dark base, 3-column layout on desktop (`grid-cols-1
- * md:grid-cols-3`) with generous gaps (≥24px via `gap-12`), stacked on mobile.
- * No box-shadow, border-radius 0, headings ≥32px (StatBlock renders the big
- * numbers) (Req 7.1–7.3).
+ * Visual system: dark base; a responsive grid that reads well with 5 items
+ * (`md:grid-cols-3 lg:grid-cols-5`) with generous gaps (≥24px via `gap-12`),
+ * stacked on mobile. No box-shadow, border-radius 0, headings ≥32px (StatBlock
+ * renders the big numbers) (Req 8.1–8.3).
  */
 export default function Numbers() {
   return (
@@ -34,12 +35,13 @@ export default function Numbers() {
         </header>
 
         {/*
-          Exactly 3 StatBlocks (Req 5.1): stacked on mobile, 3 columns on desktop
-          (grid-cols-1 md:grid-cols-3) with generous ≥24px gaps (gap-12 = 48px)
-          (Req 7.2).
+          One StatBlock per result (5 total, Req 5.1): stacked on mobile, 3
+          columns on tablet, 5 columns on wide desktop
+          (grid-cols-1 md:grid-cols-3 lg:grid-cols-5) with generous ≥24px gaps
+          (gap-12 = 48px) (Req 8.2).
         */}
-        <div className="grid grid-cols-1 gap-12 md:grid-cols-3">
-          {numbers.map((stat, i) => (
+        <div className="grid grid-cols-1 gap-12 md:grid-cols-3 lg:grid-cols-5">
+          {results.map((stat, i) => (
             <StatBlock key={i} stat={stat} />
           ))}
         </div>
