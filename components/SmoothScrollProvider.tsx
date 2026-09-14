@@ -43,6 +43,10 @@ export default function SmoothScrollProvider({
         lenis = new Lenis(heavyLenisConfig());
         lenis.on("scroll", ScrollTrigger.update);
 
+        // Expose the instance so Nav can drive smooth-scroll through it (with a
+        // native scrollIntoView fallback when it's absent, e.g. reduced motion).
+        (window as unknown as { __lenis?: Lenis }).__lenis = lenis;
+
         tick = (time: number) => lenis?.raf(time * 1000);
         gsap.ticker.add(tick);
         gsap.ticker.lagSmoothing(0);
@@ -57,6 +61,9 @@ export default function SmoothScrollProvider({
         gsap.ticker.remove(tick);
       }
       lenis?.destroy();
+      if (typeof window !== "undefined") {
+        delete (window as unknown as { __lenis?: Lenis }).__lenis;
+      }
       ScrollTrigger.getAll().forEach((t) => t.kill());
     };
   }, []);

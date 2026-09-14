@@ -19,6 +19,15 @@
   --color-muted: var(--color-muted);
   --color-accent: var(--color-accent);
 
+  /* Aliases so the vendored 21st.dev perspective slider's shadcn-style class
+     names (bg-background, text-foreground, text-muted-foreground, bg-muted)
+     resolve to our design tokens without editing the component (Step 1 option a).
+     --color-muted stays the muted TEXT color; the muted SURFACE fill maps to
+     our surface token. */
+  --color-background: var(--color-base);
+  --color-foreground: var(--color-text);
+  --color-muted-foreground: var(--color-muted);
+
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system,
     "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
