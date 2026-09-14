@@ -4,17 +4,10 @@ import { useEffect, useRef, useState } from 'react';
 import clsx from 'clsx';
 
 /**
- * SafeImage — a graceful-degradation image (Req 1.5, 1.6, 2.2, 4.8).
- *
- * Uses a plain <img> rather than next/image so that missing or misnamed files
- * (the user-supplied img-000.png–img-012.png arrive later) degrade at runtime
- * without any build-time file constraints.
- *
- * - Present images display normally with no code change (Req 1.5).
- * - On error the image is omitted and a solid placeholder background shows
- *   instead of throwing (Req 1.6, 4.8).
- * - An optional load timeout (used by the hero, ~3000ms) marks the image as
- *   failed if `onLoad` never fires, so the fallback still appears (Req 2.2).
+ * SafeImage keeps image-heavy presentation surfaces stable while files load.
+ * A polished surface-token shimmer occupies the exact image container, then
+ * the real image fades in. Missing or timed-out files settle to a solid
+ * fallback without changing layout.
  */
 interface SafeImageProps {
   src: string;
@@ -22,13 +15,17 @@ interface SafeImageProps {
   className?: string;
   /** Layout hint. `full` fills its container with object-cover. */
   variant?: 'full' | 'auto';
-  /** Placeholder color shown on failure. Defaults to the surface token. */
+  /** Placeholder color shown while loading and after failure. */
   fallbackColor?: string;
-  /** If set, mark as failed when onLoad hasn't fired within this many ms. */
+  /** If set, mark as failed when onLoad has not fired within this many ms. */
   timeoutMs?: number;
-  /** Native image loading strategy. Defaults to 'lazy' to keep image-heavy pages light. */
+  /** Native image loading strategy. Defaults to lazy. */
   loading?: 'lazy' | 'eager';
+  /** Preserve native drag control for slider/gallery uses. */
+  draggable?: boolean;
 }
+
+type ImageStatus = 'loading' | 'loaded' | 'failed';
 
 export default function SafeImage({
   src,
@@ -38,60 +35,74 @@ export default function SafeImage({
   fallbackColor = 'var(--color-surface)',
   timeoutMs,
   loading = 'lazy',
+  draggable,
 }: SafeImageProps) {
-  const [failed, setFailed] = useState(false);
-  const [loaded, setLoaded] = useState(false);
+  const [state, setState] = useState<{ src: string; status: ImageStatus }>({
+    src,
+    status: 'loading',
+  });
   const loadedRef = useRef(false);
+  const status = state.src === src ? state.status : 'loading';
+  const isFull = variant === 'full';
 
-  // Optional load-timeout: if the image hasn't loaded in time, fall back so
-  // the placeholder shows (Req 2.2). Timer is cleared on load/unmount.
   useEffect(() => {
+    loadedRef.current = false;
     if (!timeoutMs) return;
+
     const timer = window.setTimeout(() => {
-      if (!loadedRef.current) setFailed(true);
+      if (!loadedRef.current) setState({ src, status: 'failed' });
     }, timeoutMs);
+
     return () => window.clearTimeout(timer);
-  }, [timeoutMs, src]);
+  }, [src, timeoutMs]);
 
   const handleLoad = () => {
     loadedRef.current = true;
-    setLoaded(true);
+    setState({ src, status: 'loaded' });
   };
 
   const handleError = () => {
-    setFailed(true);
+    loadedRef.current = false;
+    setState({ src, status: 'failed' });
   };
 
-  const isFull = variant === 'full';
-
-  // On failure render only the placeholder background — no image, no throw.
-  if (failed) {
-    return (
-      <div
-        aria-hidden="true"
-        className={clsx(isFull && 'h-full w-full', className)}
-        style={{ backgroundColor: fallbackColor }}
-      />
-    );
-  }
-
   return (
-    <img
-      src={src}
-      alt={alt}
-      loading={loading}
-      decoding="async"
-      onLoad={handleLoad}
-      onError={handleError}
+    <span
       className={clsx(
-        isFull && 'h-full w-full object-cover',
-        !loaded && 'opacity-0',
-        loaded && 'opacity-100',
+        'safe-image-frame relative block overflow-hidden',
+        isFull ? 'h-full w-full' : 'inline-block max-w-full',
         className,
       )}
-      // Keep a placeholder color behind the image until it loads so a slow or
-      // failing image never flashes empty.
       style={{ backgroundColor: fallbackColor }}
-    />
+    >
+      {status === 'loading' ? (
+        <span
+          aria-hidden="true"
+          className="safe-image-skeleton absolute inset-0"
+        />
+      ) : null}
+
+      {status !== 'failed' ? (
+        // A plain img intentionally preserves runtime fallback for user-supplied files.
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={src}
+          alt={alt}
+          loading={loading}
+          decoding="async"
+          draggable={draggable}
+          onLoad={handleLoad}
+          onError={handleError}
+          className={clsx(
+            isFull && 'h-full w-full object-cover',
+            'safe-image-media',
+            status === 'loaded' ? 'opacity-100' : 'opacity-0',
+          )}
+          style={{ backgroundColor: fallbackColor }}
+        />
+      ) : (
+        <span aria-hidden="true" className="block h-full min-h-px w-full" />
+      )}
+    </span>
   );
 }

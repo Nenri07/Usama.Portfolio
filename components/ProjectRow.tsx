@@ -15,16 +15,11 @@ import { useLineMask } from '@/lib/useLineMask';
  * Public_Metric counts (`visitors`/`winners`/`staff`/`days`). It renders NO
  * Prohibited_Financial_Figure (Req 4.5, 8.6).
  *
- * The whole row is an interactive cursor hover target (`data-cursor` +
- * `data-cursor-label="View"`, auto-detected by `initCursor`). On pointer
- * enter/leave it reports the resolved preview `src` up via `onHover`/`onLeave`
- * so `WorkList` can drive the shared WebGL canvas (Req 4.8, 10.3) — while a CSS
- * hover emphasis (~300ms) keeps the row tactile even without WebGL (Req 4.8).
- *
- * Reveal: the title reveals line-by-line via the shared `useLineMask`
- * (Line_Mask_Reveal), which no-ops under reduced motion / SSR, leaving the row
- * fully visible and readable (Req 4.6, 4.9, 4.10). It is not a link — there are
- * no project detail pages — so it stays a `<div>`.
+ * The row keeps heading/content semantics while an overlaid native button makes
+ * the complete surface keyboard-operable and opens the shared project dialog.
+ * Pointer enter/leave still reports the resolved preview source to WorkList;
+ * when Batch 1 leaves WebGL unmounted those calls safely no-op and CSS emphasis
+ * keeps the row tactile.
  */
 export interface ProjectRowProps {
   project: Project;
@@ -33,6 +28,8 @@ export interface ProjectRowProps {
   onHover?: (index: number, src: string) => void;
   /** Called on pointer leave. */
   onLeave?: () => void;
+  /** Opens this project in the shared presentation dialog. */
+  onSelect?: (index: number) => void;
 }
 
 /** A Public_Metric count + its unit label, or null when the field is absent. */
@@ -50,6 +47,7 @@ export default function ProjectRow({
   index,
   onHover,
   onLeave,
+  onSelect,
 }: ProjectRowProps) {
   // Line-mask reveal on the title (Req 4.6). Starts when the row top crosses
   // 'top 90%'; no-ops under reduced motion so the title stays fully visible.
@@ -68,23 +66,29 @@ export default function ProjectRow({
   }, [onLeave]);
 
   return (
-    <div
-      // Interactive cursor hover target (Req 11.6). initCursor detects
-      // [data-cursor] and shows the data-cursor-label.
-      data-cursor
-      data-cursor-label="View"
+    <article
       onPointerEnter={handleEnter}
       onPointerLeave={handleLeave}
       className={clsx(
-        'group relative w-full',
-        // Big-index look: top border, no radius/shadow, generous padding (≥24px).
+        'group relative w-full min-w-0',
         'border-t border-[var(--color-muted)]/25',
         'py-8 sm:py-10',
-        'cursor-none select-none',
+        'select-none',
       )}
     >
-      <div className="flex items-baseline gap-4 sm:gap-6">
-        {/* Small maroon index number (sparse accent, Req 8.1). */}
+      <button
+        type="button"
+        onClick={() => onSelect?.(index)}
+        aria-label={`Open project presentation: ${project.title}`}
+        aria-haspopup="dialog"
+        data-cursor
+        data-cursor-label="View"
+        className="absolute inset-0 z-10 w-full cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--color-text)]"
+      >
+        <span className="sr-only">Open {project.title}</span>
+      </button>
+
+      <div className="flex min-w-0 items-baseline gap-4 sm:gap-6">
         <span
           aria-hidden="true"
           className="shrink-0 pt-2 font-mono text-sm text-[var(--color-accent)] sm:text-base"
@@ -93,34 +97,37 @@ export default function ProjectRow({
         </span>
 
         <div className="min-w-0 flex-1">
-          {/* Big-type title — heading scale, tracks tight; line-mask reveal. */}
           <h3
             ref={titleRef}
             className={clsx(
-              'font-semibold leading-[0.95] tracking-tight',
+              'break-words font-semibold leading-[0.95] tracking-tight',
               'text-[clamp(32px,7vw,96px)]',
-              // Hover emphasis (~300ms, within 200–400ms): brighten + nudge x.
               'text-[var(--color-muted)] transition-[color,transform] duration-300 ease-out',
               'group-hover:translate-x-2 group-hover:text-[var(--color-text)]',
+              'group-focus-within:translate-x-2 group-focus-within:text-[var(--color-text)]',
             )}
           >
             {project.title}
           </h3>
 
-          {/* Secondary line: year · venue. */}
-          <p className="mt-3 text-base text-[var(--color-muted)] transition-colors duration-300 group-hover:text-[var(--color-text)] sm:text-lg">
+          <p className="mt-3 break-words text-base text-[var(--color-muted)] transition-colors duration-300 group-hover:text-[var(--color-text)] group-focus-within:text-[var(--color-text)] sm:text-lg">
             {project.year} · {project.venue}
           </p>
 
-          {/* Services + any Public_Metric counts (NO financial figures). */}
-          <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-[var(--color-muted)] sm:text-base">
-            <span>{project.services.join(' · ')}</span>
-            {metrics && (
-              <span className="text-[var(--color-accent)]">{metrics}</span>
-            )}
+          <div className="mt-2 flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1 text-sm text-[var(--color-muted)] sm:text-base">
+            <span className="[overflow-wrap:anywhere]">{project.services.join(' · ')}</span>
+            {metrics ? (
+              <span className="[overflow-wrap:anywhere] text-[var(--color-accent)]">
+                {metrics}
+              </span>
+            ) : null}
           </div>
+
+          <span className="mt-5 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--color-text)] opacity-70 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100">
+            View project <span aria-hidden="true" className="text-[var(--color-accent)]">↗</span>
+          </span>
         </div>
       </div>
-    </div>
+    </article>
   );
 }

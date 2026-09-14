@@ -1,8 +1,9 @@
 'use client';
 
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import HeroSlider from './HeroSlider';
 import ProjectModal from './ProjectModal';
+import { ProjectSelectionProvider } from './ProjectSelectionContext';
 import { projects } from '@/lib/data';
 
 /**
@@ -28,13 +29,14 @@ export default function HomeClient({ children }: { children: React.ReactNode }) 
 
   const selectedProject =
     selectedIndex != null ? projects[selectedIndex] ?? null : null;
+  const selection = useMemo(() => ({ openProject }), [openProject]);
 
   return (
-    <>
+    <ProjectSelectionProvider value={selection}>
       <HeroSlider onCardClick={openProject} />
 
-      {/* Static sections below the hero (Marquee, WorkList, Numbers, Team,
-          Contact) — rendered on the server and passed through as children. */}
+      {/* Server-rendered sections remain in their original client slot. WorkList
+          consumes the provider so its rows open this same modal instance. */}
       {children}
 
       <ProjectModal
@@ -42,6 +44,6 @@ export default function HomeClient({ children }: { children: React.ReactNode }) 
         index={selectedIndex}
         onClose={closeProject}
       />
-    </>
+    </ProjectSelectionProvider>
   );
 }

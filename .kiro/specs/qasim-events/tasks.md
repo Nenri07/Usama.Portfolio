@@ -183,7 +183,7 @@ Phase 3 (section 18, NOT started) pushes the site to closely match the feel of j
     - Page renders 6 sections in order; clients list the exact 8 entries; results show only Public_Metric values; Lenis+ScrollTrigger integration mounts; custom cursor mounts and no-ops under reduced motion
     - _Requirements: 8.5, 8.6, 9.2, 9.6, 9.8_
 
-- [ ] 17. Final checkpoint - Ensure all tests pass
+- [x] 17. Final checkpoint - Ensure all tests pass
   - Ensure all tests pass and the page renders, scrolls, choreographs motion, and degrades gracefully (native scroll + final visible state) without real images and under reduced motion. Ask the user if questions arise.
 
 - [x] 18. High-fidelity motion: WebGL hover-image project list, heavy inertia, line-mask headings, cursor hover-state
@@ -249,7 +249,7 @@ Phase 3 (section 18, NOT started) pushes the site to closely match the feel of j
     - Assert `heavyLenisConfig()` bounds; Lenis skipped under reduced motion; `lineMaskReveal` leaves headings fully visible under reduced motion; cursor `setHover` toggles state and is disabled on coarse pointer; WebGL setup deferred so it does not block first paint
     - _Requirements: 11.1, 11.2, 11.4, 11.8, 10.10_
 
-- [ ] 19. Final checkpoint - Ensure all tests pass
+- [x] 19. Final checkpoint - Ensure all tests pass
   - Ensure all tests pass and the page renders, scrolls with heavy inertia, reveals headings line-by-line, drives the WebGL hover-image list, reacts with the cursor hover-state, and degrades gracefully (readable text list, headings visible, native scroll) without real images, without WebGL, on touch, and under reduced motion. Ask the user if questions arise.
 
 ## Notes

@@ -252,6 +252,10 @@ export interface TeamDivision {
   name: string;
   /** One short, factual line — no fluff, no financials. */
   blurb: string;
+  /** Responsibilities directly supported by the division blurb and project services. */
+  capabilities: string[];
+  /** Conservative description of how this crew contributes on site. */
+  management: string;
   /** Real staff photo paths: /team/<slug>/NN.jpeg. */
   images: string[];
 }
@@ -278,30 +282,40 @@ export const divisions: TeamDivision[] = [
     slug: 'organizers',
     name: 'Organizers & Providers',
     blurb: 'The core crew that plans, sets up and runs each activation on the ground.',
+    capabilities: ['On-site planning', 'Activation setup', 'Live event operations'],
+    management: 'Coordinates practical planning, setup and live delivery across each activation.',
     images: teamImagePaths('organizers', 13),
   },
   {
     slug: 'hostesses',
     name: 'Hostesses',
     blurb: 'VIP hostesses welcoming and guiding guests across our activations.',
+    capabilities: ['Guest welcome', 'Guest guidance', 'VIP hosting'],
+    management: 'Supports guest arrival, wayfinding and hosted touchpoints throughout the event.',
     images: teamImagePaths('hostesses', 20),
   },
   {
     slug: 'play-area',
     name: 'Play Area & Activities',
     blurb: 'The team operating carnival games, soft play and family activities.',
+    capabilities: ['Carnival games', 'Soft play', 'Family activities'],
+    management: 'Operates staffed activity areas, games and family play zones on site.',
     images: teamImagePaths('play-area', 14),
   },
   {
     slug: 'waiters',
     name: 'Waiters',
     blurb: 'Hospitality and F&B service staff.',
+    capabilities: ['Hospitality service', 'Food and beverage service', 'Guest support'],
+    management: 'Supports hospitality and food-and-beverage service during live events.',
     images: teamImagePaths('waiters', 4),
   },
   {
     slug: 'cleaning',
     name: 'Cleaning Crew',
     blurb: 'Keeping every venue spotless before, during and after each event.',
+    capabilities: ['Venue readiness', 'Live-event upkeep', 'Post-event reset'],
+    management: 'Maintains venue presentation before opening, during operation and after close.',
     images: teamImagePaths('cleaning', 3),
   },
 ];

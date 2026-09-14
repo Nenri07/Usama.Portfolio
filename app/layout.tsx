@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import SmoothScrollProvider from "@/components/SmoothScrollProvider";
-import CustomCursor from "@/components/CustomCursor";
-import HoverImageCanvas from "@/components/HoverImageCanvas";
 
 // Confident sans-serif stack via next/font (Requirement 7.2).
 const geistSans = Geist({
@@ -16,6 +14,13 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+// Premium editorial display face for headings.
+const playfair = Playfair_Display({
+  variable: "--font-display",
+  subsets: ["latin"],
+  weight: ["400", "700", "900"],
+});
+
 export const metadata: Metadata = {
   title: "Qasim Events",
   description:
@@ -26,20 +31,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col font-sans">
-        <SmoothScrollProvider>
-          {/*
-            Single shared WebGL hover-image canvas for the whole app (Req 10.2).
-            HoverImageCanvas provides the controller via context and renders the
-            one fixed canvas; the custom cursor + page content live inside it.
-          */}
-          <HoverImageCanvas>
-            <CustomCursor />
-            {children}
-          </HoverImageCanvas>
-        </SmoothScrollProvider>
+        <SmoothScrollProvider>{children}</SmoothScrollProvider>
       </body>
     </html>
   );

@@ -35,6 +35,7 @@ import {
 } from "react";
 import gsap from "gsap";
 import { SplitText } from "gsap/SplitText";
+import SafeImage from "../SafeImage";
 
 // Register once, browser-only. Registering twice is a no-op in GSAP; the guard
 // keeps SSR from touching gsap plugin internals.
@@ -528,16 +529,14 @@ function InfinitePerspectiveSliderComp({
               className="relative w-full overflow-hidden bg-[var(--color-surface)] cursor-pointer"
               style={{ aspectRatio: "3 / 4" }}
             >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
+              <SafeImage
                 src={item.src}
                 alt={item.title}
+                variant="full"
+                loading={index < 3 ? "eager" : "lazy"}
                 draggable={false}
-                className="h-full w-full object-cover pointer-events-none"
-                onError={(e) => {
-                  // Graceful degrade: hide a broken image, leave the surface fill.
-                  (e.currentTarget as HTMLImageElement).style.visibility = "hidden";
-                }}
+                className="pointer-events-none"
+                fallbackColor="var(--color-surface)"
               />
             </div>
 
@@ -551,7 +550,7 @@ function InfinitePerspectiveSliderComp({
               </span>
               <span
                 data-ips-title
-                className="block text-lg font-semibold tracking-tight text-foreground"
+                className="font-display block text-lg font-semibold tracking-tight text-foreground"
               >
                 {item.title}
               </span>

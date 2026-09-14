@@ -47,9 +47,11 @@ export interface StatBlockProps {
   stat: StatItem;
   /** Position in the Results grid, used to stagger the 3D reveal. */
   index?: number;
+  /** Opens the supporting public-metric presentation. */
+  onSelect?: () => void;
 }
 
-export default function StatBlock({ stat, index = 0 }: StatBlockProps) {
+export default function StatBlock({ stat, index = 0, onSelect }: StatBlockProps) {
   const { target, suffix, label } = stat;
 
   // Compute reduced-motion in the component (client); passed to useReveal as
@@ -131,16 +133,15 @@ export default function StatBlock({ stat, index = 0 }: StatBlockProps) {
   });
 
   return (
-    <div ref={revealRef} className="flex flex-col">
-      {/* 3D number card: perspective wrapper + preserve-3d surface, tilts
-          toward the pointer on a fine pointer. No box-shadow (Req 8.3). */}
-      <NumberCard>
-        <div ref={cardRef} className="flex flex-col">
-          {/* Large confident number; maroon accent reserved for the suffix
-              only (used sparingly, Req 8.1). Square, flat, no shadow (Req 8.3). */}
-          <p className="text-[var(--color-text)]">
+    <div ref={revealRef} className="flex h-full min-w-0 flex-col">
+      <NumberCard
+        wrapperClassName="h-full"
+        className="h-full min-h-72 border border-[var(--color-muted)]/20 bg-[var(--color-surface)]/30 p-5 transition-colors duration-300 hover:border-[var(--color-accent)]/55 sm:p-6"
+      >
+        <div ref={cardRef} className="flex h-full min-w-0 flex-col">
+          <p className="break-words text-[var(--color-text)]">
             <span
-              className="font-semibold leading-none tracking-tight"
+              className="font-display font-semibold leading-none tracking-tight"
               style={{ fontSize: 'clamp(44px, 8vw, 88px)' }}
             >
               {formatValue(value)}
@@ -158,28 +159,33 @@ export default function StatBlock({ stat, index = 0 }: StatBlockProps) {
             ) : null}
           </p>
 
-          {/* Thin maroon rule as a sparing accent under the number. */}
           <span
             aria-hidden="true"
             className="mt-4 block h-px w-12"
             style={{ backgroundColor: 'var(--color-accent)' }}
           />
 
-          {/* Muted label below (Req 5.1). */}
-          <span className="mt-4 max-w-[16rem] text-base text-[var(--color-muted)] sm:text-lg">
+          <span className="mt-4 max-w-[16rem] break-words text-base text-[var(--color-muted)] sm:text-lg">
             {label}
           </span>
+
+          {onSelect ? (
+            <button
+              type="button"
+              onClick={onSelect}
+              aria-haspopup="dialog"
+              aria-label={`View supporting details for ${label}`}
+              className="relative z-10 mt-auto inline-flex min-h-12 items-center gap-3 self-start pt-7 text-sm font-semibold uppercase tracking-[0.16em] text-[var(--color-text)] transition-colors hover:text-[var(--color-accent)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--color-text)]"
+            >
+              Explore result <span aria-hidden="true" className="text-[var(--color-accent)]">↗</span>
+            </button>
+          ) : null}
         </div>
       </NumberCard>
     </div>
   );
 }
 
-/**
- * Render a count value as a string. Integers show with no decimals; non-integer
- * values (mid-count of the 3.75 target) show their natural decimals. `String`
- * already produces "3.75", "3", "13", etc. without trailing-zero noise.
- */
 function formatValue(v: number): string {
-  return String(v);
+  return v.toLocaleString('en-US', { maximumFractionDigits: 2 });
 }

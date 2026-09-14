@@ -22,10 +22,11 @@ import WorkList from '@/components/WorkList';
 import Numbers from '@/components/Numbers';
 import Team from '@/components/Team';
 import Contact from '@/components/Contact';
+import ThankYou from '@/components/ThankYou';
 
 export default function Home() {
   return (
-    <main className="flex flex-col flex-1 bg-base text-[var(--color-text)]">
+    <main className="flex w-full min-w-0 max-w-full flex-1 flex-col bg-base text-[var(--color-text)]">
       <HomeClient>
         {/* ── Clients / Trusted By (Req 3) ────────────────────────────── */}
         <Marquee />
@@ -41,6 +42,9 @@ export default function Home() {
 
         {/* ── Contact (Req 7) ─────────────────────────────────────────── */}
         <Contact />
+
+        {/* ── Presentation ending ──────────────────────────────────────── */}
+        <ThankYou />
       </HomeClient>
     </main>
   );

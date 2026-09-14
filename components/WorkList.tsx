@@ -4,6 +4,7 @@ import { useCallback, useMemo } from 'react';
 import ProjectRow from './ProjectRow';
 import RevealHeading from './RevealHeading';
 import { useHoverImage } from './HoverImageContext';
+import { useProjectSelection } from './ProjectSelectionContext';
 import { projects } from '@/lib/data';
 import { hasWebGL, prefersReducedMotion, isCoarsePointer } from '@/lib/motion';
 
@@ -27,6 +28,7 @@ import { hasWebGL, prefersReducedMotion, isCoarsePointer } from '@/lib/motion';
  */
 export default function WorkList() {
   const hoverImage = useHoverImage();
+  const projectSelection = useProjectSelection();
 
   // Enable canvas wiring only when a controller exists (WebGL ok) and motion /
   // pointer conditions allow it (Req 10.7, 10.8).
@@ -45,6 +47,13 @@ export default function WorkList() {
   const handleLeave = useCallback(() => {
     if (enabled) hoverImage?.hide();
   }, [enabled, hoverImage]);
+
+  const handleSelect = useCallback(
+    (index: number) => {
+      projectSelection?.openProject(index);
+    },
+    [projectSelection],
+  );
 
   return (
     <section id="work" className="bg-base px-6 py-24 sm:px-8 lg:px-12">
@@ -73,6 +82,7 @@ export default function WorkList() {
               index={i}
               onHover={handleHover}
               onLeave={handleLeave}
+              onSelect={handleSelect}
             />
           ))}
         </div>

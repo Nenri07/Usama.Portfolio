@@ -1,8 +1,9 @@
 'use client';
 
-import { useCallback, useEffect, useLayoutEffect, useRef } from 'react';
+import { useCallback, useLayoutEffect, useRef } from 'react';
 import { gsap } from '@/lib/gsapSetup';
 import { prefersReducedMotion } from '@/lib/motion';
+import { useAccessibleDialog } from '@/lib/useAccessibleDialog';
 import { resolveImagePath, imagePathForIndex } from '@/lib/format';
 import type { Project } from '@/lib/data';
 import SafeImage from './SafeImage';
@@ -104,12 +105,18 @@ export default function ProjectModal({ project, index, onClose }: ProjectModalPr
   const panelRef = useRef<HTMLDivElement | null>(null);
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const closeBtnRef = useRef<HTMLButtonElement | null>(null);
-  const lastFocused = useRef<HTMLElement | null>(null);
 
   // Per-image quickTo setters for the scroll-driven tilt, keyed by DOM node.
   const imageRefs = useRef<HTMLDivElement[]>([]);
 
   const open = project != null;
+
+  useAccessibleDialog({
+    open,
+    onClose,
+    containerRef: panelRef,
+    initialFocusRef: closeBtnRef,
+  });
 
   // Collect gallery image nodes for the scroll tilt.
   const registerImage = useCallback((el: HTMLDivElement | null) => {
@@ -126,9 +133,6 @@ export default function ProjectModal({ project, index, onClose }: ProjectModalPr
     const panel = panelRef.current;
     const scroller = scrollRef.current;
     if (!scrim || !panel) return;
-
-    // Reset the per-open image node collection.
-    imageRefs.current = [];
 
     if (prefersReducedMotion()) {
       // Flat + fully visible, instant, no listeners (Req 9.8).
@@ -226,6 +230,7 @@ export default function ProjectModal({ project, index, onClose }: ProjectModalPr
       return () => {
         tl.kill();
         cleanupScroll?.();
+        imageRefs.current = [];
       };
     } catch {
       // On failure make sure the modal is fully visible and flat.
@@ -237,53 +242,6 @@ export default function ProjectModal({ project, index, onClose }: ProjectModalPr
       cleanupScroll?.();
     }
   }, [open]);
-
-  // Body scroll lock, ESC handler, focus management.
-  useEffect(() => {
-    if (!open) return;
-
-    lastFocused.current = (document.activeElement as HTMLElement | null) ?? null;
-
-    const prevOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-
-    // Move focus into the modal.
-    closeBtnRef.current?.focus();
-
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        e.preventDefault();
-        onClose();
-        return;
-      }
-      // Minimal focus trap: keep Tab within the panel.
-      if (e.key === 'Tab') {
-        const panel = panelRef.current;
-        if (!panel) return;
-        const focusables = panel.querySelectorAll<HTMLElement>(
-          'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
-        );
-        if (focusables.length === 0) return;
-        const first = focusables[0];
-        const last = focusables[focusables.length - 1];
-        if (e.shiftKey && document.activeElement === first) {
-          e.preventDefault();
-          last.focus();
-        } else if (!e.shiftKey && document.activeElement === last) {
-          e.preventDefault();
-          first.focus();
-        }
-      }
-    };
-    document.addEventListener('keydown', onKeyDown);
-
-    return () => {
-      document.removeEventListener('keydown', onKeyDown);
-      document.body.style.overflow = prevOverflow;
-      // Restore focus to whatever opened the modal.
-      lastFocused.current?.focus?.();
-    };
-  }, [open, onClose]);
 
   if (!open || !project) return null;
 
@@ -310,7 +268,8 @@ export default function ProjectModal({ project, index, onClose }: ProjectModalPr
     >
       <div
         ref={panelRef}
-        className="relative flex w-full max-w-6xl flex-col bg-[var(--color-base)] [transform-style:preserve-3d] will-change-transform"
+        tabIndex={-1}
+        className="relative flex max-h-full w-full min-w-0 max-w-6xl flex-col overflow-hidden border border-[var(--color-muted)]/20 bg-[var(--color-base)] [transform-style:preserve-3d] will-change-transform"
         style={{ perspective: '1200px' }}
       >
         {/* Close button — data-cursor so the custom cursor reacts. */}
@@ -321,7 +280,7 @@ export default function ProjectModal({ project, index, onClose }: ProjectModalPr
           data-cursor
           data-cursor-label="Close"
           aria-label="Close project"
-          className="absolute right-4 top-4 z-20 flex h-12 w-12 items-center justify-center border border-[var(--color-muted)]/25 bg-[var(--color-base)]/80 text-2xl text-[var(--color-muted)] backdrop-blur transition-colors hover:text-[var(--color-accent)]"
+          className="absolute right-4 top-4 z-20 flex h-12 w-12 items-center justify-center border border-[var(--color-muted)]/25 bg-[var(--color-base)]/80 text-2xl text-[var(--color-muted)] backdrop-blur transition-colors hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--color-text)]"
         >
           <span aria-hidden="true">&times;</span>
         </button>
@@ -330,7 +289,7 @@ export default function ProjectModal({ project, index, onClose }: ProjectModalPr
             transform-style + perspective enable the right-column 3D tilt. */}
         <div
           ref={scrollRef}
-          className="grid flex-1 grid-cols-1 gap-y-12 overflow-y-auto px-6 py-16 sm:px-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-x-16 lg:py-20"
+          className="grid min-w-0 flex-1 grid-cols-1 gap-y-12 overflow-x-hidden overflow-y-auto overscroll-contain px-6 py-16 sm:px-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-x-16 lg:py-20"
           style={{ perspective: '1200px' }}
         >
           {/* LEFT column — sticky within the panel. */}
@@ -346,7 +305,11 @@ export default function ProjectModal({ project, index, onClose }: ProjectModalPr
               />
             </span>
 
-            <h2 className="text-4xl font-semibold leading-[1.05] tracking-tight text-[var(--color-text)] sm:text-6xl">
+            <p className="mb-4 font-mono text-xs uppercase tracking-[0.2em] text-[var(--color-accent)]">
+              Project {String(idx + 1).padStart(2, '0')} · {project.year}
+            </p>
+
+            <h2 className="break-words text-4xl font-semibold leading-[1.05] tracking-tight text-[var(--color-text)] sm:text-6xl">
               {project.title}
             </h2>
 
@@ -382,10 +345,18 @@ export default function ProjectModal({ project, index, onClose }: ProjectModalPr
                 ref={registerImage}
                 data-cursor
                 data-cursor-label="View"
-                className="w-full overflow-hidden bg-[var(--color-surface)] [transform-style:preserve-3d] will-change-transform"
+                className="relative w-full overflow-hidden bg-[var(--color-surface)] [transform-style:preserve-3d] will-change-transform"
                 style={{ aspectRatio: '4 / 3' }}
               >
-                <SafeImage src={img.src} alt={img.alt} variant="full" />
+                <SafeImage
+                  src={img.src}
+                  alt={img.alt}
+                  variant="full"
+                  loading={i === 0 ? 'eager' : 'lazy'}
+                />
+                <span className="pointer-events-none absolute bottom-3 left-3 bg-[var(--color-base)]/85 px-3 py-1.5 font-mono text-xs text-[var(--color-muted)] backdrop-blur">
+                  Visual {String(i + 1).padStart(2, '0')}
+                </span>
               </div>
             ))}
 
