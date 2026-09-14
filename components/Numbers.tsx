@@ -43,7 +43,7 @@ export default function Numbers() {
         */}
         <div className="grid grid-cols-1 gap-12 md:grid-cols-3 lg:grid-cols-5">
           {results.map((stat, i) => (
-            <StatBlock key={i} stat={stat} />
+            <StatBlock key={i} stat={stat} index={i} />
           ))}
         </div>
       </div>
