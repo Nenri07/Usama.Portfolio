@@ -238,3 +238,76 @@ export const team: TeamMember[] = [
   { role: 'Talent & Staffing Manager', image: '/work/img-024.png' },
   { role: 'Hospitality Lead', image: '/work/img-025.png' },
 ];
+
+/**
+ * A single division in the division-wise Team showcase.
+ *
+ * Cards are photo + division only — NO invented individual names (Req 6.2, 6.3).
+ * `images` holds the real staff photo paths under public/team/<slug>/.
+ */
+export interface TeamDivision {
+  /** URL-safe slug that matches the public/team/<slug>/ folder. */
+  slug: string;
+  /** Display label for the division heading. */
+  name: string;
+  /** One short, factual line — no fluff, no financials. */
+  blurb: string;
+  /** Real staff photo paths: /team/<slug>/NN.jpeg. */
+  images: string[];
+}
+
+/**
+ * Build the sequential, zero-padded 2-digit photo paths for a division folder.
+ * @example teamImagePaths('cleaning', 3)
+ *   // ['/team/cleaning/01.jpeg', '/team/cleaning/02.jpeg', '/team/cleaning/03.jpeg']
+ */
+function teamImagePaths(slug: string, count: number): string[] {
+  return Array.from(
+    { length: count },
+    (_, i) => `/team/${slug}/${String(i + 1).padStart(2, '0')}.jpeg`,
+  );
+}
+
+/**
+ * Division-wise team showcase, in display order. Each entry maps to real staff
+ * photos under public/team/<slug>/ (Req 6.1, 6.4). No financial figures and no
+ * invented names anywhere (Req 6.2, 6.3, 8.6).
+ */
+export const divisions: TeamDivision[] = [
+  {
+    slug: 'organizers',
+    name: 'Organizers & Providers',
+    blurb: 'The core crew that plans, sets up and runs each activation on the ground.',
+    images: teamImagePaths('organizers', 13),
+  },
+  {
+    slug: 'hostesses',
+    name: 'Hostesses',
+    blurb: 'VIP hostesses welcoming and guiding guests across our activations.',
+    images: teamImagePaths('hostesses', 20),
+  },
+  {
+    slug: 'play-area',
+    name: 'Play Area & Activities',
+    blurb: 'The team operating carnival games, soft play and family activities.',
+    images: teamImagePaths('play-area', 14),
+  },
+  {
+    slug: 'waiters',
+    name: 'Waiters',
+    blurb: 'Hospitality and F&B service staff.',
+    images: teamImagePaths('waiters', 4),
+  },
+  {
+    slug: 'cleaning',
+    name: 'Cleaning Crew',
+    blurb: 'Keeping every venue spotless before, during and after each event.',
+    images: teamImagePaths('cleaning', 3),
+  },
+];
+
+/**
+ * General "Our Team" gallery: mixed team & event images used for the showcase
+ * strip. Real photos under public/team/gallery/ (36 images).
+ */
+export const teamGallery: string[] = teamImagePaths('gallery', 36);

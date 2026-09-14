@@ -26,6 +26,8 @@ interface SafeImageProps {
   fallbackColor?: string;
   /** If set, mark as failed when onLoad hasn't fired within this many ms. */
   timeoutMs?: number;
+  /** Native image loading strategy. Defaults to 'lazy' to keep image-heavy pages light. */
+  loading?: 'lazy' | 'eager';
 }
 
 export default function SafeImage({
@@ -35,6 +37,7 @@ export default function SafeImage({
   variant = 'full',
   fallbackColor = 'var(--color-surface)',
   timeoutMs,
+  loading = 'lazy',
 }: SafeImageProps) {
   const [failed, setFailed] = useState(false);
   const [loaded, setLoaded] = useState(false);
@@ -76,6 +79,8 @@ export default function SafeImage({
     <img
       src={src}
       alt={alt}
+      loading={loading}
+      decoding="async"
       onLoad={handleLoad}
       onError={handleError}
       className={clsx(
