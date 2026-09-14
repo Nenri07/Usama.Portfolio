@@ -13,8 +13,8 @@ import { initCursor } from "@/lib/motion";
  */
 export default function CustomCursor() {
   useEffect(() => {
-    const cleanup = initCursor();
-    return cleanup;
+    const ctrl = initCursor();
+    return ctrl.cleanup;
   }, []);
 
   return null;

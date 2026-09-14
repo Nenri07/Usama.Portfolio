@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import SmoothScrollProvider from "@/components/SmoothScrollProvider";
 import CustomCursor from "@/components/CustomCursor";
+import HoverImageCanvas from "@/components/HoverImageCanvas";
 
 // Confident sans-serif stack via next/font (Requirement 7.2).
 const geistSans = Geist({
@@ -29,8 +30,15 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body className="min-h-full flex flex-col font-sans">
         <SmoothScrollProvider>
-          <CustomCursor />
-          {children}
+          {/*
+            Single shared WebGL hover-image canvas for the whole app (Req 10.2).
+            HoverImageCanvas provides the controller via context and renders the
+            one fixed canvas; the custom cursor + page content live inside it.
+          */}
+          <HoverImageCanvas>
+            <CustomCursor />
+            {children}
+          </HoverImageCanvas>
         </SmoothScrollProvider>
       </body>
     </html>

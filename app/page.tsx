@@ -6,7 +6,8 @@
  * Each section is one real component:
  *   - Hero     → <Hero />     (split-text headline + parallax background)
  *   - Marquee  → <Marquee />  (Clients_Section — seamless wordmark loop)
- *   - WorkGrid → <WorkGrid />  (Work_Section — 13 project cards)
+ *   - WorkList → <WorkList />  (Work_Section — big-type Project_List of 13 rows;
+ *                              hover summons the shared WebGL preview canvas)
  *   - Numbers  → <Numbers />   (Results_Section — count-up stat blocks)
  *   - Team     → <Team />      (Team_Section — role-based cards)
  *   - Contact  → <Contact />   (Contact_Section — magnetic contact buttons)
@@ -17,7 +18,7 @@
  */
 import Hero from '@/components/Hero';
 import Marquee from '@/components/Marquee';
-import WorkGrid from '@/components/WorkGrid';
+import WorkList from '@/components/WorkList';
 import Numbers from '@/components/Numbers';
 import Team from '@/components/Team';
 import Contact from '@/components/Contact';
@@ -31,8 +32,8 @@ export default function Home() {
       {/* ── Clients / Trusted By (Req 3) ──────────────────────────────── */}
       <Marquee />
 
-      {/* ── Work / Projects (Req 4) ───────────────────────────────────── */}
-      <WorkGrid />
+      {/* ── Work / Projects — big-type Project_List (Req 4, 10) ───────── */}
+      <WorkList />
 
       {/* ── Results / Numbers (Req 5) ─────────────────────────────────── */}
       <Numbers />

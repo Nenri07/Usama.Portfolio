@@ -2,7 +2,9 @@
 
 ## Overview
 
-Phase 1 (tasks 1–10) built the original five-section site with anime.js + Lenis and is complete. This update reworks the site into a heavily motion-driven agency experience and adds depth: **GSAP + ScrollTrigger becomes the primary animation/scroll engine, Lenis is rewired to drive ScrollTrigger, and anime.js is demoted to secondary standalone effects (count-up, marquee)**. It adds four shared motion utilities (split-text, parallax, magnetic button, custom cursor), applies motion to the existing sections, expands the Work grid with real project detail, expands Clients and Results, and adds a new Team section — all wired into the single `app/page.tsx`. Every animation defaults to its final visible state and respects `prefers-reduced-motion`, and all image references degrade gracefully via `SafeImage`. New tasks are appended as sections 11–17 and are not started; original tasks are marked complete.
+Phase 1 (tasks 1–10) built the original five-section site with anime.js + Lenis and is complete. Phase 2 (tasks 11–17) reworked the site into a heavily motion-driven agency experience — **GSAP + ScrollTrigger primary, Lenis driving ScrollTrigger, anime.js secondary (count-up, marquee)** — with shared motion utilities, motion applied to every section, an enriched Work grid, expanded Clients/Results, and a new Team section, and is complete.
+
+Phase 3 (section 18, NOT started) pushes the site to closely match the feel of jesperlandberg.com. It adds the signature WebGL hover-image project list: the Work section is rebuilt from a card grid into a big-type `Project_List` (`WorkList` + `ProjectRow`) whose rows summon a cursor-following, displacement/RGB-shift-warped preview drawn on a single shared `ogl` canvas (`HoverImageCanvas`, `lib/webgl.ts`). It also retunes Lenis to heavier inertia, adds a `splitLines` line-mask heading reveal applied to the hero and section titles, and gives the custom cursor a hover state. Every new behavior is feature-gated and try/catch-wrapped so touch / coarse pointers, reduced motion, missing WebGL, or any init failure leave a fully readable, correctly laid-out page (the list reads as plain text, headings show immediately, scrolling is native). `ogl` ^1.0.11 is already installed. New tasks are appended as section 18; tasks 1–16 (except optional `*` tests and task 17) are complete.
 
 ## Tasks
 
@@ -184,10 +186,78 @@ Phase 1 (tasks 1–10) built the original five-section site with anime.js + Leni
 - [ ] 17. Final checkpoint - Ensure all tests pass
   - Ensure all tests pass and the page renders, scrolls, choreographs motion, and degrades gracefully (native scroll + final visible state) without real images and under reduced motion. Ask the user if questions arise.
 
+- [x] 18. High-fidelity motion: WebGL hover-image project list, heavy inertia, line-mask headings, cursor hover-state
+  - [x] 18.1 Verify `ogl` dependency and add WebGL feature detection + pure math helpers
+    - Confirm `ogl` ^1.0.11 resolves with its bundled TS types (ALREADY INSTALLED — halt with the failing step identified if resolution is incomplete)
+    - Add `hasWebGL()` (SSR-safe WebGL context feature-detect, false on server) and `isCoarsePointer()` in `lib/motion.ts`
+    - Add pure helpers in `lib/format.ts`: `clamp(v, lo, hi)`, `lerp(a, b, t)` (clamped `t`), and `pointerVelocity(prev, cur, dt)` (non-negative, clamped to a bounded max) used by the WebGL follow/warp math
+    - _Requirements: 1.2, 1.3, 10.3, 10.4, 10.9_
+
+  - [ ]* 18.2 Write property tests for the WebGL math helpers
+    - **Property 12: Smoothed pointer follow stays bounded and hits its endpoints** — Validates: Requirements 10.3
+    - **Property 13: Pointer velocity and texture cap are non-negative and bounded** — Validates: Requirements 10.4, 10.9
+
+  - [x] 18.3 Implement `lib/webgl.ts` (ogl renderer + displacement/RGB-shift shader)
+    - `createHoverImageRenderer(canvas)`: set up an `ogl` `Renderer`, quad `Mesh`, and `Program` with a pass-through vertex shader and a fragment shader doing displacement (UV offset ∝ smoothed pointer velocity × hover progress), RGB-channel offset (RGB shift), previous→current texture cross-mix, and alpha fade by hover progress
+    - Load images into `ogl` `Texture`s with dimensions capped to a bounded max (e.g. ≤1024px longest edge); per-frame rAF loop eases the drawn center toward the latest pointer via `lerp` and updates `uVelocity`/`uHover`/`uMix`; handle `resize`; expose `show(src)`, `hide()`, `setPointer(x,y)`, `dispose()`
+    - Wrap all init in try/catch; return `null` when WebGL is unavailable or `ogl` fails to import/init; listen for `webglcontextlost` and stop rendering
+    - _Requirements: 10.2, 10.3, 10.4, 10.5, 10.6, 10.7, 10.9_
+
+  - [x] 18.4 Implement `components/HoverImageCanvas.tsx` and mount once in the layout
+    - `'use client'` — render a single `position:fixed`, full-viewport, `pointer-events:none` `<canvas>`; in `useEffect` defer setup with `requestAnimationFrame`/idle so it does not block first paint, then call `createHoverImageRenderer`
+    - Expose the `HoverImageController` (`show`/`hide`/`setPointer`/`dispose`) to `WorkList` via ref/context; call `dispose()` on unmount; render nothing (no wiring) when the renderer is `null`
+    - Mount once near the layout root inside `SmoothScrollProvider`
+    - _Requirements: 10.2, 10.6, 10.7, 10.9, 10.10_
+
+  - [x] 18.5 Implement `components/ProjectRow.tsx` (big-type text row + hover target)
+    - `'use client'` — render one project as a large heading-sized text row: `title` heading line with `venue`, `year`, `services` highlights and any `visitors`/`winners`/`staff`/`days` counts; NO financial figures
+    - Resolve preview src via `resolveImagePath(project, i)`; on pointer enter report `{ index, src }` upward, on leave clear; apply CSS hover emphasis over 200–400ms; mark the row an interactive cursor hover target
+    - Reveal via the shared `useReveal` using the line-mask reveal (see 18.7) with per-row `staggerDelay`; skip under reduced motion (final visible state)
+    - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5, 4.6, 4.7, 4.8, 4.9, 4.10, 10.1, 10.3, 11.6, 8.6_
+
+  - [x] 18.6 Implement `components/WorkList.tsx` and wire into `app/page.tsx` (replace WorkGrid)
+    - `'use client'` — render 13 `ProjectRow`s from `projects` as the vertical big-type Project_List; own the hovered-row state; on row enter call the canvas controller `show(src)` + forward pointer via `setPointer`, on list leave call `hide()`
+    - Gate the canvas wiring on `isWebGLPreviewEnabled()` = `hasWebGL() && !prefersReducedMotion() && !isCoarsePointer()`; when false render the list only (readable text, CSS hover emphasis, optional `SafeImage` preview)
+    - Replace `WorkGrid` with `WorkList` in `app/page.tsx`, keeping the Work section between Clients and Results; leave `WorkGrid`/`WorkCard` in place as the documented fallback reference
+    - _Requirements: 4.1, 4.2, 4.9, 4.10, 10.1, 10.2, 10.5, 10.6, 10.7, 10.8, 8.5_
+
+  - [ ]* 18.7 Write example tests for the WebGL degrade + Project_List readability
+    - Assert `WorkList` renders 13 readable text rows; a single `HoverImageCanvas` mounts (not one per row); with WebGL disabled / coarse pointer / reduced motion the canvas is not wired and the list still reads fully; `createHoverImageRenderer` returns `null` → text-only path; no financial figures render
+    - _Requirements: 10.1, 10.2, 10.7, 10.8, 4.5, 4.10_
+
+  - [x] 18.8 Retune Lenis to Heavy_Inertia in `SmoothScrollProvider`
+    - Add `heavyLenisConfig()` in `lib/motion.ts` (higher `duration`, lower `lerp`, `smoothWheel: true`); construct Lenis from it so momentum feels weighty while Lenis still drives ScrollTrigger (forward scroll → `ScrollTrigger.update`, advance from GSAP ticker, `lagSmoothing(0)`)
+    - Skip Lenis construction entirely under `prefersReducedMotion()` (native/near-instant scroll); keep the try/catch degrade
+    - _Requirements: 8.4, 11.1, 11.2, 11.9, 9.2_
+
+  - [x] 18.9 Implement `splitLines` + `lineMaskReveal` and apply line-mask to headings
+    - In `lib/motion.ts` add `splitLines(el)` (wrap text into per-line nodes each inside an overflow-hidden mask wrapper) and `lineMaskReveal(el, opts)` (GSAP timeline translating each line up from below its clip, staggered, bound to ScrollTrigger); no-op leaving headings fully visible under reduced motion / SSR; try/catch wrapped
+    - Apply the line-mask reveal to the Hero headline and the section titles (Clients, Work, Results, Team, Contact) via the shared reveal pattern
+    - _Requirements: 11.3, 11.4, 11.5, 11.9, 9.4, 9.1_
+
+  - [x] 18.10 Add the Cursor_Hover_State to the custom cursor
+    - Extend `initCursor()` to return a `CursorController` with `setHover(active, label?)` that grows/changes the cursor and optionally shows a short label (e.g. "View"); detect interactive targets (links, buttons, `[data-cursor]`, project rows) via pointer enter/leave to toggle the hover state and return to default on leave
+    - Keep the cursor disabled under reduced motion and on coarse/touch pointers (native cursor); wire `CustomCursor`/`ProjectRow` to trigger the hover state
+    - _Requirements: 11.6, 11.7, 11.8, 11.9, 9.6_
+
+  - [x] 18.11 Verify high-fidelity composition and graceful degrade
+    - Confirm `app/page.tsx` still renders Hero → Clients → Work(list) → Results → Team → Contact; a single shared `HoverImageCanvas` is mounted; heavy inertia + line-mask headings + cursor hover-state are active with motion on; and with WebGL unavailable / coarse pointer / reduced motion the page is fully readable with native scroll and no console error
+    - Confirm maroon <10% surface, spacing ≥24px, no shadows, radius 0, size floors, and NO financial figures anywhere
+    - _Requirements: 4.1, 8.1, 8.2, 8.3, 8.5, 8.6, 10.1, 10.7, 10.8, 11.2, 11.8_
+
+  - [ ]* 18.12 Write smoke tests for heavy inertia, line-mask, and cursor hover-state
+    - Assert `heavyLenisConfig()` bounds; Lenis skipped under reduced motion; `lineMaskReveal` leaves headings fully visible under reduced motion; cursor `setHover` toggles state and is disabled on coarse pointer; WebGL setup deferred so it does not block first paint
+    - _Requirements: 11.1, 11.2, 11.4, 11.8, 10.10_
+
+- [ ] 19. Final checkpoint - Ensure all tests pass
+  - Ensure all tests pass and the page renders, scrolls with heavy inertia, reveals headings line-by-line, drives the WebGL hover-image list, reacts with the cursor hover-state, and degrades gracefully (readable text list, headings visible, native scroll) without real images, without WebGL, on touch, and under reduced motion. Ask the user if questions arise.
+
 ## Notes
 
 - Tasks marked with `*` are optional (tests) and can be skipped for a faster MVP; keep testing proportional.
-- Phase 1 (tasks 1–10) is complete and marked `[x]`; this update adds tasks 11–17 as not-started.
+- Phases 1–2 (tasks 1–16) are complete and marked `[x]`; Phase 3 adds section 18 (+ checkpoint 19) as not-started. Task 17 remains the Phase 2 checkpoint.
+- The signature move is a single shared `HoverImageCanvas` (`ogl`) driving a cursor-following displacement/RGB-shift preview for the big-type `Project_List`; it is feature-gated (`hasWebGL() && !prefersReducedMotion() && !isCoarsePointer()`) and disposed on unmount so it never leaks a GL context or blocks first paint.
+- Graceful degrade is preserved everywhere: no WebGL, context loss, `ogl` import failure, touch/coarse pointer, or reduced motion leave the Project_List as fully readable text, headings fully visible, and scrolling native. `ogl` ^1.0.11 is already installed (task 18.1 only verifies + adds detection).
 - Motion layering is intentional: **GSAP + ScrollTrigger is the single scroll-choreography authority, Lenis drives it, anime.js is secondary (count-up + marquee only)** to avoid competing loops and jank.
 - `gsap` is already installed; task 11.1 only verifies resolution and registers the plugin.
 - Every animation default state = final visible state, and `prefers-reduced-motion` disables non-essential motion, so content stays readable if GSAP/Lenis/anime.js never run.
@@ -197,16 +267,17 @@ Phase 1 (tasks 1–10) built the original five-section site with anime.js + Leni
 
 ## Task Dependency Graph
 
+Only incomplete leaf tasks are scheduled. Tasks 1–16 implementation leaves are complete; their optional `*` tests plus all of section 18 remain. Tasks touching the same file are placed in different waves: `18.1`, `18.9`, and `18.10` all edit `lib/motion.ts`; `18.6` and `18.9` both edit `app/page.tsx`.
+
 ```json
 {
   "waves": [
-    { "id": 0, "tasks": ["1.4", "1.7", "3.2", "4.2", "5.3", "7.3", "8.2", "9.2", "11.1", "13.1"] },
-    { "id": 1, "tasks": ["11.2", "11.3", "13.2"] },
-    { "id": 2, "tasks": ["12.1", "12.2", "12.3"] },
-    { "id": 3, "tasks": ["12.4", "14.1", "14.2", "14.3", "14.4", "15.1"] },
-    { "id": 4, "tasks": ["15.2", "16.1"] },
-    { "id": 5, "tasks": ["15.3", "16.2"] },
-    { "id": 6, "tasks": ["16.3"] }
+    { "id": 0, "tasks": ["1.4", "1.7", "3.2", "4.2", "5.3", "7.3", "8.2", "9.2", "12.4", "13.2", "15.3", "16.3", "18.1"] },
+    { "id": 1, "tasks": ["18.2", "18.3", "18.8", "18.9"] },
+    { "id": 2, "tasks": ["18.4", "18.5", "18.10"] },
+    { "id": 3, "tasks": ["18.6"] },
+    { "id": 4, "tasks": ["18.7", "18.11"] },
+    { "id": 5, "tasks": ["18.12"] }
   ]
 }
 ```

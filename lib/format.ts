@@ -147,3 +147,66 @@ export function digitsOnly(s: string): string {
 export function isContactDisabled(v: string): boolean {
   return v.trim().length === 0;
 }
+
+/**
+ * Clamp `v` into the inclusive range `[lo, hi]`.
+ *
+ * Assumes `lo <= hi`, but is defensive: if the bounds are passed reversed
+ * (`lo > hi`) they are normalized so the result is always within
+ * `[min(lo,hi), max(lo,hi)]`. When `v` is already inside the range it is
+ * returned unchanged (Correctness Property 13).
+ * @example clamp(5, 0, 10)  // 5
+ * @example clamp(-3, 0, 10) // 0
+ * @example clamp(99, 0, 10) // 10
+ */
+export function clamp(v: number, lo: number, hi: number): number {
+  const min = lo <= hi ? lo : hi;
+  const max = lo <= hi ? hi : lo;
+  return Math.min(max, Math.max(min, v));
+}
+
+/**
+ * Linear interpolation from `a` to `b` by a clamped factor `t`.
+ *
+ * `t` is clamped to `[0, 1]` so the result never overshoots: `lerp(a,b,0) === a`,
+ * `lerp(a,b,1) === b`, and every result lies within `[min(a,b), max(a,b)]`
+ * (Correctness Property 12). Used for the smoothed pointer-follow easing.
+ * @example lerp(0, 10, 0.5) // 5
+ * @example lerp(0, 10, 2)   // 10 (t clamped)
+ */
+export function lerp(a: number, b: number, t: number): number {
+  return a + (b - a) * clamp(t, 0, 1);
+}
+
+/**
+ * Upper bound (in normalized units) for {@link pointerVelocity}. Keeps the
+ * displacement strength bounded so the WebGL warp never spikes on a huge
+ * single-frame jump.
+ */
+export const POINTER_VELOCITY_MAX = 5;
+
+/**
+ * Magnitude of the pointer velocity between two positions over a time delta,
+ * clamped to `[0, max]` (Req 10.4, Correctness Property 13).
+ *
+ * Computes `|(cur - prev) / dt|` and clamps it to a bounded, non-negative
+ * range so it can safely scale the displacement/RGB-shift effect. Returns `0`
+ * when `dt <= 0` (no meaningful elapsed time). Coordinates are expected in
+ * normalized units (e.g. viewport fractions) so the default `max` of
+ * {@link POINTER_VELOCITY_MAX} is sensible; pass a different `max` for other
+ * unit spaces.
+ * @example pointerVelocity({x:0,y:0}, {x:3,y:4}, 1) // 5 (== hypot(3,4))
+ * @example pointerVelocity({x:0,y:0}, {x:1,y:0}, 0) // 0 (dt <= 0)
+ */
+export function pointerVelocity(
+  prev: { x: number; y: number },
+  cur: { x: number; y: number },
+  dt: number,
+  max: number = POINTER_VELOCITY_MAX,
+): number {
+  if (dt <= 0) return 0;
+  const vx = (cur.x - prev.x) / dt;
+  const vy = (cur.y - prev.y) / dt;
+  const magnitude = Math.hypot(vx, vy);
+  return clamp(magnitude, 0, max);
+}

@@ -2,6 +2,7 @@ import clsx from 'clsx';
 import { contact } from '@/lib/data';
 import { buildMailto, buildWaLink, isContactDisabled } from '@/lib/format';
 import MagneticButton from './MagneticButton';
+import RevealHeading from './RevealHeading';
 
 /**
  * Contact — the final, closing section (Req 6).
@@ -54,9 +55,9 @@ export default function Contact() {
     >
       <div className="mx-auto flex w-full max-w-4xl flex-col items-center text-center">
         {/* Closing headline — 32–72px band (Req 6.1). */}
-        <h2 className="text-4xl font-semibold leading-tight tracking-tight text-[var(--color-text)] sm:text-6xl lg:text-7xl">
+        <RevealHeading className="text-4xl font-semibold leading-tight tracking-tight text-[var(--color-text)] sm:text-6xl lg:text-7xl">
           Let&apos;s build the moment Qatar remembers.
-        </h2>
+        </RevealHeading>
 
         {/* Thin maroon rule — the only decorative accent, kept sparing (Req 7.1). */}
         <span

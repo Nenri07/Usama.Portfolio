@@ -1,4 +1,5 @@
 import StatBlock from './StatBlock';
+import RevealHeading from './RevealHeading';
 import { results } from '@/lib/data';
 
 /**
@@ -25,9 +26,9 @@ export default function Numbers() {
       <div className="mx-auto w-full max-w-7xl">
         {/* Small section label — heading ≥32px, sans-serif, square, no shadow. */}
         <header className="mb-12">
-          <h2 className="text-4xl font-semibold tracking-tight text-[var(--color-text)] sm:text-5xl">
+          <RevealHeading className="text-4xl font-semibold tracking-tight text-[var(--color-text)] sm:text-5xl">
             By the Numbers
-          </h2>
+          </RevealHeading>
           <span
             aria-hidden="true"
             className="mt-4 block h-px w-16 bg-[var(--color-accent)]"

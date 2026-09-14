@@ -5,6 +5,7 @@ import { animate } from 'animejs';
 import { clients } from '@/lib/data';
 import { buildMarqueeTrack } from '@/lib/format';
 import { prefersReducedMotion } from '@/lib/motion';
+import { useLineMask } from '@/lib/useLineMask';
 
 /**
  * Marquee — the "Trusted By" (Clients) section (Req 3).
@@ -33,6 +34,9 @@ const TRACK = buildMarqueeTrack(HALF);
 
 export default function Marquee() {
   const trackRef = useRef<HTMLDivElement>(null);
+  // Line-mask reveal for the section label (Req 11.3, 11.5). No-ops under
+  // reduced motion / SSR, leaving the label fully visible.
+  const labelRef = useLineMask();
 
   useEffect(() => {
     const el = trackRef.current;
@@ -64,7 +68,10 @@ export default function Marquee() {
       id="trusted-by"
       className="flex flex-col items-center gap-10 px-6 py-24"
     >
-      <p className="text-sm uppercase tracking-[0.3em] text-[var(--color-muted)]">
+      <p
+        ref={labelRef}
+        className="text-sm uppercase tracking-[0.3em] text-[var(--color-muted)]"
+      >
         Trusted By
       </p>
 

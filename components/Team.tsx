@@ -1,5 +1,6 @@
 import clsx from 'clsx';
 import TeamCard from './TeamCard';
+import RevealHeading from './RevealHeading';
 import { team } from '@/lib/data';
 
 /**
@@ -24,9 +25,9 @@ export default function Team() {
       <div className="mx-auto w-full max-w-7xl">
         {/* Section heading — heading ≥32px, sans-serif, square, no shadow. */}
         <header className="mb-12">
-          <h2 className="text-4xl font-semibold tracking-tight text-[var(--color-text)] sm:text-5xl">
+          <RevealHeading className="text-4xl font-semibold tracking-tight text-[var(--color-text)] sm:text-5xl">
             The Team
-          </h2>
+          </RevealHeading>
           <span
             aria-hidden="true"
             className="mt-4 block h-px w-16 bg-[var(--color-accent)]"
