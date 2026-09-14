@@ -115,6 +115,63 @@ h1 {
   font-family: var(--font-display-family);
 }
 
+/* ── Fail-safe text semantics ──────────────────────────────────────── */
+/* Critical copy uses these unlayered semantic classes instead of relying on
+   generated arbitrary-value utilities. Every declaration has a literal
+   fallback, so labels remain readable even if a compatibility alias is lost
+   during production CSS chunking. */
+.text-primary,
+.reveal-heading {
+  color: var(--qe-text, #F2F2F0);
+}
+
+.text-secondary {
+  color: var(--qe-muted, #9BA1AE);
+}
+
+.text-accent {
+  color: var(--qe-accent, #6E1423);
+}
+
+.reveal-heading {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  clip-path: none;
+  overflow: visible;
+}
+
+.text-primary-interactive {
+  color: var(--qe-text, #F2F2F0);
+}
+
+.text-primary-interactive:hover,
+.text-primary-interactive:focus-visible {
+  color: var(--qe-accent, #6E1423);
+}
+
+.button-on-accent {
+  color: var(--qe-text, #F2F2F0);
+  background-color: var(--qe-accent, #6E1423);
+}
+
+.button-on-accent:hover,
+.button-on-accent:focus-visible {
+  color: var(--qe-text, #F2F2F0);
+  background-color: color-mix(in srgb, var(--qe-accent, #6E1423) 88%, white);
+}
+
+.button-outline {
+  color: var(--qe-text, #F2F2F0);
+  border-color: color-mix(in srgb, var(--qe-text, #F2F2F0) 22%, transparent);
+}
+
+.button-outline:hover,
+.button-outline:focus-visible {
+  color: var(--qe-text, #F2F2F0);
+  border-color: color-mix(in srgb, var(--qe-text, #F2F2F0) 52%, transparent);
+}
+
 /* ── Progressive image loading ─────────────────────────────────────── */
 .safe-image-frame {
   isolation: isolate;

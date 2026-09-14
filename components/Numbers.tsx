@@ -22,15 +22,15 @@ export default function Numbers() {
       <div className="mx-auto w-full min-w-0 max-w-7xl">
         <header className="mb-12 grid min-w-0 gap-6 md:grid-cols-[minmax(0,1fr)_minmax(16rem,0.6fr)] md:items-end">
           <div>
-            <RevealHeading className="text-4xl font-semibold tracking-tight text-[var(--color-text)] sm:text-5xl">
+            <RevealHeading className="text-primary text-4xl font-semibold tracking-tight sm:text-5xl">
               By the Numbers
             </RevealHeading>
             <span
               aria-hidden="true"
-              className="mt-4 block h-px w-16 bg-[var(--color-accent)]"
+              className="mt-4 block h-px w-16 bg-[var(--qe-accent)]"
             />
           </div>
-          <p className="text-base leading-relaxed text-[var(--color-muted)] md:text-right">
+          <p className="text-secondary text-base leading-relaxed md:text-right">
             Public scale markers from the documented activation portfolio.
             Open any card for its available supporting record.
           </p>

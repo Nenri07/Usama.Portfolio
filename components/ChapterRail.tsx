@@ -307,8 +307,8 @@ export default function ChapterRail() {
                   aria-hidden="true"
                   className={`chapter-rail-label pointer-events-none absolute left-6 hidden bg-[color-mix(in_srgb,var(--qe-base)_92%,transparent)] px-1 py-1.5 font-mono text-[9px] font-semibold uppercase tracking-[0.16em] backdrop-blur-sm transition-opacity duration-200 motion-reduce:transition-none lg:block ${
                     active
-                      ? 'text-[var(--qe-text)] opacity-100'
-                      : 'text-[var(--qe-muted)] opacity-0 group-hover:opacity-100 group-focus-visible:text-[var(--qe-text)] group-focus-visible:opacity-100'
+                      ? 'text-primary opacity-100'
+                      : 'text-secondary opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100'
                   }`}
                 >
                   {chapter.label}

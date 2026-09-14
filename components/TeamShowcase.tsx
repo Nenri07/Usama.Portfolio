@@ -46,13 +46,14 @@ function CrewRow({ division, index, onSelect }: CrewRowProps) {
 
   const onReveal = useCallback((element: Element) => {
     try {
+      // Transform-only enhancement: copy is visible before, during, and after.
       gsap.fromTo(
         element,
-        { y: 48, rotationX: -7, transformPerspective: 1200 },
-        { y: 0, rotationX: 0, duration: 0.85, ease: 'power4.out' },
+        { y: 32, rotationX: -4, transformPerspective: 1200 },
+        { y: 0, rotationX: 0, duration: 0.75, ease: 'power4.out' },
       );
     } catch {
-      /* default final state remains visible */
+      /* the default final state remains visible */
     }
   }, []);
 
@@ -66,13 +67,13 @@ function CrewRow({ division, index, onSelect }: CrewRowProps) {
   return (
     <article
       ref={revealRef}
-      className="grid min-w-0 items-center gap-10 border-t border-[var(--color-muted)]/20 py-14 [transform-style:preserve-3d] sm:py-20 lg:grid-cols-2 lg:gap-16"
+      className="grid min-w-0 items-center gap-10 border-t border-[var(--qe-muted)]/20 py-14 [transform-style:preserve-3d] sm:py-20 lg:grid-cols-2 lg:gap-16"
     >
       <div className={clsx('min-w-0', reverse && 'lg:order-2')}>
         <div className="crew-pile group relative mx-auto aspect-[4/3] w-full max-w-xl overflow-hidden [perspective:1200px]">
           <div
             aria-hidden="true"
-            className="absolute inset-[12%] border border-[var(--color-accent)]/25"
+            className="absolute inset-[12%] border border-[var(--qe-accent)]/25"
           />
           {previewImages.map((src, imageIndex) => {
             const transforms = PILE_TRANSFORMS[imageIndex];
@@ -85,7 +86,7 @@ function CrewRow({ division, index, onSelect }: CrewRowProps) {
             return (
               <div
                 key={src}
-                className="crew-pile-card absolute left-1/2 top-1/2 aspect-[4/5] w-[54%] overflow-hidden border border-[var(--color-muted)]/25 bg-[var(--color-surface)] [transform-style:preserve-3d]"
+                className="crew-pile-card absolute left-1/2 top-1/2 aspect-[4/5] w-[54%] overflow-hidden border border-[var(--qe-muted)]/25 bg-[var(--qe-surface)] [transform-style:preserve-3d]"
                 style={style}
               >
                 <SafeImage
@@ -93,36 +94,36 @@ function CrewRow({ division, index, onSelect }: CrewRowProps) {
                   alt=""
                   variant="full"
                   sizes="(max-width: 1024px) 54vw, 27vw"
-                  fallbackColor="var(--color-surface)"
+                  fallbackColor="var(--qe-surface)"
                   loading="lazy"
                 />
               </div>
             );
           })}
-          <span className="absolute bottom-3 right-3 z-10 bg-[var(--color-base)]/90 px-3 py-2 font-mono text-xs text-[var(--color-muted)] backdrop-blur">
+          <span className="text-secondary absolute bottom-3 right-3 z-10 bg-[var(--qe-base)]/90 px-3 py-2 font-mono text-xs backdrop-blur">
             {String(division.images.length).padStart(2, '0')} images
           </span>
         </div>
       </div>
 
       <div className={clsx('min-w-0', reverse && 'lg:order-1')}>
-        <p className="font-mono text-sm text-[var(--color-accent)]">
+        <p className="text-accent font-mono text-sm">
           Division {String(index + 1).padStart(2, '0')}
         </p>
-        <h3 className="mt-4 break-words text-3xl font-semibold leading-tight text-[var(--color-text)] sm:text-5xl">
+        <h3 className="text-primary mt-4 break-words text-3xl font-semibold leading-tight sm:text-5xl">
           {division.name}
         </h3>
-        <p className="mt-5 max-w-xl text-base leading-relaxed text-[var(--color-muted)] sm:text-lg">
+        <p className="text-secondary mt-5 max-w-xl text-base leading-relaxed sm:text-lg">
           {division.blurb}
         </p>
-        <p className="mt-4 max-w-xl text-base leading-relaxed text-[var(--color-muted)]">
+        <p className="text-secondary mt-4 max-w-xl text-base leading-relaxed">
           {division.management}
         </p>
         <ul className="mt-6 flex flex-wrap gap-2">
           {division.capabilities.map((capability) => (
             <li
               key={capability}
-              className="border border-[var(--color-muted)]/25 px-3 py-1.5 text-sm text-[var(--color-muted)]"
+              className="text-secondary border border-[var(--qe-muted)]/25 px-3 py-1.5 text-sm"
             >
               {capability}
             </li>
@@ -132,10 +133,10 @@ function CrewRow({ division, index, onSelect }: CrewRowProps) {
           type="button"
           onClick={() => onSelect(division)}
           aria-haspopup="dialog"
-          className="mt-8 inline-flex min-h-12 items-center gap-4 border-b border-[var(--color-accent)] pb-2 text-base font-semibold text-[var(--color-text)] transition-colors hover:text-[var(--color-accent)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--color-text)]"
+          className="text-primary-interactive mt-8 inline-flex min-h-12 items-center gap-4 border-b border-[var(--qe-accent)] pb-2 text-base font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--qe-text)]"
         >
           View crew
-          <span aria-hidden="true" className="text-[var(--color-accent)]">↗</span>
+          <span aria-hidden="true" className="text-accent">↗</span>
           <span className="sr-only">— {division.images.length} photographs</span>
         </button>
       </div>

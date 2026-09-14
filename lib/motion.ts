@@ -1,6 +1,6 @@
 'use client';
 
-import { gsap, registerScrollTrigger } from '@/lib/gsapSetup';
+import { gsap, ScrollTrigger, registerScrollTrigger } from '@/lib/gsapSetup';
 
 /**
  * Shared motion utilities (Req 9.4).
@@ -276,13 +276,13 @@ export function splitLines(el: HTMLElement): HTMLElement[] {
 }
 
 /**
- * Reveal the heading `el` line-by-line: split it into clipped lines and slide
- * each line up into view, staggered, bound to a ScrollTrigger (Req 11.3–11.5).
+ * Apply an optional, non-hiding settle after `el` enters the viewport.
  *
- * Returns a cleanup that kills the timeline and its ScrollTrigger. Under
- * reduced motion or SSR it no-ops and returns a no-op cleanup so the heading
- * renders fully visible immediately (Req 11.4). Wrapped in try/catch; on any
- * failure it clears transforms so the heading stays visible (Req 11.9).
+ * This compatibility utility deliberately keeps the original heading DOM
+ * intact. It never creates overflow masks or applies opacity/visibility, and
+ * the small transform begins only from `onEnter`, so ScrollTrigger refresh or
+ * initialization failure cannot strand text offscreen. Cleanup clears every
+ * property that an older line-mask implementation may have left behind.
  */
 export function lineMaskReveal(
   el: HTMLElement,
@@ -292,54 +292,56 @@ export function lineMaskReveal(
     return noop;
   }
 
-  let lines: HTMLElement[] = [];
+  let trigger: ScrollTrigger | undefined;
+  let tween: gsap.core.Tween | undefined;
 
   try {
     registerScrollTrigger();
 
-    lines = splitLines(el);
-    if (lines.length === 0) {
-      return noop;
-    }
+    const { duration = 0.55, start = 'top 85%' } = opts;
+    const enhanceAfterEntry = () => {
+      try {
+        tween?.kill();
+        // Transform-only and deliberately small: the original DOM is never
+        // split, clipped, transparent, or translated outside its own bounds.
+        tween = gsap.fromTo(
+          el,
+          { y: 10 },
+          { y: 0, duration, ease: 'power3.out', overwrite: true },
+        );
+      } catch {
+        el.style.removeProperty('transform');
+      }
+    };
 
-    const { stagger = 0.08, duration = 0.8, start = 'top 85%' } = opts;
-
-    // Hidden start state applied via JS (each line sits below its clip) so the
-    // default DOM state stays fully visible if the timeline never runs.
-    gsap.set(lines, { yPercent: 110 });
-
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: el,
-        start,
-        once: true,
-      },
-    });
-    tl.to(lines, {
-      yPercent: 0,
-      duration,
-      ease: 'power4.out',
-      stagger,
+    trigger = ScrollTrigger.create({
+      trigger: el,
+      start,
+      once: true,
+      onEnter: enhanceAfterEntry,
     });
 
     return () => {
       try {
-        tl.scrollTrigger?.kill();
-        tl.kill();
+        trigger?.kill();
+        tween?.kill();
+        gsap.set(el, { clearProps: 'transform,opacity,visibility,clipPath' });
       } catch {
-        /* nothing left to clean up */
+        el.style.removeProperty('transform');
+        el.style.removeProperty('opacity');
+        el.style.removeProperty('visibility');
+        el.style.removeProperty('clip-path');
       }
     };
   } catch {
-    // On failure clear transforms so the heading is fully visible (Req 11.9).
+    // Initialization must never change the readable default state.
     try {
-      if (lines.length > 0) {
-        gsap.set(lines, { clearProps: 'all' });
-      }
+      gsap.set(el, { clearProps: 'transform,opacity,visibility,clipPath' });
     } catch {
-      lines.forEach((line) => {
-        line.style.transform = 'none';
-      });
+      el.style.removeProperty('transform');
+      el.style.removeProperty('opacity');
+      el.style.removeProperty('visibility');
+      el.style.removeProperty('clip-path');
     }
     return noop;
   }

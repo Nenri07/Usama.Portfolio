@@ -26,7 +26,7 @@ import ThankYou from '@/components/ThankYou';
 
 export default function Home() {
   return (
-    <main className="flex w-full min-w-0 max-w-full flex-1 flex-col bg-base text-[var(--color-text)]">
+    <main className="text-primary flex w-full min-w-0 max-w-full flex-1 flex-col bg-base">
       <HomeClient>
         {/* ── Clients / Trusted By (Req 3) ────────────────────────────── */}
         <Marquee />

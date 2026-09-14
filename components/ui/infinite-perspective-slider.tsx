@@ -412,7 +412,9 @@ function InfinitePerspectiveSliderComp({
           ...(built.title?.chars ?? []),
           ...(built.desc?.lines ?? []),
         ];
-        gsap.set(targets, { yPercent: 120, opacity: 0 });
+        // Keep the split glyphs in their readable resting state. Hover may
+        // replay a subtle settle, but never hides card metadata.
+        gsap.set(targets, { yPercent: 0, opacity: 1 });
       } catch {
         /* SplitText failed — leave text statically visible. */
       }
@@ -456,10 +458,10 @@ function InfinitePerspectiveSliderComp({
       ];
       if (targets.length === 0) return;
       gsap.to(targets, {
-        yPercent: 120,
-        opacity: 0,
+        yPercent: 0,
+        opacity: 1,
         duration: textLeaveDuration,
-        ease: "power3.in",
+        ease: "power3.out",
         stagger: { each: textStagger, from: "end" },
         overwrite: true,
       });
@@ -492,7 +494,7 @@ function InfinitePerspectiveSliderComp({
     <div
       ref={rootRef}
       className={
-        "relative h-full w-full overflow-hidden bg-background text-foreground select-none touch-pan-y " +
+        "relative h-full w-full overflow-hidden bg-background text-primary select-none touch-pan-y " +
         (className ?? "")
       }
       style={rootStyle}
@@ -548,23 +550,24 @@ function InfinitePerspectiveSliderComp({
               />
             </div>
 
-            {/* Number / title / desc — SplitText-revealed on hover. */}
+            {/* Number / title / desc stay readable at rest; hover motion may
+                enhance them but never changes their visibility. */}
             <div className="mt-4 flex flex-col gap-1 overflow-hidden">
               <span
                 data-ips-number
-                className="block font-mono text-sm text-[var(--color-accent)]"
+                className="text-accent block font-mono text-sm"
               >
                 {item.number}
               </span>
               <span
                 data-ips-title
-                className="font-display block text-lg font-semibold tracking-tight text-foreground"
+                className="text-primary font-display block text-lg font-semibold tracking-tight"
               >
                 {item.title}
               </span>
               <span
                 data-ips-desc
-                className="block text-sm text-muted-foreground"
+                className="text-secondary block text-sm"
               >
                 {item.desc}
               </span>

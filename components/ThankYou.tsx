@@ -95,12 +95,13 @@ export default function ThankYou() {
           stagger: 0.08,
         },
       );
+      // Copy is never hidden: the settle is transform-only and begins only
+      // after the section has entered, so a stalled trigger cannot gate text.
       timeline.fromTo(
         copy,
-        { y: 36, autoAlpha: 0 },
+        { y: 18 },
         {
           y: 0,
-          autoAlpha: 1,
           duration: 0.85,
           ease: 'power4.out',
           stagger: 0.1,
