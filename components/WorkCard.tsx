@@ -115,6 +115,7 @@ export default function WorkCard({ project, index, className }: WorkCardProps) {
           src={resolveImagePath(project, index)}
           alt={project.title}
           variant="full"
+          sizes="(max-width: 768px) 100vw, 50vw"
           fallbackColor="var(--color-surface)"
         />
         {/* Scrim so title/overlay text stays legible over any image. */}

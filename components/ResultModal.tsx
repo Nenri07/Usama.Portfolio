@@ -175,7 +175,10 @@ export default function ResultModal({ stat, index, onClose }: ResultModalProps) 
       <div
         ref={panelRef}
         tabIndex={-1}
-        className="relative max-h-[calc(100dvh-1.5rem)] w-full max-w-5xl min-w-0 overflow-x-hidden overflow-y-auto overscroll-contain border border-[var(--color-muted)]/20 bg-[var(--color-base)] p-5 [perspective:1400px] sm:max-h-[calc(100dvh-3rem)] sm:p-9 lg:p-12"
+        data-lenis-prevent
+        data-lenis-prevent-wheel
+        data-lenis-prevent-touch
+        className="modal-scroll-surface relative max-h-[calc(100dvh-1.5rem)] w-full max-w-5xl min-w-0 overflow-x-hidden overflow-y-auto border border-[var(--qe-muted)]/20 bg-[var(--qe-base)] p-5 [perspective:1400px] sm:max-h-[calc(100dvh-3rem)] sm:p-9 lg:p-12"
       >
         <button
           ref={closeRef}

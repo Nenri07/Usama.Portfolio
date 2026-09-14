@@ -1,11 +1,12 @@
 'use client';
 
-import { useLayoutEffect, useRef } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 import { gsap } from '@/lib/gsapSetup';
 import { prefersReducedMotion } from '@/lib/motion';
 import { useAccessibleDialog } from '@/lib/useAccessibleDialog';
 import type { TeamDivision } from '@/lib/data';
 import SafeImage from './SafeImage';
+import CinematicImageViewer from './CinematicImageViewer';
 
 interface CrewModalProps {
   division: TeamDivision;
@@ -17,6 +18,8 @@ export default function CrewModal({ division, onClose }: CrewModalProps) {
   const scrimRef = useRef<HTMLDivElement | null>(null);
   const panelRef = useRef<HTMLDivElement | null>(null);
   const closeRef = useRef<HTMLButtonElement | null>(null);
+  const [viewerIndex, setViewerIndex] = useState<number | null>(null);
+  const viewerOpen = viewerIndex != null;
   const titleId = `crew-dialog-${division.slug}`;
 
   useAccessibleDialog({
@@ -24,6 +27,7 @@ export default function CrewModal({ division, onClose }: CrewModalProps) {
     onClose,
     containerRef: panelRef,
     initialFocusRef: closeRef,
+    suspended: viewerOpen,
   });
 
   useLayoutEffect(() => {
@@ -63,11 +67,14 @@ export default function CrewModal({ division, onClose }: CrewModalProps) {
   }, []);
 
   return (
-    <div
-      ref={scrimRef}
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby={titleId}
+    <>
+      <div
+        ref={scrimRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
+        aria-hidden={viewerOpen || undefined}
+        inert={viewerOpen || undefined}
       onMouseDown={(event) => {
         if (event.target === event.currentTarget) onClose();
       }}
@@ -76,7 +83,10 @@ export default function CrewModal({ division, onClose }: CrewModalProps) {
       <div
         ref={panelRef}
         tabIndex={-1}
-        className="relative max-h-[calc(100dvh-1.5rem)] w-full max-w-6xl min-w-0 overflow-y-auto overscroll-contain border border-[var(--color-muted)]/20 bg-[var(--color-base)] [transform-style:preserve-3d] sm:max-h-[calc(100dvh-3rem)]"
+        data-lenis-prevent
+        data-lenis-prevent-wheel
+        data-lenis-prevent-touch
+        className="modal-scroll-surface relative max-h-[calc(100dvh-1.5rem)] w-full max-w-6xl min-w-0 overflow-y-auto border border-[var(--qe-muted)]/20 bg-[var(--qe-base)] [transform-style:preserve-3d] sm:max-h-[calc(100dvh-3rem)]"
       >
         <header className="sticky top-0 z-20 flex min-w-0 items-start justify-between gap-6 border-b border-[var(--color-muted)]/20 bg-[var(--color-base)]/95 px-5 py-5 backdrop-blur sm:px-8 sm:py-6">
           <div className="min-w-0">
@@ -130,18 +140,25 @@ export default function CrewModal({ division, onClose }: CrewModalProps) {
             {division.images.map((src, index) => (
               <figure
                 key={src}
-                className="min-w-0 border border-[var(--color-muted)]/15 bg-[var(--color-surface)]"
+                className="crew-gallery-item min-w-0 border border-[var(--qe-muted)]/15 bg-[var(--qe-surface)]"
               >
-                <div className="aspect-[4/5] w-full overflow-hidden">
+                <button
+                  type="button"
+                  onClick={() => setViewerIndex(index)}
+                  aria-label={`Open ${division.name} crew photograph ${index + 1} in cinematic viewer`}
+                  className="block aspect-[4/5] w-full overflow-hidden focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--qe-text)]"
+                >
                   <SafeImage
                     src={src}
                     alt={`${division.name} crew photograph ${index + 1}`}
                     variant="full"
-                    fallbackColor="var(--color-surface)"
+                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                    fallbackColor="var(--qe-surface)"
                     loading="lazy"
+                    className="pointer-events-none"
                   />
-                </div>
-                <figcaption className="px-3 py-2 font-mono text-xs text-[var(--color-muted)]">
+                </button>
+                <figcaption className="px-3 py-2 font-mono text-xs text-[var(--qe-muted)]">
                   {String(index + 1).padStart(2, '0')} / {String(division.images.length).padStart(2, '0')}
                 </figcaption>
               </figure>
@@ -150,5 +167,18 @@ export default function CrewModal({ division, onClose }: CrewModalProps) {
         </div>
       </div>
     </div>
+
+      {viewerIndex != null ? (
+        <CinematicImageViewer
+          images={division.images.map((src, index) => ({
+            src,
+            alt: `${division.name} crew photograph ${index + 1}`,
+          }))}
+          initialIndex={viewerIndex}
+          title={division.name}
+          onClose={() => setViewerIndex(null)}
+        />
+      ) : null}
+    </>
   );
 }

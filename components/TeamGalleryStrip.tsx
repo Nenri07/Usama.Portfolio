@@ -83,6 +83,7 @@ export default function TeamGalleryStrip({ images, className }: TeamGalleryStrip
               src={src}
               alt={`Qasim Events team photo ${i + 1}`}
               variant="full"
+              sizes="(max-width: 640px) 33vw, (max-width: 1024px) 17vw, 11vw"
               fallbackColor="var(--color-surface)"
               loading="lazy"
             />

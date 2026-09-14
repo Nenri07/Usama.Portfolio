@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, type RefObject } from 'react';
+import { useEffect, useRef, type RefObject } from 'react';
 
 const FOCUSABLE_SELECTOR = [
   'a[href]',
@@ -17,24 +17,32 @@ interface AccessibleDialogOptions {
   onClose: () => void;
   containerRef: RefObject<HTMLElement | null>;
   initialFocusRef?: RefObject<HTMLElement | null>;
+  /** Keep body lock and opener restoration, but suspend this dialog's keyboard
+   *  handling while a nested, topmost dialog is open. */
+  suspended?: boolean;
 }
 
 /**
- * Shared modal lifecycle for every presentation popup.
+ * Shared modal lifecycle with nested-dialog support.
  *
- * It locks page scroll, closes on Escape, traps Tab focus inside the dialog,
- * moves focus to a sensible initial control, and restores focus to the opener
- * when the dialog unmounts. Visual animation remains the caller's concern so
- * accessibility behavior is identical even when reduced motion is enabled.
+ * Body locking/restoration lives for the whole open lifetime. Focus and key
+ * handling can be suspended independently, preventing a parent Escape/focus
+ * trap from racing a child lightbox while preserving the parent's opener.
  */
 export function useAccessibleDialog({
   open,
   onClose,
   containerRef,
   initialFocusRef,
+  suspended = false,
 }: AccessibleDialogOptions): void {
+  const hasFocusedRef = useRef(false);
+
   useEffect(() => {
-    if (!open || typeof document === 'undefined') return;
+    if (!open || typeof document === 'undefined') {
+      hasFocusedRef.current = false;
+      return;
+    }
 
     const previouslyFocused =
       document.activeElement instanceof HTMLElement ? document.activeElement : null;
@@ -50,18 +58,34 @@ export function useAccessibleDialog({
       document.body.style.paddingRight = `${scrollbarWidth}px`;
     }
 
-    const focusFrame = window.requestAnimationFrame(() => {
-      const container = containerRef.current;
-      const target =
-        initialFocusRef?.current ??
-        container?.querySelector<HTMLElement>(FOCUSABLE_SELECTOR) ??
-        container;
-      target?.focus();
-    });
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.body.style.paddingRight = previousPaddingRight;
+      hasFocusedRef.current = false;
+      previouslyFocused?.focus();
+    };
+  }, [open]);
+
+  useEffect(() => {
+    if (!open || suspended || typeof document === 'undefined') return;
+
+    let focusFrame = 0;
+    if (!hasFocusedRef.current) {
+      hasFocusedRef.current = true;
+      focusFrame = window.requestAnimationFrame(() => {
+        const container = containerRef.current;
+        const target =
+          initialFocusRef?.current ??
+          container?.querySelector<HTMLElement>(FOCUSABLE_SELECTOR) ??
+          container;
+        target?.focus();
+      });
+    }
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         event.preventDefault();
+        event.stopPropagation();
         onClose();
         return;
       }
@@ -101,11 +125,8 @@ export function useAccessibleDialog({
     document.addEventListener('keydown', handleKeyDown);
 
     return () => {
-      window.cancelAnimationFrame(focusFrame);
+      if (focusFrame) window.cancelAnimationFrame(focusFrame);
       document.removeEventListener('keydown', handleKeyDown);
-      document.body.style.overflow = previousOverflow;
-      document.body.style.paddingRight = previousPaddingRight;
-      previouslyFocused?.focus();
     };
-  }, [containerRef, initialFocusRef, onClose, open]);
+  }, [containerRef, initialFocusRef, onClose, open, suspended]);
 }

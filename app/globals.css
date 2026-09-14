@@ -2,31 +2,37 @@
 
 /* ── Design tokens (Requirement 7.1, 7.2) ───────────────────────────── */
 :root {
-  --color-base: #0A0E1A;
-  --color-surface: #0F1424;
-  --color-text: #F2F2F0;
-  --color-muted: #8A8F9C;
-  --color-accent: #6E1423;
+  /* Primitive palette values deliberately do NOT use Tailwind's --color-*
+     namespace. Mapping --color-text to var(--color-text), for example, creates
+     an invalid custom-property cycle at computed-value time. */
+  --qe-base: #0A0E1A;
+  --qe-surface: #0F1424;
+  --qe-text: #F2F2F0;
+  --qe-muted: #9BA1AE;
+  --qe-accent: #6E1423;
+
+  /* Compatibility aliases for existing arbitrary-value utilities and inline
+     styles. These point one-way to primitives and are never self-referential. */
+  --color-base: var(--qe-base);
+  --color-surface: var(--qe-surface);
+  --color-text: var(--qe-text);
+  --color-muted: var(--qe-muted);
+  --color-accent: var(--qe-accent);
   --space-block: 24px;
 }
 
-/* Expose tokens to Tailwind v4 so utilities like bg-base, text-accent,
-   bg-surface, text-muted, and rounded-none work (Requirement 7.1, 7.3). */
+/* Tailwind v4 semantic colors map directly to the non-colliding primitives. */
 @theme inline {
-  --color-base: var(--color-base);
-  --color-surface: var(--color-surface);
-  --color-text: var(--color-text);
-  --color-muted: var(--color-muted);
-  --color-accent: var(--color-accent);
+  --color-base: var(--qe-base);
+  --color-surface: var(--qe-surface);
+  --color-text: var(--qe-text);
+  --color-muted: var(--qe-muted);
+  --color-accent: var(--qe-accent);
 
-  /* Aliases so the vendored 21st.dev perspective slider's shadcn-style class
-     names (bg-background, text-foreground, text-muted-foreground, bg-muted)
-     resolve to our design tokens without editing the component (Step 1 option a).
-     --color-muted stays the muted TEXT color; the muted SURFACE fill maps to
-     our surface token. */
-  --color-background: var(--color-base);
-  --color-foreground: var(--color-text);
-  --color-muted-foreground: var(--color-muted);
+  /* Aliases for the adapted perspective slider's shadcn-style utilities. */
+  --color-background: var(--qe-base);
+  --color-foreground: var(--qe-text);
+  --color-muted-foreground: var(--qe-muted);
 
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system,
     "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -42,15 +48,21 @@
 
 /* ── Base element styles ────────────────────────────────────────────── */
 html {
-  background: var(--color-base);
-  color: var(--color-text);
+  color-scheme: dark;
+  background: var(--qe-base, #0A0E1A);
+  color: var(--qe-text, #F2F2F0);
+  /* Hide only the root page scrollbar; scrolling itself remains fully enabled. */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
   /* Never allow content to create a horizontal scrollbar. */
   overflow-x: hidden;
 }
 
 body {
-  background: var(--color-base);
-  color: var(--color-text);
+  background: var(--qe-base, #0A0E1A);
+  color: var(--qe-text, #F2F2F0);
+  scrollbar-width: none;
+  -ms-overflow-style: none;
   /* Confident sans-serif stack (Requirement 7.2) */
   font-family: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system,
     "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -60,6 +72,19 @@ body {
   /* Belt-and-suspenders against horizontal overflow. */
   overflow-x: hidden;
   max-width: 100%;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+/* Chapter labels read vertically inside the narrow left gutter. */
+.chapter-rail-label {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
 }
 
 /* Headings minimum 32px (Requirement 7.2) */
@@ -172,4 +197,46 @@ article,
 [data-container] {
   box-shadow: none;
   border-radius: 0;
+}
+
+/* Nested scroll regions opt out of Lenis and retain native trackpad momentum. */
+.modal-scroll-surface {
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-gutter: stable;
+  scrollbar-width: auto;
+}
+
+/* Long crew galleries avoid layout/paint work until tiles approach view. */
+.crew-gallery-item {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 360px;
+}
+
+/* Coverflow motion is intentionally weighty and square-edged. */
+.cinematic-card {
+  transform-style: preserve-3d;
+  transition:
+    transform 780ms cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 780ms cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 240ms ease;
+  will-change: transform, opacity;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cinematic-card {
+    transition: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cinematic-card {
+    opacity: 0 !important;
+    transform: translate3d(-50%, -50%, 0) !important;
+  }
+
+  .cinematic-card[aria-current="true"] {
+    opacity: 1 !important;
+  }
 }

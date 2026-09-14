@@ -46,7 +46,7 @@ export default function Contact() {
 
   // Shared button geometry: square (rounded-none), no shadow, generous padding.
   const baseButton =
-    'inline-flex items-center justify-center rounded-none px-8 py-4 text-base font-semibold tracking-tight transition-colors sm:text-lg';
+    'inline-flex min-h-14 items-center justify-center rounded-none px-8 py-4 text-base font-semibold tracking-tight transition-[color,background-color,border-color,opacity] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--qe-text)] sm:text-lg';
 
   return (
     <section
@@ -87,8 +87,11 @@ export default function Contact() {
             <MagneticButton>
               <a
                 href={buildMailto(contact.email)}
-                className={clsx(baseButton, 'text-[var(--color-text)] hover:opacity-90')}
-                style={{ backgroundColor: 'var(--color-accent)' }}
+                className={clsx(baseButton, 'hover:bg-[color-mix(in_srgb,var(--qe-accent)_88%,white)]')}
+                style={{
+                  backgroundColor: 'var(--qe-accent, #6E1423)',
+                  color: 'var(--qe-text, #F2F2F0)',
+                }}
               >
                 Email us
               </a>

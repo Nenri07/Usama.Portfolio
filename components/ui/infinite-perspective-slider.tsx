@@ -320,8 +320,14 @@ function InfinitePerspectiveSliderComp({
     };
 
     const onWheel = (e: WheelEvent) => {
+      const horizontalIntent = Math.abs(e.deltaX) > Math.abs(e.deltaY);
+      if (!horizontalIntent && !e.shiftKey) return;
+
+      // Horizontal trackpad intent (or Shift+wheel) drives the carousel. Plain
+      // vertical wheel/trackpad input remains available to Lenis/native page
+      // scrolling so the full-viewport hero never traps the document.
       e.preventDefault();
-      const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+      const delta = horizontalIntent ? e.deltaX : e.deltaY;
       s.scroll += delta * scrollSpeed;
       scheduleStop();
     };
@@ -486,7 +492,7 @@ function InfinitePerspectiveSliderComp({
     <div
       ref={rootRef}
       className={
-        "relative h-full w-full overflow-hidden bg-background text-foreground select-none touch-none " +
+        "relative h-full w-full overflow-hidden bg-background text-foreground select-none touch-pan-y " +
         (className ?? "")
       }
       style={rootStyle}
@@ -533,7 +539,9 @@ function InfinitePerspectiveSliderComp({
                 src={item.src}
                 alt={item.title}
                 variant="full"
-                loading={index < 3 ? "eager" : "lazy"}
+                sizes="(max-width: 640px) 72vw, 320px"
+                loading={index === 0 ? "eager" : "lazy"}
+                preload={index === 0}
                 draggable={false}
                 className="pointer-events-none"
                 fallbackColor="var(--color-surface)"

@@ -108,6 +108,9 @@ export default function Hero() {
           src="/work/img-000.png"
           alt=""
           variant="full"
+          sizes="100vw"
+          preload
+          loading="eager"
           fallbackColor="var(--color-base)"
           timeoutMs={3000}
         />

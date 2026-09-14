@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Playfair_Display } from "next/font/google";
 import "./globals.css";
+import ChapterRail from "@/components/ChapterRail";
 import SmoothScrollProvider from "@/components/SmoothScrollProvider";
 
 // Confident sans-serif stack via next/font (Requirement 7.2).
@@ -34,7 +35,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col font-sans">
-        <SmoothScrollProvider>{children}</SmoothScrollProvider>
+        <SmoothScrollProvider>
+          <ChapterRail />
+          {children}
+        </SmoothScrollProvider>
       </body>
     </html>
   );

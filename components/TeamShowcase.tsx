@@ -92,6 +92,7 @@ function CrewRow({ division, index, onSelect }: CrewRowProps) {
                   src={src}
                   alt=""
                   variant="full"
+                  sizes="(max-width: 1024px) 54vw, 27vw"
                   fallbackColor="var(--color-surface)"
                   loading="lazy"
                 />

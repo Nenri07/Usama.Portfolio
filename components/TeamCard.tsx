@@ -102,6 +102,7 @@ export default function TeamCard({ member, index, className }: TeamCardProps) {
           src={member.image}
           alt={member.name ?? member.role}
           variant="full"
+          sizes="(max-width: 768px) 100vw, 33vw"
           fallbackColor="var(--color-surface)"
         />
         {/* Scrim so the role/name text stays legible over any image. */}

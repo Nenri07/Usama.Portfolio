@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useLayoutEffect, useRef } from 'react';
+import { useCallback, useLayoutEffect, useRef, useState } from 'react';
 import { gsap } from '@/lib/gsapSetup';
 import { prefersReducedMotion } from '@/lib/motion';
 import { useAccessibleDialog } from '@/lib/useAccessibleDialog';
@@ -8,6 +8,7 @@ import { resolveImagePath, imagePathForIndex } from '@/lib/format';
 import type { Project } from '@/lib/data';
 import SafeImage from './SafeImage';
 import NumberCard from './NumberCard';
+import CinematicImageViewer from './CinematicImageViewer';
 
 /**
  * ProjectModal — a rich, full-screen project-DETAIL overlay (Griflan-style).
@@ -105,21 +106,24 @@ export default function ProjectModal({ project, index, onClose }: ProjectModalPr
   const panelRef = useRef<HTMLDivElement | null>(null);
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const closeBtnRef = useRef<HTMLButtonElement | null>(null);
+  const [viewerIndex, setViewerIndex] = useState<number | null>(null);
 
   // Per-image quickTo setters for the scroll-driven tilt, keyed by DOM node.
-  const imageRefs = useRef<HTMLDivElement[]>([]);
+  const imageRefs = useRef<HTMLElement[]>([]);
 
   const open = project != null;
+  const viewerOpen = viewerIndex != null;
 
   useAccessibleDialog({
     open,
     onClose,
     containerRef: panelRef,
     initialFocusRef: closeBtnRef,
+    suspended: viewerOpen,
   });
 
-  // Collect gallery image nodes for the scroll tilt.
-  const registerImage = useCallback((el: HTMLDivElement | null) => {
+  // Collect gallery image triggers for the scroll tilt.
+  const registerImage = useCallback((el: HTMLButtonElement | null) => {
     if (el && !imageRefs.current.includes(el)) {
       imageRefs.current.push(el);
     }
@@ -171,7 +175,7 @@ export default function ProjectModal({ project, index, onClose }: ProjectModalPr
       if (scroller) {
         // Defer setter creation so the images have mounted.
         const setters: {
-          el: HTMLDivElement;
+          el: HTMLElement;
           rotX: (v: number) => void;
           rotY: (v: number) => void;
           y: (v: number) => void;
@@ -253,11 +257,14 @@ export default function ProjectModal({ project, index, onClose }: ProjectModalPr
   const tagServices = project.services.slice(0, 3);
 
   return (
-    <div
-      ref={scrimRef}
-      role="dialog"
-      aria-modal="true"
-      aria-label={project.title}
+    <>
+      <div
+        ref={scrimRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label={project.title}
+        aria-hidden={viewerOpen || undefined}
+        inert={viewerOpen || undefined}
       onMouseDown={(e) => {
         // Close only when the scrim itself is pressed, not the panel. Using
         // mousedown target guards against selections that end on the scrim.
@@ -289,7 +296,10 @@ export default function ProjectModal({ project, index, onClose }: ProjectModalPr
             transform-style + perspective enable the right-column 3D tilt. */}
         <div
           ref={scrollRef}
-          className="grid min-w-0 flex-1 grid-cols-1 gap-y-12 overflow-x-hidden overflow-y-auto overscroll-contain px-6 py-16 sm:px-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-x-16 lg:py-20"
+          data-lenis-prevent
+          data-lenis-prevent-wheel
+          data-lenis-prevent-touch
+          className="modal-scroll-surface grid min-w-0 flex-1 grid-cols-1 gap-y-12 overflow-x-hidden overflow-y-auto px-6 py-16 sm:px-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-x-16 lg:py-20"
           style={{ perspective: '1200px' }}
         >
           {/* LEFT column — sticky within the panel. */}
@@ -340,24 +350,30 @@ export default function ProjectModal({ project, index, onClose }: ProjectModalPr
           <div className="flex flex-col gap-12">
             {/* Gallery of curated visuals, each with a scroll-driven 3D tilt. */}
             {gallery.map((img, i) => (
-              <div
+              <button
                 key={i}
                 ref={registerImage}
+                type="button"
+                onClick={() => setViewerIndex(i)}
+                aria-label={`Open ${img.alt} in cinematic viewer`}
                 data-cursor
                 data-cursor-label="View"
-                className="relative w-full overflow-hidden bg-[var(--color-surface)] [transform-style:preserve-3d] will-change-transform"
+                className="relative w-full overflow-hidden bg-[var(--qe-surface)] text-[var(--qe-text)] [transform-style:preserve-3d] will-change-transform focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--qe-text)]"
                 style={{ aspectRatio: '4 / 3' }}
               >
                 <SafeImage
                   src={img.src}
                   alt={img.alt}
                   variant="full"
+                  sizes="(max-width: 1024px) 100vw, 50vw"
                   loading={i === 0 ? 'eager' : 'lazy'}
+                  preload={i === 0}
+                  className="pointer-events-none"
                 />
-                <span className="pointer-events-none absolute bottom-3 left-3 bg-[var(--color-base)]/85 px-3 py-1.5 font-mono text-xs text-[var(--color-muted)] backdrop-blur">
+                <span className="pointer-events-none absolute bottom-3 left-3 bg-[var(--qe-base)]/88 px-3 py-1.5 font-mono text-xs text-[var(--qe-text)] backdrop-blur">
                   Visual {String(i + 1).padStart(2, '0')}
                 </span>
-              </div>
+              </button>
             ))}
 
             {/* All services as chips. */}
@@ -406,5 +422,15 @@ export default function ProjectModal({ project, index, onClose }: ProjectModalPr
         </div>
       </div>
     </div>
+
+      {viewerIndex != null ? (
+        <CinematicImageViewer
+          images={gallery}
+          initialIndex={viewerIndex}
+          title={project.title}
+          onClose={() => setViewerIndex(null)}
+        />
+      ) : null}
+    </>
   );
 }

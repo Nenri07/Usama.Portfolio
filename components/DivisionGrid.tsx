@@ -156,6 +156,7 @@ export default function DivisionGrid({ name, images, className }: DivisionGridPr
               src={src}
               alt={`${name} team member`}
               variant="full"
+              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
               fallbackColor="var(--color-surface)"
               loading="lazy"
             />
