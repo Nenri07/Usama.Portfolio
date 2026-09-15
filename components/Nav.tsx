@@ -1,6 +1,8 @@
 'use client';
 
 import { useCallback } from 'react';
+import { brand } from '@/lib/data';
+import BrandLogo3D from './BrandLogo3D';
 
 /**
  * Nav — a minimal fixed top navigation overlay (Step 3).
@@ -62,10 +64,10 @@ export default function Nav() {
 
   return (
     <nav
-      className="fixed inset-x-0 top-0 z-40 flex items-center justify-between px-6 py-5 sm:px-8 lg:px-12"
+      className="fixed inset-x-0 top-0 z-40 flex min-w-0 items-center justify-between gap-3 px-4 py-3 sm:px-8 lg:px-12"
       aria-label="Primary"
     >
-      {/* Brand — links back to the top of the hero. */}
+      {/* Optimized local brand mark; the adjacent name remains real text. */}
       <a
         href="#top"
         onClick={(e) => {
@@ -73,20 +75,28 @@ export default function Nav() {
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }}
         data-cursor
-        className="text-sm font-semibold uppercase tracking-[0.2em] text-[var(--color-text)] transition-colors hover:text-[var(--color-accent)]"
+        aria-label={`${brand.name} — return to top`}
+        className="text-primary-interactive flex min-w-0 items-center gap-2 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--qe-text)] sm:gap-3"
       >
-        Qasim Events
+        <BrandLogo3D
+          className="h-14 w-14 sm:h-16 sm:w-16"
+          sizes="(max-width: 640px) 56px, 64px"
+          preload
+        />
+        <span className="text-primary hidden max-w-52 text-[0.65rem] font-semibold uppercase leading-tight tracking-[0.15em] md:block">
+          {brand.name}
+        </span>
       </a>
 
       {/* Section links. */}
-      <ul className="flex items-center gap-6 sm:gap-8">
+      <ul className="flex shrink-0 items-center gap-3 sm:gap-6 lg:gap-8">
         {LINKS.map((link) => (
           <li key={link.target}>
             <a
               href={`#${link.target}`}
               onClick={(e) => handleClick(e, link.target)}
               data-cursor
-              className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--color-muted)] transition-colors hover:text-[var(--color-accent)] sm:text-sm"
+              className="text-secondary text-[0.65rem] font-semibold uppercase tracking-[0.14em] transition-colors hover:text-[var(--qe-accent)] focus-visible:text-[var(--qe-accent)] sm:text-sm"
             >
               {link.label}
             </a>

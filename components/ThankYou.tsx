@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useRef } from 'react';
-import { contact } from '@/lib/data';
+import { brand, contact } from '@/lib/data';
 import { buildMailto } from '@/lib/format';
 import { gsap, ScrollTrigger, registerScrollTrigger } from '@/lib/gsapSetup';
 import { prefersReducedMotion } from '@/lib/motion';
@@ -238,9 +238,9 @@ export default function ThankYou() {
       <div className="relative z-10 mx-auto flex w-full max-w-5xl min-w-0 flex-col items-center text-center [transform:translateZ(80px)] [transform-style:preserve-3d]">
         <p
           data-thank-copy
-          className="font-mono text-xs font-semibold uppercase tracking-[0.28em] text-[var(--qe-accent)]"
+          className="text-primary font-mono text-xs font-semibold uppercase tracking-[0.28em]"
         >
-          End of presentation · Doha, Qatar
+          {brand.name} · Qatar
         </p>
 
         <h2
@@ -254,7 +254,7 @@ export default function ThankYou() {
           data-thank-copy
           className="mt-8 max-w-2xl bg-[color-mix(in_srgb,var(--qe-base)_78%,transparent)] px-4 py-2 text-base leading-relaxed text-[var(--qe-text)] backdrop-blur-sm sm:text-xl"
         >
-          The next memorable gathering starts with one clear conversation.
+          Professional operations and on-site delivery start with one clear conversation.
         </p>
 
         <div data-thank-copy className="mt-10 flex flex-wrap items-center justify-center gap-5">
@@ -262,7 +262,7 @@ export default function ThankYou() {
             href={buildMailto(contact.email)}
             className="inline-flex min-h-14 items-center border border-[var(--qe-accent)] bg-[var(--qe-accent)] px-7 py-3 text-base font-semibold text-[var(--qe-text)] transition-colors hover:bg-[color-mix(in_srgb,var(--qe-accent)_86%,white)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--qe-text)]"
           >
-            Start the next activation
+            Start a conversation
           </a>
           <a
             href="#top"

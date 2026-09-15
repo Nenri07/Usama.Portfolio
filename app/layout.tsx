@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import ChapterRail from "@/components/ChapterRail";
 import SmoothScrollProvider from "@/components/SmoothScrollProvider";
+import { brand } from "@/lib/data";
 
 // Confident sans-serif stack via next/font (Requirement 7.2).
 const geistSans = Geist({
@@ -23,9 +24,13 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "Qasim Events",
-  description:
-    "Qatar-based event activation company — premium activations at scale.",
+  title: brand.name,
+  description: brand.description,
+  openGraph: {
+    title: brand.name,
+    description: brand.description,
+    type: "website",
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

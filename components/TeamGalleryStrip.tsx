@@ -6,6 +6,7 @@ import { gsap } from '@/lib/gsapSetup';
 import { useReveal } from '@/lib/reveal';
 import { prefersReducedMotion } from '@/lib/motion';
 import SafeImage from './SafeImage';
+import { brand } from '@/lib/data';
 
 /**
  * TeamGalleryStrip — the "Our Team" showcase for general team & event photos
@@ -81,7 +82,7 @@ export default function TeamGalleryStrip({ images, className }: TeamGalleryStrip
           >
             <SafeImage
               src={src}
-              alt={`Qasim Events team photo ${i + 1}`}
+              alt={`${brand.name} team photo ${i + 1}`}
               variant="full"
               sizes="(max-width: 640px) 33vw, (max-width: 1024px) 17vw, 11vw"
               fallbackColor="var(--color-surface)"

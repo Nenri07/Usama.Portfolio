@@ -1,5 +1,5 @@
 /**
- * Pure formatting helpers for Qasim Events.
+ * Pure formatting helpers for Puro Cleaning & Disinfecting.
  *
  * Every function here is pure: it has no side effects and its output depends
  * solely on its inputs. This keeps them trivially unit- and property-testable

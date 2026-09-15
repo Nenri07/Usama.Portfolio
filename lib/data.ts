@@ -1,10 +1,17 @@
-// Static content module for the Qasim Events site.
+// Static content module for the Puro Cleaning & Disinfecting site.
 // All page content is hardcoded here (Req 1.4, 3.1, 3.3, 4.1, 4.3, 5.1, 5.5, 6.1, 6.3).
 // Sequential image paths are derived from index (see lib/format.ts resolveImagePath /
 // imagePathForIndex) unless a Project defines an explicit `image` override (Req 4.2).
 //
 // NO revenue, cost, or net-profit figures appear in any data model — only
 // Public_Metric counts (visitors, winners, staff, days, activations) (Req 4.5, 5.5, 8.6).
+
+// Public brand identity used by metadata and visible company lockups.
+export const brand = {
+  name: 'Puro Cleaning & Disinfecting',
+  description: 'Professional operations and on-site delivery in Qatar.',
+  logo: '/PURO-logo.png',
+} as const;
 
 /**
  * A single project card in the Work grid (Req 4.3, 4.4).
@@ -45,16 +52,14 @@ export interface TeamMember {
 }
 
 /**
- * Contact details for the Contact section. All fields are EDITABLE:
- * - `email` defaults to hello@qasim-events.qa (Req 7.3).
- * - `phone` is a Qatar international-format number beginning with 974 (Req 7.5).
- * - `whatsapp` is a Qatar international-format number beginning with 974 (Req 7.5);
- *   the trailing 'XXXXXXXX' is a placeholder — replace with the real number.
+ * Contact details for the Contact section.
+ * `phone` is the public Qatar display number; `whatsapp` carries the required
+ * international country code used only to construct the wa.me destination.
  */
 export const contact = {
-  email: 'hello@qasim-events.qa', // editable (Req 7.3)
-  phone: '974XXXXXXXX', // editable, Qatar intl format beginning with 974 (Req 7.5)
-  whatsapp: '974XXXXXXXX', // editable, Qatar intl format beginning with 974 (Req 7.5)
+  email: 'info@puroqatar.com',
+  phone: '70981603',
+  whatsapp: '97470981603',
 };
 
 /** Trusted-by clients/venues/partners, rendered as text in EXACT order (Req 3.1, 3.3). */
