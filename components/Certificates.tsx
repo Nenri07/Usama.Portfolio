@@ -11,7 +11,9 @@ import {
 } from 'react';
 import RevealHeading from './RevealHeading';
 import SafeImage from './SafeImage';
-import { certificates, contracts, type CertificateItem } from '@/lib/data';
+import DeckShapes from './DeckShapes';
+import { certificates, contracts, clients, type CertificateItem } from '@/lib/data';
+import { buildMarqueeTrack } from '@/lib/format';
 
 /**
  * Certificates — an auto-advancing 3D coverflow of certificate / contract
@@ -39,6 +41,9 @@ import { certificates, contracts, type CertificateItem } from '@/lib/data';
  */
 
 const AUTO_ADVANCE_MS = 3600;
+
+/** Seamless doubled client ribbon track (0% → -50% loop). */
+const CLIENT_TRACK = buildMarqueeTrack(clients);
 
 function wrapIndex(index: number, count: number): number {
   if (count <= 0) return 0;
@@ -221,9 +226,37 @@ export default function Certificates() {
   return (
     <section
       id="certificates"
-      className="min-w-0 overflow-hidden bg-base px-6 py-24 sm:px-8 lg:px-12"
+      data-deck-section
+      className="relative min-w-0 overflow-hidden bg-base px-6 py-24 sm:px-8 lg:px-12"
     >
-      <div className="mx-auto w-full min-w-0 max-w-7xl">
+      <DeckShapes variant="bloom" />
+      <div className="relative z-[1] mx-auto w-full min-w-0 max-w-7xl">
+        {/* Slim, always-readable client ribbon — the "trusted by" value folded
+            in here (the full list lives in the contracts table below), so it is
+            no longer a separate full section. Pure CSS marquee, reduced-motion
+            safe (animation disabled via media query). */}
+        <div
+          className="marquee-mask mb-14 w-full overflow-hidden border-y border-subtle py-4"
+          aria-label="Selected clients"
+        >
+          <div className="cert-client-ribbon flex w-max items-center">
+            {CLIENT_TRACK.map((client, i) => (
+              <span
+                key={`${client}-${i}`}
+                aria-hidden={i >= clients.length ? true : undefined}
+                className="text-secondary flex shrink-0 items-center gap-6 whitespace-nowrap pr-6 font-mono text-sm uppercase tracking-[0.14em] sm:gap-8 sm:pr-8"
+              >
+                {client}
+                <span
+                  aria-hidden="true"
+                  className="h-1.5 w-1.5 shrink-0 rotate-45"
+                  style={{ backgroundColor: 'var(--qe-accent, #6E1423)' }}
+                />
+              </span>
+            ))}
+          </div>
+        </div>
+
         <header className="mb-12 grid min-w-0 gap-6 md:grid-cols-[minmax(0,1fr)_minmax(16rem,0.6fr)] md:items-end">
           <div>
             <RevealHeading className="text-primary text-4xl font-semibold tracking-tight sm:text-5xl">

@@ -7,20 +7,23 @@ import InfinitePerspectiveSlider, {
 } from './ui/infinite-perspective-slider';
 import Nav from './Nav';
 import HeroAmbient from './HeroAmbient';
-import { projects } from '@/lib/data';
-import { resolveImagePath } from '@/lib/format';
+import { contractCards } from '@/lib/data';
 import { prefersReducedMotion } from '@/lib/motion';
 
 /**
- * HeroSlider — the full-screen hero built on the perspective slider (Step 2).
+ * HeroSlider — the full-screen hero built on the perspective slider.
  *
- * Feeds our real `projects` into `InfinitePerspectiveSlider` and overlays the
- * jesperlandberg-style corner labels plus the fixed <Nav>. Clicking a card
- * calls `onCardClick(index)` so the parent (HomeClient) can open the project
- * modal for `projects[index]`.
+ * Feeds ALL 32 real client contracts (from `contractCards`) into
+ * `InfinitePerspectiveSlider`, one card per engagement, each with its
+ * deterministically-mapped work photograph. Clicking a card calls
+ * `onCardClick(index)` so the parent (HomeClient) opens the contract-detail
+ * modal for `contractCards[index]`.
  *
- * The slider itself handles drag/wheel scroll, the velocity tilt, per-card
- * SplitText reveal, and reduced-motion degradation.
+ * The slider is a CSS-transform carousel (each card is a positioned node with a
+ * single transform), so ~32 cards render without jank — no per-frame layout,
+ * and the rAF loop suspends when the hero is off-screen or the tab is hidden.
+ * It handles drag/wheel scroll, the velocity tilt, per-card SplitText reveal,
+ * and reduced-motion degradation internally.
  */
 
 interface HeroSliderProps {
@@ -31,11 +34,11 @@ export default function HeroSlider({ onCardClick }: HeroSliderProps) {
   const overlayRef = useRef<HTMLDivElement | null>(null);
   const items = useMemo<InfinitePerspectiveSliderItem[]>(
     () =>
-      projects.map((project, i) => ({
-        src: resolveImagePath(project, i),
-        number: String(i + 1).padStart(2, '0'),
-        title: project.title,
-        desc: `${project.client ? `${project.client} · ` : ''}${project.category} · ${project.location}`,
+      contractCards.map((contract) => ({
+        src: contract.image.src,
+        number: String(contract.no).padStart(2, '0'),
+        title: contract.client,
+        desc: `${contract.scope} · ${contract.duration}`,
       })),
     [],
   );
@@ -63,7 +66,11 @@ export default function HeroSlider({ onCardClick }: HeroSliderProps) {
   }, []);
 
   return (
-    <section id="top" className="relative h-screen w-full overflow-hidden bg-base">
+    <section
+      id="top"
+      data-deck-section
+      className="relative h-screen w-full overflow-hidden bg-base"
+    >
       {/* Fixed top navigation overlay. */}
       <Nav />
 
@@ -91,17 +98,17 @@ export default function HeroSlider({ onCardClick }: HeroSliderProps) {
             data-hero-reveal
             className="text-primary mt-3 font-display text-2xl font-semibold leading-tight tracking-tight sm:text-3xl"
           >
-            Quality, hygiene &amp; safety across Qatar.
+            {contractCards.length} client engagements across Qatar.
           </p>
         </div>
 
-        {/* Bottom-left: featured / full index cue. */}
+        {/* Bottom-left: full client index cue. */}
         <div className="absolute bottom-6 left-6 sm:left-8 lg:left-12">
           <p
             data-hero-reveal
             className="text-secondary text-xs font-semibold uppercase tracking-[0.2em]"
           >
-            Featured <span className="text-accent">/ Full</span>
+            Every client <span className="text-accent">/ tap a card</span>
           </p>
         </div>
 

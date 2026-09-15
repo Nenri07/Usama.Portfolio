@@ -146,6 +146,8 @@ export default function ThankYou() {
       cancelSettle();
       settleTimer = window.setTimeout(() => {
         if (!armed || settled) return;
+        // Never fight the presentation controller's scroll while presenting.
+        if ((window as unknown as { __presenting?: boolean }).__presenting) return;
         const rect = section.getBoundingClientRect();
         if (rect.top <= 2 || rect.top >= window.innerHeight * 0.82) return;
         settled = true;
@@ -205,6 +207,7 @@ export default function ThankYou() {
     <section
       id="thank-you"
       ref={setRefs}
+      data-deck-section
       className="relative isolate flex min-h-[100dvh] w-full min-w-0 max-w-full items-center justify-center overflow-hidden bg-[var(--qe-base)] px-5 py-20 [perspective:1400px] sm:px-8 lg:px-12"
     >
       <div

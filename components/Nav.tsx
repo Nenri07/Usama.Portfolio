@@ -27,10 +27,10 @@ interface NavLink {
 }
 
 const LINKS: NavLink[] = [
-  { label: 'Work', target: 'work' },
+  { label: 'Projects', target: 'work' },
   { label: 'Certificates', target: 'certificates' },
   { label: 'Services', target: 'services' },
-  { label: 'Activities', target: 'activities' },
+  { label: 'Team', target: 'team' },
   { label: 'Contact', target: 'contact' },
 ];
 
@@ -113,6 +113,27 @@ export default function Nav() {
           >
             Film
           </Link>
+        </li>
+        <li>
+          <button
+            type="button"
+            onClick={() => {
+              if (typeof window !== 'undefined') {
+                window.dispatchEvent(new CustomEvent('puro:present-start'));
+              }
+            }}
+            data-cursor
+            data-cursor-label="Present"
+            aria-label="Start presentation mode"
+            className="button-on-accent inline-flex items-center gap-2 border border-[var(--qe-accent)] px-3 py-1.5 text-[0.65rem] font-semibold uppercase tracking-[0.14em] transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--qe-text)] sm:px-4 sm:py-2 sm:text-sm"
+          >
+            <span
+              aria-hidden="true"
+              className="h-2 w-2 shrink-0"
+              style={{ backgroundColor: 'var(--qe-text, #F2F2F0)' }}
+            />
+            Present
+          </button>
         </li>
       </ul>
     </nav>

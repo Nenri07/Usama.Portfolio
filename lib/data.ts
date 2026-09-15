@@ -331,6 +331,39 @@ export function contractsForRefs(refs: readonly number[] | undefined): ContractR
     .filter((contract): contract is ContractRecord => contract != null);
 }
 
+/**
+ * Deterministically map a contract to a work-gallery image. Because there are
+ * 54 gallery photos and 32 contracts, every contract gets a stable photo and
+ * the mapping never runs out (reuse is allowed and stable across renders).
+ * The index is derived from the contract number so the same contract always
+ * resolves to the same photo (no randomness, SSR-safe).
+ */
+export function imageForContract(contract: ContractRecord): WorkImage {
+  const gallery = workGallery;
+  if (gallery.length === 0) {
+    return { src: brand.logo, alt: `${contract.client} — Puro engagement` };
+  }
+  const image = gallery[(contract.no - 1) % gallery.length];
+  return {
+    src: image.src,
+    alt: `Puro service delivery for ${contract.client}`,
+  };
+}
+
+/**
+ * A contract enriched with its deterministic hero image, ready for the hero
+ * carousel and the contract-detail modal. Built once from the source-backed
+ * `contracts` list; contains no invented data.
+ */
+export interface ContractCard extends ContractRecord {
+  image: WorkImage;
+}
+
+export const contractCards: ContractCard[] = contracts.map((contract) => ({
+  ...contract,
+  image: imageForContract(contract),
+}));
+
 /** Source-backed service standards replace unsupported event-result metrics. */
 export const results: StatItem[] = [
   {

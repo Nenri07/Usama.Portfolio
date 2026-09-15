@@ -3,7 +3,10 @@
 import { createContext, useContext } from 'react';
 
 export interface ProjectSelectionValue {
+  /** Open the service-project detail modal for `projects[index]`. */
   openProject: (index: number) => void;
+  /** Open the contract-detail modal for `contractCards[index]`. */
+  openContract: (index: number) => void;
 }
 
 const ProjectSelectionContext = createContext<ProjectSelectionValue | null>(null);

@@ -1,29 +1,30 @@
 /**
- * Single route — the above-the-fold hero is now the curved 3D perspective
- * slider (HeroSlider, jesperlandberg-style) with a fixed nav overlay; the rest
- * of the page continues below as the user scrolls.
+ * Single route — an investor-grade presentation deck.
  *
- * Order:
- *   HeroSlider (full-screen, nav overlay + project-detail modal)
- *     → Marquee   (Clients / Trusted By)
- *     → WorkList  (Work_Section — big-type Project_List, id="work")
- *     → Numbers   (Results_Section)
- *     → Team      (Team_Section, id="team")
- *     → Contact   (Contact_Section, id="contact")
+ * Final top-to-bottom order (confirmed):
+ *   1) Hero        — all 32 client contracts as cards (HomeClient → HeroSlider)
+ *   2) Projects    — 4 service projects + links into every engagement (WorkList)
+ *   3) Certificates— 10 real documents coverflow + contracts context
+ *   4) Services    — verified service lines + folded-in Standards/Activities
+ *   5) Team        — Operations
+ *   6) Thank You   — closing screen
+ *
+ * De-duplication: the standalone "Trusted By" marquee, "Activities" and
+ * "Standards/Numbers" sections were removed as separate full sections. Their
+ * content is represented once — clients as a slim ribbon inside Certificates
+ * (full list in the contracts table), Standards + Activities as compact
+ * supporting blocks inside Services. The Contact section is retained just
+ * before the closing screen so the WhatsApp + email controls stay available.
  *
  * page.tsx stays a Server Component: HomeClient is a thin `'use client'`
- * wrapper that owns the selected-project modal state and renders HeroSlider +
- * ProjectModal, while the static sections below are passed through as children
- * (Server Components rendered into a Client Component slot).
+ * wrapper that owns the modal + present-mode state and renders HeroSlider,
+ * ProjectModal, ContractModal and PresentMode, while the static sections below
+ * are passed through as children.
  */
 import HomeClient from '@/components/HomeClient';
-import Marquee from '@/components/Marquee';
 import WorkList from '@/components/WorkList';
-import WorkGallery from '@/components/WorkGallery';
 import Certificates from '@/components/Certificates';
 import Services from '@/components/Services';
-import Activities from '@/components/Activities';
-import Numbers from '@/components/Numbers';
 import Team from '@/components/Team';
 import Contact from '@/components/Contact';
 import ThankYou from '@/components/ThankYou';
@@ -32,34 +33,22 @@ export default function Home() {
   return (
     <main className="text-primary flex w-full min-w-0 max-w-full flex-1 flex-col bg-base">
       <HomeClient>
-        {/* ── Clients / Trusted By (Req 3) ────────────────────────────── */}
-        <Marquee />
-
-        {/* ── Work / Projects — big-type Project_List (Req 4, 10) ──────── */}
+        {/* ── Projects — flagship work + links to all 32 engagements ────── */}
         <WorkList />
 
-        {/* ── Work gallery — animated masonry wall of every on-site photo ── */}
-        <WorkGallery />
-
-        {/* ── Certificates & Contracts — auto-advancing coverflow ──────── */}
+        {/* ── Certificates & Contracts — coverflow + client ribbon/table ── */}
         <Certificates />
 
-        {/* ── Services — verified Puro service lines (Part B) ──────────── */}
+        {/* ── Services — verified lines + folded-in Standards & Activities ─ */}
         <Services />
 
-        {/* ── Activities — operational scope of work (Part C) ──────────── */}
-        <Activities />
-
-        {/* ── Results / Numbers (Req 5) ───────────────────────────────── */}
-        <Numbers />
-
-        {/* ── Team (Req 6) ────────────────────────────────────────────── */}
+        {/* ── Team / Operations ─────────────────────────────────────────── */}
         <Team />
 
-        {/* ── Contact (Req 7) ─────────────────────────────────────────── */}
+        {/* ── Contact — retained for WhatsApp + email controls ──────────── */}
         <Contact />
 
-        {/* ── Presentation ending ──────────────────────────────────────── */}
+        {/* ── Presentation ending ───────────────────────────────────────── */}
         <ThankYou />
       </HomeClient>
     </main>

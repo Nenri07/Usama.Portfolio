@@ -4,7 +4,11 @@ import TeamShowcase from './TeamShowcase';
 /** Editorial operations index; full retained galleries mount only on selection. */
 export default function Team() {
   return (
-    <section id="team" className="min-w-0 overflow-hidden bg-base px-6 py-24 sm:px-8 lg:px-12">
+    <section
+      id="team"
+      data-deck-section
+      className="min-w-0 overflow-hidden bg-base px-6 py-24 sm:px-8 lg:px-12"
+    >
       <div className="mx-auto w-full min-w-0 max-w-7xl">
         <header className="mb-8">
           <RevealHeading className="text-primary text-4xl font-semibold tracking-tight sm:text-5xl">

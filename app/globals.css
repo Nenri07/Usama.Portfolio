@@ -459,3 +459,142 @@ article,
     transparent 100%
   );
 }
+
+/* ── Deck "off shapes" (decorative) ─────────────────────────────────── */
+/* Thin geometric rules, offset frames and floating accent marks that give
+   sections a confident presentation-deck feel. All GPU-cheap (transform/
+   opacity), aria-hidden and pointer-events-none from the component. Disabled
+   under reduced motion so they settle into a static, unobtrusive resting state. */
+.deck-shape {
+  will-change: transform, opacity;
+}
+
+.deck-shape-frame {
+  animation: deck-frame-drift 16s ease-in-out infinite alternate;
+  opacity: 0.6;
+}
+
+.deck-shape-float-a {
+  animation: deck-float-a 11s ease-in-out infinite alternate;
+}
+
+.deck-shape-float-b {
+  animation: deck-float-b 13s ease-in-out infinite alternate;
+}
+
+.deck-shape-line-a {
+  transform-origin: left center;
+  animation: deck-line-a 14s ease-in-out infinite alternate;
+}
+
+.deck-shape-line-b {
+  transform-origin: right center;
+  animation: deck-line-b 17s ease-in-out infinite alternate;
+}
+
+.deck-shape-bloom {
+  background: radial-gradient(
+    circle at 50% 50%,
+    color-mix(in srgb, var(--qe-accent, #6E1423) 32%, transparent) 0%,
+    transparent 68%
+  );
+  filter: blur(48px);
+  opacity: 0.4;
+  animation: deck-bloom 20s ease-in-out infinite alternate;
+}
+
+@keyframes deck-frame-drift {
+  from { transform: translate3d(0, 0, 0) rotate(0deg); }
+  to { transform: translate3d(-10px, 12px, 0) rotate(2deg); }
+}
+
+@keyframes deck-float-a {
+  from { transform: translate3d(0, 0, 0) rotate(45deg); opacity: 0.5; }
+  to { transform: translate3d(10px, -18px, 0) rotate(45deg); opacity: 0.85; }
+}
+
+@keyframes deck-float-b {
+  from { transform: translate3d(0, 0, 0) rotate(45deg); opacity: 0.4; }
+  to { transform: translate3d(-14px, -12px, 0) rotate(45deg); opacity: 0.75; }
+}
+
+@keyframes deck-line-a {
+  from { transform: scaleX(0.7); opacity: 0.5; }
+  to { transform: scaleX(1); opacity: 0.9; }
+}
+
+@keyframes deck-line-b {
+  from { transform: scaleX(0.6); opacity: 0.4; }
+  to { transform: scaleX(1); opacity: 0.85; }
+}
+
+@keyframes deck-bloom {
+  from { transform: translate3d(0, -50%, 0) scale(0.9); opacity: 0.3; }
+  to { transform: translate3d(-6%, -50%, 0) scale(1.08); opacity: 0.5; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .deck-shape-frame,
+  .deck-shape-float-a,
+  .deck-shape-float-b,
+  .deck-shape-line-a,
+  .deck-shape-line-b,
+  .deck-shape-bloom {
+    animation: none;
+  }
+}
+
+/* ── Present mode ───────────────────────────────────────────────────── */
+/* When presenting, the active section is lifted into a near-fullscreen slide.
+   Transitions are transform/opacity only; text is never gated (sections are
+   always in the normal flow and readable — this only enhances the active one). */
+.present-active-slide {
+  position: relative;
+  z-index: 1;
+}
+
+.present-slide-enter {
+  animation: present-slide-in 720ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes present-slide-in {
+  from { opacity: 0.001; transform: translate3d(0, 40px, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+/* Dim non-active sections slightly while presenting for slide focus. Applied
+   to <main> so it never touches the overlay controls. */
+.present-dimmed [data-deck-section]:not(.present-active-slide) {
+  opacity: 0.35;
+  transition: opacity 500ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .present-slide-enter {
+    animation: none;
+  }
+
+  .present-dimmed [data-deck-section]:not(.present-active-slide) {
+    opacity: 1;
+    transition: none;
+  }
+}
+
+/* Slim client ribbon inside the Certificates section. The doubled track loops
+   seamlessly (0% → -50%). Readable at rest; animation disabled under reduced
+   motion so the clients simply sit statically. */
+.cert-client-ribbon {
+  animation: cert-client-scroll 40s linear infinite;
+  will-change: transform;
+}
+
+@keyframes cert-client-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cert-client-ribbon {
+    animation: none;
+  }
+}

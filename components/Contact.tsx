@@ -16,6 +16,7 @@ export default function Contact() {
   return (
     <section
       id="contact"
+      data-deck-section
       className="flex min-h-screen flex-col items-center justify-center bg-base px-6 py-24 sm:px-8 lg:px-12"
     >
       <div className="mx-auto flex w-full max-w-4xl flex-col items-center text-center">
