@@ -28,7 +28,7 @@ function ActivityRow({
   const mediaFirst = index % 2 === 0;
 
   const media = (
-    <div className="relative aspect-[16/10] w-full overflow-hidden border border-subtle md:aspect-[4/3]">
+    <div className="card-lift relative aspect-[16/10] w-full overflow-hidden border border-subtle md:aspect-[4/3]">
       {activity.image ? (
         <SafeImage
           src={activity.image}

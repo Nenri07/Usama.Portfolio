@@ -19,6 +19,7 @@
 import HomeClient from '@/components/HomeClient';
 import Marquee from '@/components/Marquee';
 import WorkList from '@/components/WorkList';
+import Certificates from '@/components/Certificates';
 import Services from '@/components/Services';
 import Activities from '@/components/Activities';
 import Numbers from '@/components/Numbers';
@@ -35,6 +36,9 @@ export default function Home() {
 
         {/* ── Work / Projects — big-type Project_List (Req 4, 10) ──────── */}
         <WorkList />
+
+        {/* ── Certificates & Contracts — auto-advancing coverflow ──────── */}
+        <Certificates />
 
         {/* ── Services — verified Puro service lines (Part B) ──────────── */}
         <Services />

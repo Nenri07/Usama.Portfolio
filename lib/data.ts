@@ -30,6 +30,12 @@ export interface Project {
   image: string;
   images: WorkImage[];
   facts: WorkFact[];
+  /**
+   * Contract numbers (from `contracts`) that this work item represents.
+   * Used to surface real client + scope + duration + dates in the detail
+   * modal. Optional; a project without a mapped contract simply omits it.
+   */
+  contractRefs?: number[];
 }
 
 /** A source-backed operating principle shown in the former numeric-results area. */
@@ -70,21 +76,121 @@ export const portfolioAssets = {
   ],
 } as const;
 
-/** Public client names reproduced from the profile's client and contract lists. */
-export const clients = [
-  'Primary Health Care Corporation (PHCC)',
-  'Ministry of Defense — Qatar Armed Forces',
-  'Mesaimeer City Real Estate Company W.L.L.',
-  'Doha Marketing Services Company (Honda)',
-  'Al Fardan Properties',
-  'Ali Bin Ali Group',
-  'Gulf Times',
-  'Nasser Bin Khalid Holdings (NBK)',
-  'Qatar Automobiles Company (Mitsubishi)',
-  'SNC-Lavalin Profac Gulf Management',
-  'The Blue Group (Sports Corner)',
-  'Qatar Distribution Company (QDC)',
-] as const;
+/**
+ * A single public row from Puro's official "Cleaning, Hospitality & Support
+ * Services Contracts List". Transcribed verbatim from the client-approved
+ * contract table. Contains NO financial figures or private data — only the
+ * publicly shareable client name, dates, duration and scope.
+ */
+export interface ContractRecord {
+  no: number;
+  client: string;
+  start: string;
+  end: string;
+  duration: string;
+  scope: string;
+}
+
+/**
+ * The full, source-backed contracts list (32 rows). Client names, dates,
+ * durations and scopes are transcribed exactly from the approved table; no
+ * values are invented, and there are no financial figures in the source.
+ */
+export const contracts: ContractRecord[] = [
+  { no: 1, client: 'Primary Health Care Corporation (PHCC)', start: '01-Oct-24', end: '31-Aug-27', duration: '3 Years', scope: 'Cleaning & Housekeeping Services' },
+  { no: 2, client: 'Ministry of Defense - Qatar Armed Forces', start: '01-Sep-24', end: '31-Aug-26', duration: '2 Years', scope: 'Cleaning & Housekeeping Services' },
+  { no: 3, client: 'Mesaimeer City Real Estate Company W.L.L.', start: '09-Aug-20', end: '08-Aug-23', duration: '3 Years', scope: 'Cleaning, Hospitality & Pest Control Services' },
+  { no: 4, client: 'SNC-LAVALIN Profac Gulf Management', start: '01-Jun-21', end: '31-May-22', duration: '1 Year', scope: 'Façade Cleaning' },
+  { no: 5, client: 'Nasser Bin Khaled Heavy Equipment W.L.L.', start: '01-Jan-22', end: '31-Dec-22', duration: '1 Year', scope: 'Cleaning & Hospitality Services' },
+  { no: 6, client: 'Qatar Automobiles Company WLL', start: '01-Jan-22', end: '31-Dec-22', duration: '1 Year', scope: 'Cleaning Services' },
+  { no: 7, client: 'Nasser Bin Khaled Al Thani & Sons Automobiles W.L.L.', start: '01-Jan-23', end: '31-Dec-23', duration: '1 Year', scope: 'Cleaning, Hospitality & Car Washing Services' },
+  { no: 8, client: 'Auto Class W.L.L.', start: '01-Jan-22', end: '31-Dec-22', duration: '1 Year', scope: 'Cleaning Services' },
+  { no: 9, client: 'Nasser Bin Khaled Services W.L.L.', start: '01-Jan-22', end: '31-Dec-22', duration: '1 Year', scope: 'Cleaning Services' },
+  { no: 10, client: 'Ali Bin Ali Group', start: '02-Jun-21', end: '01-Jun-22', duration: '1 Year', scope: 'Cleaning & Supporting Services' },
+  { no: 11, client: 'Kangaroo Kids Nursery', start: '14-Aug-19', end: '14-Aug-22', duration: '2 Years', scope: 'Cleaning and Support Services' },
+  { no: 12, client: 'Mahaseel for Marketing & Agricultural Services', start: '01-Jan-23', end: '31-Dec-24', duration: '1 Year', scope: 'Cleaning & Hospitality Services' },
+  { no: 13, client: 'Doha Marketing Services Company W.L.L.', start: '01-Oct-24', end: '30-Sep-25', duration: '1 Year', scope: 'Cleaning & Hospitality Services' },
+  { no: 14, client: 'Sports Corner (The Blue Group)', start: '22-Apr-19', end: '21-Apr-22', duration: '3 Years', scope: 'Cleaning Services' },
+  { no: 15, client: 'Mirage International Properties Consultants', start: '01-Sep-24', end: '31-Aug-25', duration: '1 Year', scope: 'Façade Cleaning' },
+  { no: 16, client: 'Al Fardan Properties L.L.C', start: '01-Jun-23', end: '31-Dec-24', duration: '1 Year', scope: 'Hospitality Services' },
+  { no: 17, client: 'Kien International services', start: '01-Jan-23', end: '31-Dec-24', duration: '1 Year', scope: 'Façade Cleaning' },
+  { no: 18, client: 'The Wellness Lab', start: '01-Mar-24', end: '28-Feb-25', duration: '1 Year', scope: 'Cleaning & Hospitality Services' },
+  { no: 19, client: 'Qatar Distribution Company', start: '01-Apr-21', end: '31-Jul-22', duration: '1 Year', scope: 'Supporting Services' },
+  { no: 20, client: 'Thousand Rent a Car (TRAC)', start: '01-Sep-19', end: '30-Jul-22', duration: '3 Years', scope: 'Supporting Services' },
+  { no: 21, client: 'Ali Bin Ali Medical W.L.L', start: '02-Jun-21', end: '01-Jun-22', duration: '1 Year', scope: 'Cleaning & Supporting Services' },
+  { no: 22, client: 'Bangladesh MHM School & College', start: '16-Aug-23', end: '15-Aug-25', duration: '2 Years', scope: 'Cleaning & Supporting Services' },
+  { no: 23, client: 'Bumblebee Nursery', start: '21-Jun-23', end: '20-Jun-25', duration: '2 Years', scope: 'Cleaning Services' },
+  { no: 24, client: 'Diet Delights - Qatar', start: '01-Mar-24', end: '28-Feb-25', duration: '1 Year', scope: 'Cleaning Services' },
+  { no: 25, client: 'EMCOR Facilities Services Qatar W.L.L.', start: '19-Oct-24', end: '18-Oct-25', duration: '1 Year', scope: 'Cleaning Services' },
+  { no: 26, client: 'Al Mana Real Estate', start: '01-Sep-24', end: '30-Aug-25', duration: '1 Year', scope: 'Façade Cleaning' },
+  { no: 27, client: 'Enova Facilities Management Services LLC', start: '01-Jan-24', end: '31-Dec-24', duration: '1 Year', scope: 'Cleaning Services' },
+  { no: 28, client: 'Family Mart', start: '01-Sep-21', end: '31-Aug-22', duration: '1 Year', scope: 'Cleaning Services' },
+  { no: 29, client: 'Raha Medical Center', start: '01-Oct-24', end: '30-Sep-25', duration: '1 Year', scope: 'Cleaning and Support Services' },
+  { no: 30, client: 'Vistas Global', start: '01-Feb-22', end: '31-Jan-23', duration: '1 Year', scope: 'Cleaning and Support Services' },
+  { no: 31, client: 'Rash Fashion', start: '20-Nov-22', end: '19-Nov-23', duration: '1 Year', scope: 'Cleaning Services' },
+  { no: 32, client: 'Shaqab Qatar', start: '01-Oct-24', end: '30-Sep-25', duration: '1 Year', scope: 'Steward Services' },
+];
+
+/**
+ * Public client names for the "Trusted By" marquee, derived directly from the
+ * 32 real contract rows above (single source of truth). No client is invented
+ * and none is dropped.
+ */
+export const clients: readonly string[] = contracts.map((contract) => contract.client);
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Certificates & contract documents — placeholder-driven coverflow content.
+
+   The real certificate/contract scans are NOT machine-extractable, so every
+   card starts as a clearly-marked PLACEHOLDER. Titles are neutral and
+   non-fabricated: they never claim a specific certifying body, licence number,
+   or accreditation that was not provided.
+
+   To publish a real scan, drop an optimized image at the referenced path under
+   `public/puro/certificates/` (e.g. `/puro/certificates/cert-01.webp`) and set
+   the matching `image` field to that path. Until the file exists, SafeImage
+   shows the elegant styled placeholder frame — no fake certificate is ever
+   rendered.
+   ───────────────────────────────────────────────────────────────────────── */
+export interface CertificateItem {
+  id: string;
+  title: string;
+  caption: string;
+  /** Path to a real scan under /puro/certificates/, or null for a placeholder. */
+  image: string | null;
+}
+
+export const certificates: CertificateItem[] = [
+  { id: 'cert-01', title: 'Company Certificate 01', caption: 'Official company document', image: '/puro/certificates/cert-01.webp' },
+  { id: 'trade-license', title: 'Trade License', caption: 'Commercial registration document', image: '/puro/certificates/cert-02.webp' },
+  { id: 'cert-03', title: 'Company Certificate 02', caption: 'Official company document', image: '/puro/certificates/cert-03.webp' },
+  { id: 'contract-01', title: 'Contract Document 01', caption: 'Signed service contract', image: '/puro/certificates/cert-04.webp' },
+  { id: 'contract-02', title: 'Contract Document 02', caption: 'Signed service contract', image: '/puro/certificates/cert-05.webp' },
+  { id: 'cert-06', title: 'Company Certificate 03', caption: 'Official company document', image: '/puro/certificates/cert-06.webp' },
+  { id: 'contract-03', title: 'Contract Document 03', caption: 'Signed service contract', image: '/puro/certificates/cert-07.webp' },
+];
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Hero expansion slots — data-driven imagery for the animated hero collage.
+
+   The hero uses these curated, already-optimized photographs as its layered
+   parallax/collage source. To add more hero photos later, append optimized
+   images here (under `public/puro/...` or `public/team/...`); no component
+   edits are required. Each entry carries descriptive alt text.
+   ───────────────────────────────────────────────────────────────────────── */
+export interface HeroSlot {
+  src: string;
+  alt: string;
+}
+
+export const heroCollage: HeroSlot[] = [
+  { src: portfolioAssets.mallLobby[0], alt: 'Puro team member cleaning a mall lobby' },
+  { src: portfolioAssets.facade[0], alt: 'Puro façade cleaning on a commercial building' },
+  { src: portfolioAssets.pestControl[0], alt: 'Puro pest-control service activity' },
+  { src: portfolioAssets.externalWindows[0], alt: 'Puro exterior window cleaning with specialist equipment' },
+  { src: portfolioAssets.mallLobby[1], alt: 'Puro team member carrying out floor care in a mall lobby' },
+  { src: portfolioAssets.facade[0], alt: 'Puro team carrying out façade cleaning' },
+];
 
 export const projects: Project[] = [
   {
@@ -104,6 +210,8 @@ export const projects: Project[] = [
       { label: 'Setting', value: 'Mall lobby' },
       { label: 'Delivery', value: 'Cleaning service' },
     ],
+    // Cleaning & housekeeping contracts from the public contracts list.
+    contractRefs: [1, 2, 13],
   },
   {
     title: 'External Window Cleaning',
@@ -120,6 +228,8 @@ export const projects: Project[] = [
       { label: 'Focus', value: 'Exterior glass' },
       { label: 'Approach', value: 'Dedicated equipment' },
     ],
+    // Façade / exterior contracts from the public contracts list.
+    contractRefs: [4, 15, 17],
   },
   {
     title: 'Façade Cleaning',
@@ -136,6 +246,8 @@ export const projects: Project[] = [
       { label: 'Scope', value: 'Building façades' },
       { label: 'Standard', value: 'HSE-led delivery' },
     ],
+    // Façade cleaning contracts from the public contracts list.
+    contractRefs: [4, 26, 15],
   },
   {
     title: 'Pest Control Services',
@@ -153,8 +265,18 @@ export const projects: Project[] = [
       { label: 'Scope', value: 'Insect and rodent control' },
       { label: 'Delivery', value: 'Cleaning support service' },
     ],
+    // Pest-control scope appears within the Mesaimeer City contract.
+    contractRefs: [3],
   },
 ];
+
+/** Look up full contract records for a project's `contractRefs`. */
+export function contractsForRefs(refs: readonly number[] | undefined): ContractRecord[] {
+  if (!refs || refs.length === 0) return [];
+  return refs
+    .map((no) => contracts.find((contract) => contract.no === no))
+    .filter((contract): contract is ContractRecord => contract != null);
+}
 
 /** Source-backed service standards replace unsupported event-result metrics. */
 export const results: StatItem[] = [

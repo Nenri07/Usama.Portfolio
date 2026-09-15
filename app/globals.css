@@ -288,6 +288,82 @@ article,
   contain-intrinsic-size: auto 360px;
 }
 
+/* ── Hero ambient depth layer (decorative) ─────────────────────────── */
+/* Soft drifting colour blooms behind the hero. Blurred, low-opacity, and
+   animated with transform/opacity only so they stay GPU-cheap. */
+.hero-glow {
+  filter: blur(60px);
+  opacity: 0.5;
+  will-change: transform, opacity;
+}
+
+.hero-glow-a {
+  background: radial-gradient(
+    circle at 50% 50%,
+    color-mix(in srgb, var(--qe-accent, #6E1423) 60%, transparent) 0%,
+    transparent 70%
+  );
+  animation: hero-glow-drift-a 18s ease-in-out infinite alternate;
+}
+
+.hero-glow-b {
+  background: radial-gradient(
+    circle at 50% 50%,
+    color-mix(in srgb, var(--qe-text, #F2F2F0) 16%, transparent) 0%,
+    transparent 70%
+  );
+  animation: hero-glow-drift-b 22s ease-in-out infinite alternate;
+}
+
+@keyframes hero-glow-drift-a {
+  from { transform: translate3d(0, 0, 0) scale(1); opacity: 0.4; }
+  to { transform: translate3d(6%, 4%, 0) scale(1.12); opacity: 0.6; }
+}
+
+@keyframes hero-glow-drift-b {
+  from { transform: translate3d(0, 0, 0) scale(1.05); opacity: 0.35; }
+  to { transform: translate3d(-5%, -4%, 0) scale(1); opacity: 0.5; }
+}
+
+/* Edge collage tiles: a gentle idle float; pointer parallax is layered on via
+   an inline transform from HeroAmbient (fine pointers only). */
+.hero-tile {
+  opacity: 0.32;
+  will-change: transform;
+  transition: opacity 600ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-glow-a,
+  .hero-glow-b {
+    animation: none;
+  }
+
+  .hero-tile {
+    /* Static, still perfectly legible-as-decoration resting state. */
+    transform: none !important;
+  }
+}
+
+/* Certificates coverflow: transform/opacity-only glide, square-edged. The
+   cards are readable at rest; the transition only eases their position/scale
+   between centre and side states. Disabled under reduced motion. */
+.cert-coverflow-card {
+  transform-style: preserve-3d;
+  transition:
+    transform 700ms cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 700ms cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 240ms ease;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cert-coverflow-card {
+    transition: none;
+  }
+}
+
 /* Coverflow motion is intentionally weighty and square-edged. */
 .cinematic-card {
   transform-style: preserve-3d;

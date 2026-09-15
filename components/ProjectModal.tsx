@@ -4,7 +4,7 @@ import { useCallback, useLayoutEffect, useRef, useState } from 'react';
 import { gsap } from '@/lib/gsapSetup';
 import { prefersReducedMotion } from '@/lib/motion';
 import { useAccessibleDialog } from '@/lib/useAccessibleDialog';
-import type { Project, WorkImage } from '@/lib/data';
+import { contractsForRefs, type Project, type WorkImage } from '@/lib/data';
 import SafeImage from './SafeImage';
 import NumberCard from './NumberCard';
 import CinematicImageViewer from './CinematicImageViewer';
@@ -174,6 +174,7 @@ export default function ProjectModal({ project, index, onClose }: ProjectModalPr
   const itemIndex = index ?? 0;
   const gallery = buildGallery(project);
   const tagServices = project.services.slice(0, 3);
+  const relatedContracts = contractsForRefs(project.contractRefs);
 
   return (
     <>
@@ -329,6 +330,35 @@ export default function ProjectModal({ project, index, onClose }: ProjectModalPr
                   ))}
                 </dl>
               </div>
+
+              {/* Real client engagements drawn from the public contracts list —
+                  client, scope, duration and the user-approved start/end dates.
+                  No invented metrics; only transcribed contract fields. */}
+              {relatedContracts.length > 0 ? (
+                <div>
+                  <h3 className="text-accent text-sm uppercase tracking-[0.2em]">
+                    Client Engagements
+                  </h3>
+                  <ul className="mt-5 flex flex-col gap-3">
+                    {relatedContracts.map((contract) => (
+                      <li
+                        key={contract.no}
+                        className="border border-[var(--qe-muted)]/25 bg-[var(--qe-surface)]/40 p-4"
+                      >
+                        <p className="text-primary break-words text-base font-semibold leading-tight">
+                          {contract.client}
+                        </p>
+                        <p className="text-secondary mt-1 text-sm">
+                          {contract.scope}
+                        </p>
+                        <p className="text-secondary mt-2 font-mono text-xs uppercase tracking-[0.14em]">
+                          {contract.start} → {contract.end} · {contract.duration}
+                        </p>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : null}
             </div>
           </div>
         </div>

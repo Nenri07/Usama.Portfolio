@@ -1,0 +1,5 @@
+# Drop real certificate / contract scans here as optimized images.
+# Reference them from lib/data.ts `certificates[].image`, e.g.
+#   /puro/certificates/cert-01.webp
+# Until a file exists at the referenced path, the Certificates section shows an
+# elegant placeholder card (no fabricated certificate is ever rendered).
