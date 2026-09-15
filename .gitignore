@@ -40,6 +40,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# Client source deck — contains private financials, never commit
+# Client source deck ï¿½ contains private financials, never commit
 portfolio.pdf
 PURO PROFILE SHORT-29-09-25.pdf
+PURO_Portfolio.pdf
+# Never commit source PDFs (may contain private financials/PII)
+*.pdf
