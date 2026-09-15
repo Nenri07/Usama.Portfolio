@@ -41,13 +41,13 @@ export default function BrandLogo3D({
     try {
       intro = gsap.fromTo(
         entry,
-        { autoAlpha: 0, y: 10, scale: 0.96, rotationX: -7 },
+        { autoAlpha: 0, y: 8, scale: 0.97, rotationX: -5 },
         {
           autoAlpha: 1,
           y: 0,
           scale: 1,
           rotationX: 0,
-          duration: 0.75,
+          duration: 1.1,
           ease: 'power3.out',
         },
       );
@@ -63,13 +63,15 @@ export default function BrandLogo3D({
       }
 
       // Keep the mark alive without competing with the periodic surface shine.
-      // This is depth-only breathing: no perpetual vertical drift or broad spin.
+      // Depth-only breathing on a long, low-amplitude cycle: NO fast/continuous
+      // spin, just a gentle 9s float + micro-tilt that reads as refined depth.
       idle = gsap.to(float, {
-        z: 2,
-        rotationX: -0.2,
-        rotationY: 0.35,
-        scale: 1.004,
-        duration: 4.8,
+        z: 3,
+        rotationX: -0.6,
+        rotationY: 0.8,
+        y: -1.5,
+        scale: 1.006,
+        duration: 9,
         delay: 0.8,
         repeat: -1,
         yoyo: true,
@@ -83,12 +85,12 @@ export default function BrandLogo3D({
         const y = ((event.clientY - bounds.top) / bounds.height - 0.5) * 2;
 
         gsap.to(tilt, {
-          rotationX: -y * 6,
-          rotationY: x * 8,
-          x: x * 2,
-          y: y * 1.5,
-          z: 6,
-          duration: 0.42,
+          rotationX: -y * 4.5,
+          rotationY: x * 6,
+          x: x * 1.5,
+          y: y * 1,
+          z: 8,
+          duration: 0.6,
           ease: 'power2.out',
           overwrite: 'auto',
         });
@@ -101,7 +103,7 @@ export default function BrandLogo3D({
           x: 0,
           y: 0,
           z: 0,
-          duration: 0.65,
+          duration: 0.9,
           ease: 'power3.out',
           overwrite: 'auto',
         });
@@ -150,6 +152,9 @@ export default function BrandLogo3D({
             ref={tiltRef}
             className="relative block h-full w-full [transform-style:preserve-3d] will-change-transform"
           >
+            {/* Soft depth glow sitting BEHIND the transparent PNG — adds richness
+                and a subtle rim without a hard box or square-edged shadow. */}
+            <span aria-hidden="true" className="brand-logo-glow" />
             <SafeImage
               src={brand.logo}
               alt={`${brand.name} logo`}
@@ -160,7 +165,7 @@ export default function BrandLogo3D({
               loading={preload ? 'eager' : 'lazy'}
               objectFit="contain"
               fallbackColor="transparent"
-              className="bg-transparent"
+              className="relative z-[2] bg-transparent"
             />
             <span aria-hidden="true" className="brand-logo-shine" />
           </span>

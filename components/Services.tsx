@@ -5,7 +5,7 @@ import RevealHeading from './RevealHeading';
 import SafeImage from './SafeImage';
 import { services, film } from '@/lib/data';
 import { prefersReducedMotion } from '@/lib/motion';
-import { useCardReveal } from '@/lib/reveal';
+import { useCardReveal, useTilt } from '@/lib/reveal';
 
 /**
  * Services — the verified Puro service lines (Part B).
@@ -23,6 +23,7 @@ import { useCardReveal } from '@/lib/reveal';
 function ServiceCard({ service, index }: { service: (typeof services)[number]; index: number }) {
   const reduced = prefersReducedMotion();
   const revealRef = useCardReveal({ index, disabled: reduced });
+  const tiltRef = useTilt({ disabled: reduced, max: 5, lift: 12 });
 
   return (
     <article
@@ -30,7 +31,10 @@ function ServiceCard({ service, index }: { service: (typeof services)[number]; i
       className="card-lift surface-alt group relative flex min-w-0 flex-col border border-subtle"
     >
       {/* Image with the service name + context overlaid on top. */}
-      <div className="relative aspect-[4/3] w-full overflow-hidden">
+      <div
+        ref={tiltRef}
+        className="relative aspect-[4/3] w-full overflow-hidden will-change-transform"
+      >
         {service.image ? (
           <SafeImage
             src={service.image}

@@ -51,9 +51,10 @@ export default function HeroSlider({ onCardClick }: HeroSliderProps) {
     try {
       animate(targets, {
         opacity: [0, 1],
-        translateY: [14, 0],
-        duration: 900,
-        delay: stagger(120, { start: 300 }),
+        translateY: [22, 0],
+        filter: ['blur(6px)', 'blur(0px)'],
+        duration: 1100,
+        delay: stagger(140, { start: 350 }),
         ease: 'out(3)',
       });
     } catch {

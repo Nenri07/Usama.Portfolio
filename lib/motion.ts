@@ -459,6 +459,73 @@ export function magnetic(
 }
 
 /**
+ * Bind a subtle 3D pointer-tilt to `el` (fine pointers only). As the pointer
+ * moves across the element, it tilts toward the cursor and lifts slightly in Z;
+ * on leave it settles back to flat. Enhancement only — the element is fully
+ * usable/visible without it.
+ *
+ * Returns a cleanup that removes listeners and resets the transform. No-ops
+ * (returns a no-op cleanup, element stays flat) under reduced motion, on
+ * coarse/touch pointers, or during SSR. Wrapped in try/catch so a GSAP failure
+ * never breaks rendering.
+ */
+export function tilt3d(
+  el: HTMLElement,
+  opts: { max?: number; lift?: number; perspective?: number } = {},
+): Cleanup {
+  if (
+    typeof window === 'undefined' ||
+    prefersReducedMotion() ||
+    isCoarsePointer() ||
+    !el
+  ) {
+    return noop;
+  }
+
+  try {
+    const { max = 6, lift = 10, perspective = 900 } = opts;
+
+    const rotX = gsap.quickTo(el, 'rotationX', { duration: 0.5, ease: 'power2.out' });
+    const rotY = gsap.quickTo(el, 'rotationY', { duration: 0.5, ease: 'power2.out' });
+    const zTo = gsap.quickTo(el, 'z', { duration: 0.5, ease: 'power2.out' });
+
+    gsap.set(el, { transformPerspective: perspective, transformStyle: 'preserve-3d' });
+
+    const onMove = (event: PointerEvent) => {
+      if (event.pointerType === 'touch') return;
+      const rect = el.getBoundingClientRect();
+      const px = (event.clientX - rect.left) / rect.width - 0.5;
+      const py = (event.clientY - rect.top) / rect.height - 0.5;
+      rotY(px * max * 2);
+      rotX(-py * max * 2);
+      zTo(lift);
+    };
+
+    const onLeave = () => {
+      rotX(0);
+      rotY(0);
+      zTo(0);
+    };
+
+    el.addEventListener('pointermove', onMove);
+    el.addEventListener('pointerleave', onLeave);
+
+    return () => {
+      try {
+        el.removeEventListener('pointermove', onMove);
+        el.removeEventListener('pointerleave', onLeave);
+        gsap.killTweensOf(el);
+        gsap.set(el, { rotationX: 0, rotationY: 0, z: 0 });
+      } catch {
+        /* nothing left to clean up */
+      }
+    };
+  } catch {
+    return noop;
+  }
+}
+
+/**
  * A controller returned by `initCursor` (Req 11.6, 11.7). `cleanup` removes the
  * cursor node and its listeners; `setHover` toggles the `Cursor_Hover_State`
  * (grow + optional label) programmatically.

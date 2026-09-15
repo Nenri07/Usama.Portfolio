@@ -4,6 +4,7 @@ import { useCallback, useState } from 'react';
 import StatBlock from './StatBlock';
 import ResultModal from './ResultModal';
 import RevealHeading from './RevealHeading';
+import AmbientField from './AmbientField';
 import { results } from '@/lib/data';
 
 /** Interactive presentation of source-backed Puro service standards. */
@@ -18,8 +19,15 @@ export default function Numbers() {
     selectedIndex == null ? null : results[selectedIndex] ?? null;
 
   return (
-    <section id="numbers" className="min-w-0 bg-base px-6 py-24 sm:px-8 lg:px-12">
-      <div className="mx-auto w-full min-w-0 max-w-7xl">
+    <section
+      id="numbers"
+      className="relative min-w-0 overflow-hidden bg-base px-6 py-24 sm:px-8 lg:px-12"
+    >
+      {/* Decorative WebGL ambient depth behind the standards grid (the second
+          3D moment beyond the hero). Purely disposable + degradable. */}
+      <AmbientField className="opacity-70" />
+
+      <div className="relative z-[1] mx-auto w-full min-w-0 max-w-7xl">
         <header className="mb-12 grid min-w-0 gap-6 md:grid-cols-[minmax(0,1fr)_minmax(16rem,0.6fr)] md:items-end">
           <div>
             <RevealHeading className="text-primary text-4xl font-semibold tracking-tight sm:text-5xl">

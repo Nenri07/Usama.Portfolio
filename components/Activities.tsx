@@ -4,7 +4,7 @@ import RevealHeading from './RevealHeading';
 import SafeImage from './SafeImage';
 import { activities } from '@/lib/data';
 import { prefersReducedMotion } from '@/lib/motion';
-import { useCardReveal } from '@/lib/reveal';
+import { useCardReveal, useTilt } from '@/lib/reveal';
 
 /**
  * Activities — operational scope-of-work items (Part C).
@@ -25,10 +25,14 @@ function ActivityRow({
 }) {
   const reduced = prefersReducedMotion();
   const revealRef = useCardReveal({ index, disabled: reduced });
+  const tiltRef = useTilt({ disabled: reduced, max: 4, lift: 10 });
   const mediaFirst = index % 2 === 0;
 
   const media = (
-    <div className="card-lift relative aspect-[16/10] w-full overflow-hidden border border-subtle md:aspect-[4/3]">
+    <div
+      ref={tiltRef}
+      className="card-lift relative aspect-[16/10] w-full overflow-hidden border border-subtle will-change-transform md:aspect-[4/3]"
+    >
       {activity.image ? (
         <SafeImage
           src={activity.image}

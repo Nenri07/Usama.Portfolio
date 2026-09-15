@@ -48,20 +48,25 @@ function wrapIndex(index: number, count: number): number {
 function CertificateCard({ item }: { item: CertificateItem }) {
   return (
     <span className="surface-alt relative flex h-full w-full flex-col border border-subtle">
-      {/* Document media area (real scan when present, placeholder otherwise). */}
-      <span className="relative block w-full flex-1 overflow-hidden">
+      {/* Document media area (real scan when present, placeholder otherwise).
+          A soft matte inset frames the document so the contained scan reads as
+          a premium, uncropped framed print rather than a raw edge-to-edge fill. */}
+      <span className="relative block w-full flex-1 overflow-hidden p-3 sm:p-4">
         {item.image ? (
-          <SafeImage
-            src={item.image}
-            alt={`${item.title} — ${item.caption}`}
-            variant="full"
-            objectFit="contain"
-            sizes="(max-width: 768px) 76vw, 40vw"
-            fallbackColor="var(--qe-surface, #0F1424)"
-            loading="lazy"
-            draggable={false}
-            className="pointer-events-none"
-          />
+          <span className="relative block h-full w-full overflow-hidden bg-white/[0.02]">
+            <SafeImage
+              src={item.image}
+              alt={`${item.title} — ${item.caption}`}
+              variant="full"
+              objectFit="contain"
+              sizes="(max-width: 768px) 72vw, 38vw"
+              quality={82}
+              fallbackColor="var(--qe-surface, #0F1424)"
+              loading="lazy"
+              draggable={false}
+              className="pointer-events-none"
+            />
+          </span>
         ) : null}
 
         {/* Elegant placeholder frame. Rendered beneath the image so that if a
@@ -267,11 +272,11 @@ export default function Certificates() {
                 const item = items[index];
                 const isCenter = offset === 0;
                 const abs = Math.abs(offset);
-                const translate = offset * 46;
-                const depth = -abs * 240;
-                const rotate = offset * -32;
-                const scale = isCenter ? 1 : abs === 1 ? 0.78 : 0.6;
-                const opacity = isCenter ? 1 : abs === 1 ? 0.62 : 0.32;
+                const translate = offset * 44;
+                const depth = isCenter ? 60 : -abs * 260;
+                const rotate = offset * -34;
+                const scale = isCenter ? 1.04 : abs === 1 ? 0.8 : 0.62;
+                const opacity = isCenter ? 1 : abs === 1 ? 0.66 : 0.34;
 
                 const transform = reduced
                   ? `translate3d(calc(-50% + ${translate}%), -50%, 0) scale(${scale})`

@@ -116,6 +116,40 @@ h1 {
   }
 }
 
+/* Soft radial depth glow behind the transparent brand PNG. Blurred, low
+   opacity, transform/opacity-only, and on a long gentle pulse so it enriches
+   the mark without any hard box. Disabled under reduced motion (static, faint). */
+.brand-logo-glow {
+  position: absolute;
+  inset: -14%;
+  z-index: 1;
+  display: block;
+  pointer-events: none;
+  border-radius: 9999px;
+  background: radial-gradient(
+    circle at 50% 42%,
+    color-mix(in srgb, var(--qe-accent, #6E1423) 42%, transparent) 0%,
+    color-mix(in srgb, var(--qe-text, #F2F2F0) 8%, transparent) 38%,
+    transparent 70%
+  );
+  filter: blur(14px);
+  opacity: 0.45;
+  will-change: transform, opacity;
+  animation: brand-logo-glow-pulse 9s ease-in-out infinite alternate;
+}
+
+@keyframes brand-logo-glow-pulse {
+  from { transform: scale(0.96); opacity: 0.32; }
+  to { transform: scale(1.06); opacity: 0.55; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .brand-logo-glow {
+    animation: none;
+    opacity: 0.28;
+  }
+}
+
 /* The polish pass is masked to the transparent logo silhouette. The narrow
    stripe crosses for 1.2s, then remains fully idle for the rest of each cycle. */
 .brand-logo-shine {
@@ -358,6 +392,20 @@ article,
   backface-visibility: hidden;
 }
 
+/* The centered document reads as a premium framed print: a soft depth shadow
+   plus a hairline accent rim. Side cards stay flatter/dimmer so the centre
+   clearly leads. Square-edged, transform/opacity-only elsewhere. */
+.cert-coverflow-card[aria-current='true'] {
+  border-color: color-mix(in srgb, var(--qe-accent, #6E1423) 55%, transparent);
+  box-shadow:
+    0 40px 90px -30px rgb(0 0 0 / 70%),
+    0 0 0 1px color-mix(in srgb, var(--qe-text, #F2F2F0) 8%, transparent) inset;
+}
+
+.cert-coverflow-card:not([aria-current='true']) {
+  filter: saturate(0.85) brightness(0.82);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .cert-coverflow-card {
     transition: none;
@@ -389,4 +437,25 @@ article,
   .cinematic-card[aria-current="true"] {
     opacity: 1 !important;
   }
+}
+
+/* ── Trusted By marquee ─────────────────────────────────────────────── */
+/* Fade both ends of the ribbon into the background so the continuous scroll
+   reads as infinite rather than a hard-cut strip. Mask is purely visual and
+   never affects layout width (track stays clipped by overflow-hidden). */
+.marquee-mask {
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    #000 12%,
+    #000 88%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    #000 12%,
+    #000 88%,
+    transparent 100%
+  );
 }

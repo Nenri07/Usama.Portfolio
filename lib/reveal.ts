@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { gsap, ScrollTrigger, registerScrollTrigger } from '@/lib/gsapSetup';
+import { tilt3d } from '@/lib/motion';
 
 /**
  * Options for the shared scroll-reveal hook (Req 4.9, 9.1).
@@ -187,4 +188,27 @@ export function useCardReveal(options: {
       }
     },
   });
+}
+
+/**
+ * Attach a subtle fine-pointer 3D tilt to an element (enhancement only). Wraps
+ * {@link tilt3d}: on coarse pointers / reduced motion / SSR it does nothing and
+ * the element stays flat and fully usable. Returns a ref to attach.
+ */
+export function useTilt(options: {
+  disabled?: boolean;
+  max?: number;
+  lift?: number;
+} = {}): (node: HTMLElement | null) => void {
+  const { disabled = false, max, lift } = options;
+  const [node, setNode] = useState<HTMLElement | null>(null);
+  const refCallback = useCallback((el: HTMLElement | null) => setNode(el), []);
+
+  useEffect(() => {
+    if (!node || disabled) return;
+    const cleanup = tilt3d(node, { max, lift });
+    return cleanup;
+  }, [node, disabled, max, lift]);
+
+  return refCallback;
 }

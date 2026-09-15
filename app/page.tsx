@@ -19,6 +19,7 @@
 import HomeClient from '@/components/HomeClient';
 import Marquee from '@/components/Marquee';
 import WorkList from '@/components/WorkList';
+import WorkGallery from '@/components/WorkGallery';
 import Certificates from '@/components/Certificates';
 import Services from '@/components/Services';
 import Activities from '@/components/Activities';
@@ -36,6 +37,9 @@ export default function Home() {
 
         {/* ── Work / Projects — big-type Project_List (Req 4, 10) ──────── */}
         <WorkList />
+
+        {/* ── Work gallery — animated masonry wall of every on-site photo ── */}
+        <WorkGallery />
 
         {/* ── Certificates & Contracts — auto-advancing coverflow ──────── */}
         <Certificates />

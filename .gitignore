@@ -46,3 +46,9 @@ PURO PROFILE SHORT-29-09-25.pdf
 PURO_Portfolio.pdf
 # Never commit source PDFs (may contain private financials/PII)
 *.pdf
+
+# Raw source imagery — keep only the optimized copies referenced by the app.
+# WhatsApp-named originals (spaces/parens) are converted to work-NN.webp.
+public/puro/work/WhatsApp Image*
+# Source certificate PNGs are optimized to cert-NN.webp; keep sources local.
+public/puro/certificates/[0-9][0-9]_*.png

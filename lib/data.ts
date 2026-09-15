@@ -160,14 +160,21 @@ export interface CertificateItem {
   image: string | null;
 }
 
+// The 10 REAL provided documents (optimized to WebP, full document preserved
+// with objectFit: contain — never cropped). Titles are transcribed from the
+// supplied filenames; no extra accreditation numbers or claims are invented
+// beyond each document's own name.
 export const certificates: CertificateItem[] = [
-  { id: 'cert-01', title: 'Company Certificate 01', caption: 'Official company document', image: '/puro/certificates/cert-01.webp' },
-  { id: 'trade-license', title: 'Trade License', caption: 'Commercial registration document', image: '/puro/certificates/cert-02.webp' },
-  { id: 'cert-03', title: 'Company Certificate 02', caption: 'Official company document', image: '/puro/certificates/cert-03.webp' },
-  { id: 'contract-01', title: 'Contract Document 01', caption: 'Signed service contract', image: '/puro/certificates/cert-04.webp' },
-  { id: 'contract-02', title: 'Contract Document 02', caption: 'Signed service contract', image: '/puro/certificates/cert-05.webp' },
-  { id: 'cert-06', title: 'Company Certificate 03', caption: 'Official company document', image: '/puro/certificates/cert-06.webp' },
-  { id: 'contract-03', title: 'Contract Document 03', caption: 'Signed service contract', image: '/puro/certificates/cert-07.webp' },
+  { id: 'commercial-registration-1', title: 'Commercial Registration', caption: 'Company registration — page 1', image: '/puro/certificates/cert-01.webp' },
+  { id: 'commercial-registration-2', title: 'Commercial Registration — Activities', caption: 'Company registration — page 2 (activities)', image: '/puro/certificates/cert-02.webp' },
+  { id: 'trade-license', title: 'Trade License', caption: 'Municipal trade licence', image: '/puro/certificates/cert-03.webp' },
+  { id: 'mof-vendor-classification', title: 'MOF Vendor Classification Certificate', caption: 'Ministry of Finance vendor classification', image: '/puro/certificates/cert-04.webp' },
+  { id: 'iso-9001-2015', title: 'ISO 9001:2015 Certificate', caption: 'Quality management system certificate', image: '/puro/certificates/cert-05.webp' },
+  { id: 'icv-certificate', title: 'ICV Certificate', caption: 'In-Country Value certificate', image: '/puro/certificates/cert-06.webp' },
+  { id: 'phcc-appreciation', title: 'PHCC Appreciation Letter', caption: 'Primary Health Care Corporation — appreciation', image: '/puro/certificates/cert-07.webp' },
+  { id: 'phcc-compliance', title: 'PHCC Certificate of Compliance', caption: 'Primary Health Care Corporation — compliance', image: '/puro/certificates/cert-08.webp' },
+  { id: 'mesaimeer-real-estate', title: 'Mesaimeer Real Estate Certificate', caption: 'Client reference document', image: '/puro/certificates/cert-09.webp' },
+  { id: 'nbk-reference', title: 'NBK Reference Certificate', caption: 'Client reference document', image: '/puro/certificates/cert-10.webp' },
 ];
 
 /* ─────────────────────────────────────────────────────────────────────────
@@ -183,13 +190,53 @@ export interface HeroSlot {
   alt: string;
 }
 
+/* ─────────────────────────────────────────────────────────────────────────
+   Work gallery — the full set of normalized on-site service photographs.
+
+   The raw WhatsApp-named originals (spaces/parentheses) are converted by
+   `scripts/normalize-work-images.mjs` into clean, optimized WebP files
+   (`/puro/work/work-01.webp` … `work-54.webp`). ONLY these space-free paths
+   are referenced by the app. Alt text is deliberately generic and
+   non-fabricated — it never claims a specific client, venue or date.
+
+   `WORK_GALLERY_COUNT` must match the number of `work-NN.webp` files produced
+   by the normalizer. If more photos are added, re-run the script and bump this.
+   ───────────────────────────────────────────────────────────────────────── */
+export const WORK_GALLERY_COUNT = 54;
+
+export const workGallery: WorkImage[] = Array.from(
+  { length: WORK_GALLERY_COUNT },
+  (_, index) => ({
+    src: `/puro/work/work-${String(index + 1).padStart(2, '0')}.webp`,
+    alt: `Puro on-site service photograph ${index + 1}`,
+  }),
+);
+
+/**
+ * Evenly distribute the full work gallery across `groups` buckets in order, so
+ * every photo is used exactly once and the counts differ by at most one. Used
+ * to give each project its own gallery set for the Work modal + gallery block.
+ * @example distributeGallery(4) // 14,14,13,13 across 4 projects (54 total)
+ */
+export function distributeGallery(groups: number): WorkImage[][] {
+  const buckets: WorkImage[][] = Array.from({ length: groups }, () => []);
+  workGallery.forEach((image, index) => {
+    buckets[index % groups].push(image);
+  });
+  return buckets;
+}
+
+const PROJECT_GALLERIES = distributeGallery(4);
+
 export const heroCollage: HeroSlot[] = [
   { src: portfolioAssets.mallLobby[0], alt: 'Puro team member cleaning a mall lobby' },
+  { src: '/puro/work/work-04.webp', alt: 'Puro on-site service photograph' },
   { src: portfolioAssets.facade[0], alt: 'Puro façade cleaning on a commercial building' },
+  { src: '/puro/work/work-20.webp', alt: 'Puro on-site service photograph' },
   { src: portfolioAssets.pestControl[0], alt: 'Puro pest-control service activity' },
+  { src: '/puro/work/work-33.webp', alt: 'Puro on-site service photograph' },
   { src: portfolioAssets.externalWindows[0], alt: 'Puro exterior window cleaning with specialist equipment' },
-  { src: portfolioAssets.mallLobby[1], alt: 'Puro team member carrying out floor care in a mall lobby' },
-  { src: portfolioAssets.facade[0], alt: 'Puro team carrying out façade cleaning' },
+  { src: '/puro/work/work-48.webp', alt: 'Puro on-site service photograph' },
 ];
 
 export const projects: Project[] = [
@@ -205,6 +252,7 @@ export const projects: Project[] = [
     images: [
       { src: portfolioAssets.mallLobby[0], alt: 'Puro team member cleaning a DFC mall lobby' },
       { src: portfolioAssets.mallLobby[1], alt: 'Puro team member carrying out floor care in a DFC mall lobby' },
+      ...PROJECT_GALLERIES[0],
     ],
     facts: [
       { label: 'Setting', value: 'Mall lobby' },
@@ -223,6 +271,7 @@ export const projects: Project[] = [
     image: portfolioAssets.externalWindows[0],
     images: [
       { src: portfolioAssets.externalWindows[0], alt: 'Puro team cleaning exterior glazing with specialist equipment' },
+      ...PROJECT_GALLERIES[1],
     ],
     facts: [
       { label: 'Focus', value: 'Exterior glass' },
@@ -241,6 +290,7 @@ export const projects: Project[] = [
     image: portfolioAssets.facade[0],
     images: [
       { src: portfolioAssets.facade[0], alt: 'Puro team carrying out façade cleaning on a commercial building' },
+      ...PROJECT_GALLERIES[2],
     ],
     facts: [
       { label: 'Scope', value: 'Building façades' },
@@ -257,10 +307,13 @@ export const projects: Project[] = [
       'The Puro profile includes insect and rodent control activity, with pest-control delivery also identified in its documented contract scope.',
     services: ['Pest control', 'Insect control', 'Rodent control'],
     image: portfolioAssets.pestControl[0],
-    images: portfolioAssets.pestControl.map((src, index) => ({
-      src,
-      alt: `Puro pest-control service activity ${index + 1}`,
-    })),
+    images: [
+      ...portfolioAssets.pestControl.map((src, index) => ({
+        src,
+        alt: `Puro pest-control service activity ${index + 1}`,
+      })),
+      ...PROJECT_GALLERIES[3],
+    ],
     facts: [
       { label: 'Scope', value: 'Insect and rodent control' },
       { label: 'Delivery', value: 'Cleaning support service' },
@@ -588,8 +641,8 @@ export const film: FilmConfig = {
   // ⚠️ INTERIM stakeholder video — replace with the real film's YouTube id
   // once published. Only the clean 11-char id is used downstream (any
   // list/index/pp params from the share URL are intentionally stripped).
-  youtubeId: 'CWZ0lTUs5Mk',
-  youtubeUrl: 'https://www.youtube.com/watch?v=CWZ0lTUs5Mk',
+  youtubeId: 'dXBQZRfOfnc',
+  youtubeUrl: 'https://www.youtube.com/watch?v=dXBQZRfOfnc',
   isPlaceholder: true,
 } as const;
 
