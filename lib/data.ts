@@ -278,6 +278,199 @@ export const divisions: TeamDivision[] = [
 
 export const teamGallery: string[] = teamImagePaths('gallery', 36);
 
+/* ─────────────────────────────────────────────────────────────────────────
+   Services — the verified Puro service lines from the company profile.
+
+   Names, summaries and key points are drawn only from source-backed content
+   already documented in this file (see `projects`, `results`, `divisions`).
+   Imagery reuses the curated `public/puro/work/` photographs; where a service
+   line has no dedicated verified photograph yet, `image` is left null so the
+   Services card renders a clearly-marked, non-fabricated placeholder the user
+   can fill later (no invented visuals, metrics, certifications or clients).
+   ───────────────────────────────────────────────────────────────────────── */
+export interface ServiceItem {
+  /** Stable identifier used for keys and deep-links. */
+  slug: string;
+  /** Document-supported service name. */
+  name: string;
+  /** Short context line for the card overlay. */
+  context: string;
+  /** One-sentence, source-backed summary. */
+  summary: string;
+  /** Curated verified photograph, or null for a marked placeholder slot. */
+  image: string | null;
+  /** Descriptive alt text for the mapped image (empty when placeholder). */
+  alt: string;
+  /** Source-backed key points shown on the card. */
+  points: string[];
+}
+
+export const services: ServiceItem[] = [
+  {
+    slug: 'cleaning-housekeeping',
+    name: 'Cleaning & Housekeeping',
+    context: 'Public areas · Floor care',
+    summary:
+      'Cleaning and housekeeping delivered for public and commercial environments, documented in the Puro profile.',
+    image: portfolioAssets.mallLobby[0],
+    alt: 'Puro team member cleaning a mall lobby public area',
+    points: ['Public-area cleaning', 'Housekeeping routines', 'Floor care and presentation'],
+  },
+  {
+    slug: 'indoor-cleaning',
+    name: 'Indoor Cleaning',
+    context: 'Interior spaces · Presentation',
+    summary:
+      'Indoor cleaning scopes keep interior spaces sanitary and presentable across day-to-day operations.',
+    image: portfolioAssets.mallLobby[1],
+    alt: 'Puro team member carrying out interior floor care',
+    points: ['Interior surface cleaning', 'Sanitary space upkeep', 'Presentation checks'],
+  },
+  {
+    slug: 'external-window-cleaning',
+    name: 'External Window Cleaning',
+    context: 'Exterior glass · Specialist equipment',
+    summary:
+      'External window cleaning is documented among Puro’s specialist services, supported by dedicated equipment for exterior glass.',
+    image: portfolioAssets.externalWindows[0],
+    alt: 'Puro team cleaning exterior glazing with specialist equipment',
+    points: ['Exterior glass care', 'Dedicated equipment', 'Height-aware delivery'],
+  },
+  {
+    slug: 'facade-cleaning',
+    name: 'Façade Cleaning',
+    context: 'Building exterior · HSE-led',
+    summary:
+      'Façade cleaning for commercial properties, delivered alongside the profile’s documented site-safety controls.',
+    image: portfolioAssets.facade[0],
+    alt: 'Puro team carrying out façade cleaning on a commercial building',
+    points: ['Building exterior care', 'Site-safety controls', 'Commercial properties'],
+  },
+  {
+    slug: 'pest-control',
+    name: 'Pest Control',
+    context: 'Insect & rodent control',
+    summary:
+      'Insect and rodent control is included in the Puro profile and identified within its documented contract scope.',
+    image: portfolioAssets.pestControl[0],
+    alt: 'Puro pest-control service activity',
+    points: ['Insect control', 'Rodent control', 'Cleaning-support delivery'],
+  },
+  {
+    slug: 'hospitality-support',
+    name: 'Hospitality & Support Services',
+    context: 'Client-facing · Support',
+    summary:
+      'Hospitality and support services complement Puro’s cleaning operations in client-facing environments.',
+    // No dedicated verified public photograph for this service line yet.
+    image: null,
+    alt: '',
+    points: ['Hospitality services', 'Front-of-house support', 'Client-facing delivery'],
+  },
+];
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Activities — operational scope-of-work items, distinct from the headline
+   Services. These describe HOW work is delivered (methods, controls, checks)
+   rather than the service line itself, and trace to the profile's documented
+   quality, environmental and safety practices (see `results`). No fabricated
+   claims; imagery reuses curated work photographs.
+   ───────────────────────────────────────────────────────────────────────── */
+export interface ActivityItem {
+  slug: string;
+  /** Short operational label. */
+  title: string;
+  /** Source-backed description of the operational activity. */
+  description: string;
+  /** Curated verified photograph, or null for a marked placeholder slot. */
+  image: string | null;
+  alt: string;
+  /** Concrete, source-backed sub-activities. */
+  tasks: string[];
+}
+
+export const activities: ActivityItem[] = [
+  {
+    slug: 'quality-assurance',
+    title: 'Quality Assurance',
+    description:
+      'Quality assurance is identified in the profile as a crucial part of meeting service and business objectives, applied consistently across operations.',
+    image: portfolioAssets.mallLobby[1],
+    alt: 'Puro team member maintaining presentation standards indoors',
+    tasks: [
+      'Consistent standards across cleaning and hygiene work',
+      'Delivery aligned to client requirements',
+      'Staff training and involvement',
+    ],
+  },
+  {
+    slug: 'low-impact-cleaning',
+    title: 'Low-Impact Cleaning',
+    description:
+      'The profile commits to environmentally responsible liquids, systems and methods that reduce impact while keeping spaces sanitary.',
+    image: portfolioAssets.facade[0],
+    alt: 'Puro team carrying out exterior cleaning work',
+    tasks: [
+      'Environmentally friendly cleaning liquids and systems',
+      'Microfiber methods that reduce chemical use',
+      'Energy, water and resource conservation',
+    ],
+  },
+  {
+    slug: 'hse-controls',
+    title: 'Safety Controls & Inspections',
+    description:
+      'Safety training, periodic equipment inspection and protective controls form part of Puro’s documented project-delivery approach.',
+    image: portfolioAssets.pestControl[1],
+    alt: 'Puro pest-control activity carried out with protective controls',
+    tasks: [
+      'Task-appropriate safety training',
+      'Periodic tools and equipment inspection',
+      'PPE, warning controls and site supervision',
+    ],
+  },
+  {
+    slug: 'pest-management',
+    title: 'Insect & Rodent Management',
+    description:
+      'Insect and rodent control activity is documented in the profile as part of Puro’s cleaning-support scope.',
+    image: portfolioAssets.pestControl[2],
+    alt: 'Puro pest-control service activity on site',
+    tasks: ['Insect control', 'Rodent control', 'Scheduled cleaning-support visits'],
+  },
+];
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Film — the dedicated cinematic /film route's video configuration.
+
+   ⚠️ INTERIM: `youtubeId` / `youtubeUrl` below point at an interim stakeholder
+   video, NOT the final film. The user replaces `youtubeId` with the real
+   YouTube video id (and, if desired, `youtubeUrl`) once the film is published.
+   Everything downstream derives the privacy-friendly youtube-nocookie embed
+   from `youtubeId` alone (share-URL list/index/pp params are never embedded).
+   ───────────────────────────────────────────────────────────────────────── */
+export interface FilmConfig {
+  title: string;
+  tagline: string;
+  /** PLACEHOLDER YouTube video id — replace with the real id. */
+  youtubeId: string;
+  /** PLACEHOLDER canonical watch URL — optional, replace with the real link. */
+  youtubeUrl: string;
+  /** Whether the current value is still the placeholder (drives on-page note). */
+  isPlaceholder: boolean;
+}
+
+export const film: FilmConfig = {
+  title: 'The Puro Film',
+  tagline: 'A cinematic look at cleaning, hospitality and façade services in Qatar.',
+  // ⚠️ INTERIM stakeholder video — replace with the real film's YouTube id
+  // once published. Only the clean 11-char id is used downstream (any
+  // list/index/pp params from the share URL are intentionally stripped).
+  youtubeId: 'CWZ0lTUs5Mk',
+  youtubeUrl: 'https://www.youtube.com/watch?v=CWZ0lTUs5Mk',
+  isPlaceholder: true,
+} as const;
+
 /** Decorative ending-plane images, kept centralized with all other work assets. */
 export const closingImages = [
   portfolioAssets.mallLobby[0],

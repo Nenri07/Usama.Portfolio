@@ -49,24 +49,24 @@ export default function StatBlock({ stat, index = 0, onSelect }: StatBlockProps)
     <div ref={revealRef} className="flex h-full min-w-0 flex-col">
       <NumberCard
         wrapperClassName="h-full"
-        className="h-full min-h-72 border border-[var(--color-muted)]/20 bg-[var(--color-surface)]/30 p-5 transition-colors duration-300 hover:border-[var(--color-accent)]/55 sm:p-6"
+        className="h-full min-h-72 border border-[var(--qe-muted)]/20 bg-[var(--qe-surface)]/30 p-5 transition-colors duration-300 hover:border-[var(--qe-accent)]/55 sm:p-6"
       >
         <div ref={cardRef} className="flex h-full min-w-0 flex-col">
-          <p className="font-mono text-sm text-[var(--color-accent)]">
+          <p className="text-accent font-mono text-sm">
             {String(index + 1).padStart(2, '0')} · {stat.kicker}
           </p>
 
-          <h3 className="mt-6 break-words font-display text-[clamp(2rem,4vw,3.5rem)] font-semibold leading-[0.95] tracking-tight text-[var(--color-text)]">
+          <h3 className="text-primary mt-6 break-words font-display text-[clamp(2rem,4vw,3.5rem)] font-semibold leading-[0.95] tracking-tight">
             {stat.label}
           </h3>
 
           <span
             aria-hidden="true"
             className="mt-5 block h-px w-12"
-            style={{ backgroundColor: 'var(--color-accent)' }}
+            style={{ backgroundColor: 'var(--qe-accent, #6E1423)' }}
           />
 
-          <p className="mt-5 max-w-[22rem] text-base leading-relaxed text-[var(--color-muted)]">
+          <p className="text-secondary mt-5 max-w-[22rem] text-base leading-relaxed">
             {stat.summary}
           </p>
 
@@ -76,10 +76,10 @@ export default function StatBlock({ stat, index = 0, onSelect }: StatBlockProps)
               onClick={onSelect}
               aria-haspopup="dialog"
               aria-label={`View service standard details for ${stat.label}`}
-              className="relative z-10 mt-auto inline-flex min-h-12 items-center gap-3 self-start pt-7 text-sm font-semibold uppercase tracking-[0.16em] text-[var(--color-text)] transition-colors hover:text-[var(--color-accent)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--color-text)]"
+              className="text-primary-interactive relative z-10 mt-auto inline-flex min-h-12 items-center gap-3 self-start pt-7 text-sm font-semibold uppercase tracking-[0.16em] transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--qe-text)]"
             >
               Explore standard{' '}
-              <span aria-hidden="true" className="text-[var(--color-accent)]">↗</span>
+              <span aria-hidden="true" className="text-accent">↗</span>
             </button>
           ) : null}
         </div>

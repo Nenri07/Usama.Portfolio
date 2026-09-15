@@ -121,13 +121,13 @@ export default function TeamCard({ member, index, className }: TeamCardProps) {
         {/* Name — ONLY when present; no invented placeholder when absent
             (Req 6.2, 6.3). */}
         {member.name ? (
-          <span className="text-lg font-semibold leading-tight text-[var(--color-text)] sm:text-xl">
+          <span className="text-primary text-lg font-semibold leading-tight sm:text-xl">
             {member.name}
           </span>
         ) : null}
 
         {/* Role — ALWAYS shown (Req 6.1). */}
-        <span className="mt-1 text-xs uppercase tracking-[0.2em] text-[var(--color-muted)]">
+        <span className="text-secondary mt-1 text-xs uppercase tracking-[0.2em]">
           {member.role}
         </span>
       </div>

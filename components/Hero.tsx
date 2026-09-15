@@ -129,25 +129,25 @@ export default function Hero() {
       {/* Foreground content — always visible (Req 2.2, 2.6). Not parallaxed. */}
       <h1
         ref={headlineRef}
-        className="max-w-5xl text-[var(--color-text)]"
+        className="text-primary max-w-5xl"
         style={{ fontSize: 'clamp(40px, 9vw, 88px)', lineHeight: 1.05 }}
       >
         {HEADLINE}
       </h1>
 
       {/* Subheadline: single line, ≤120 chars, no wrapping (Req 2.4). */}
-      <p className="mt-6 max-w-full overflow-hidden text-base text-[var(--color-muted)] whitespace-nowrap sm:text-lg">
+      <p className="text-secondary mt-6 max-w-full overflow-hidden text-base whitespace-nowrap sm:text-lg">
         {SUBHEADLINE}
       </p>
 
       {/* Scroll cue anchored to the section bottom, within the first viewport
           (Req 2.5). Stays fully readable at every scroll position (Req 2.6). */}
-      <div className="pointer-events-none absolute inset-x-0 bottom-8 flex flex-col items-center gap-2 text-[var(--color-muted)]">
+      <div className="text-secondary pointer-events-none absolute inset-x-0 bottom-8 flex flex-col items-center gap-2">
         <span className="text-xs uppercase tracking-[0.3em]">Scroll</span>
         <span
           aria-hidden="true"
           className="h-8 w-px"
-          style={{ backgroundColor: 'var(--color-accent)' }}
+          style={{ backgroundColor: 'var(--qe-accent, #6E1423)' }}
         />
       </div>
     </section>

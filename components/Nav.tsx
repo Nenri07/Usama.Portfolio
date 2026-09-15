@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback } from 'react';
+import Link from 'next/link';
 import { brand } from '@/lib/data';
 import BrandLogo3D from './BrandLogo3D';
 
@@ -27,7 +28,8 @@ interface NavLink {
 
 const LINKS: NavLink[] = [
   { label: 'Work', target: 'work' },
-  { label: 'Operations', target: 'team' },
+  { label: 'Services', target: 'services' },
+  { label: 'Activities', target: 'activities' },
   { label: 'Contact', target: 'contact' },
 ];
 
@@ -88,10 +90,10 @@ export default function Nav() {
         </span>
       </a>
 
-      {/* Section links. */}
+      {/* Section links + the dedicated /film route. */}
       <ul className="flex shrink-0 items-center gap-3 sm:gap-6 lg:gap-8">
         {LINKS.map((link) => (
-          <li key={link.target}>
+          <li key={link.target} className="hidden sm:block">
             <a
               href={`#${link.target}`}
               onClick={(e) => handleClick(e, link.target)}
@@ -102,6 +104,15 @@ export default function Nav() {
             </a>
           </li>
         ))}
+        <li>
+          <Link
+            href="/film"
+            data-cursor
+            className="text-primary-interactive text-[0.65rem] font-semibold uppercase tracking-[0.14em] transition-colors sm:text-sm"
+          >
+            Film
+          </Link>
+        </li>
       </ul>
     </nav>
   );

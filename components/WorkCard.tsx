@@ -74,10 +74,10 @@ export default function WorkCard({ project, index, className }: WorkCardProps) {
       </div>
 
       <div className="flex h-full w-full flex-col justify-end p-4 sm:p-5">
-        <h3 className="text-lg font-semibold leading-tight text-[var(--color-text)] sm:text-xl">
+        <h3 className="text-primary text-lg font-semibold leading-tight sm:text-xl">
           {project.title}
         </h3>
-        <span className="mt-1 text-xs uppercase tracking-[0.2em] text-[var(--color-muted)]">
+        <span className="text-secondary mt-1 text-xs uppercase tracking-[0.2em]">
           {project.category}
         </span>
 
@@ -88,14 +88,14 @@ export default function WorkCard({ project, index, className }: WorkCardProps) {
             'group-hover:max-h-72 group-hover:translate-y-0 group-hover:opacity-100',
           )}
         >
-          <span className="text-sm text-[var(--color-text)]">
+          <span className="text-primary text-sm">
             {project.client ? `${project.client} · ` : ''}{project.location}
           </span>
           <ul className="flex flex-wrap gap-1.5">
             {project.services.map((service) => (
               <li
                 key={service}
-                className="border border-[var(--color-muted)]/40 px-2 py-0.5 text-xs text-[var(--color-muted)]"
+                className="text-secondary border border-[var(--qe-muted)]/40 px-2 py-0.5 text-xs"
               >
                 {service}
               </li>

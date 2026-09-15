@@ -19,6 +19,8 @@
 import HomeClient from '@/components/HomeClient';
 import Marquee from '@/components/Marquee';
 import WorkList from '@/components/WorkList';
+import Services from '@/components/Services';
+import Activities from '@/components/Activities';
 import Numbers from '@/components/Numbers';
 import Team from '@/components/Team';
 import Contact from '@/components/Contact';
@@ -33,6 +35,12 @@ export default function Home() {
 
         {/* ── Work / Projects — big-type Project_List (Req 4, 10) ──────── */}
         <WorkList />
+
+        {/* ── Services — verified Puro service lines (Part B) ──────────── */}
+        <Services />
+
+        {/* ── Activities — operational scope of work (Part C) ──────────── */}
+        <Activities />
 
         {/* ── Results / Numbers (Req 5) ───────────────────────────────── */}
         <Numbers />

@@ -4,6 +4,8 @@ import { useCallback } from 'react';
 import clsx from 'clsx';
 import type { Project } from '@/lib/data';
 import { resolveImagePath } from '@/lib/format';
+import { prefersReducedMotion } from '@/lib/motion';
+import { useCardReveal } from '@/lib/reveal';
 
 /** A source-backed work/service row that stays fully readable without motion. */
 export interface ProjectRowProps {
@@ -23,6 +25,7 @@ export default function ProjectRow({
 }: ProjectRowProps) {
   const src = resolveImagePath(project, index);
   const label = String(index + 1).padStart(2, '0');
+  const revealRef = useCardReveal({ index, disabled: prefersReducedMotion() });
 
   const handleEnter = useCallback(() => {
     onHover?.(index, src);
@@ -34,6 +37,7 @@ export default function ProjectRow({
 
   return (
     <article
+      ref={revealRef}
       onPointerEnter={handleEnter}
       onPointerLeave={handleLeave}
       className={clsx(

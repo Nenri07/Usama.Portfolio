@@ -52,15 +52,15 @@ export default function HeroSlider({ onCardClick }: HeroSliderProps) {
       <div className="pointer-events-none absolute inset-0 z-30">
         {/* Bottom-left: featured / full index cue. */}
         <div className="absolute bottom-6 left-6 sm:left-8 lg:left-12">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--color-muted)]">
+          <p className="text-secondary text-xs font-semibold uppercase tracking-[0.2em]">
             Featured{' '}
-            <span className="text-[var(--color-accent)]">/ Full</span>
+            <span className="text-accent">/ Full</span>
           </p>
         </div>
 
         {/* Bottom-right: contact cue (nav has the real link). */}
         <div className="absolute bottom-6 right-6 sm:right-8 lg:right-12">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--color-muted)]">
+          <p className="text-secondary text-xs font-semibold uppercase tracking-[0.2em]">
             Contact
           </p>
         </div>

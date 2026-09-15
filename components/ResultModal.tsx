@@ -71,7 +71,7 @@ export default function ResultModal({ stat, index, onClose }: ResultModalProps) 
       onMouseDown={(event) => {
         if (event.target === event.currentTarget) onClose();
       }}
-      className="fixed inset-0 z-[120] flex items-center justify-center overflow-hidden bg-[color-mix(in_srgb,var(--color-base)_94%,transparent)] p-3 sm:p-6"
+      className="fixed inset-0 z-[120] flex items-center justify-center overflow-hidden bg-[color-mix(in_srgb,var(--qe-base)_94%,transparent)] p-3 sm:p-6"
     >
       <div
         ref={panelRef}
@@ -86,35 +86,35 @@ export default function ResultModal({ stat, index, onClose }: ResultModalProps) 
           type="button"
           onClick={onClose}
           aria-label={`Close ${stat.label} details`}
-          className="absolute right-4 top-4 z-20 flex h-12 w-12 items-center justify-center border border-[var(--color-muted)]/30 bg-[var(--color-base)] text-2xl text-[var(--color-text)] transition-colors hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--color-text)] sm:right-6 sm:top-6"
+          className="text-primary-interactive absolute right-4 top-4 z-20 flex h-12 w-12 items-center justify-center border border-[var(--qe-muted)]/30 bg-[var(--qe-base)] text-2xl transition-colors hover:border-[var(--qe-accent)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--qe-text)] sm:right-6 sm:top-6"
         >
           <span aria-hidden="true">×</span>
         </button>
 
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute -right-4 top-12 font-display text-[clamp(7rem,24vw,18rem)] leading-none text-[var(--color-text)] opacity-[0.025]"
+          className="text-primary pointer-events-none absolute -right-4 top-12 font-display text-[clamp(7rem,24vw,18rem)] leading-none opacity-[0.025]"
         >
           {String(index + 1).padStart(2, '0')}
         </div>
 
         <header className="relative z-10 min-w-0 pr-14">
-          <p className="font-mono text-xs uppercase tracking-[0.22em] text-[var(--color-accent)]">
+          <p className="text-accent font-mono text-xs uppercase tracking-[0.22em]">
             Service standard · {String(index + 1).padStart(2, '0')}
           </p>
-          <p className="mt-8 font-mono text-sm uppercase tracking-[0.18em] text-[var(--color-accent)]">
+          <p className="text-accent mt-8 font-mono text-sm uppercase tracking-[0.18em]">
             {stat.kicker}
           </p>
           <h2
             id={titleId}
-            className="mt-4 max-w-3xl break-words font-display text-[clamp(3.25rem,10vw,7.5rem)] font-semibold leading-[0.88] tracking-tight text-[var(--color-text)]"
+            className="text-primary mt-4 max-w-3xl break-words font-display text-[clamp(3.25rem,10vw,7.5rem)] font-semibold leading-[0.88] tracking-tight"
           >
             {stat.label}
           </h2>
         </header>
 
-        <div className="relative z-10 mt-10 grid min-w-0 gap-8 border-t border-[var(--color-muted)]/20 pt-8 lg:grid-cols-[minmax(0,1.1fr)_minmax(16rem,0.9fr)] lg:gap-12">
-          <p className="text-lg leading-relaxed text-[var(--color-muted)] sm:text-xl">
+        <div className="relative z-10 mt-10 grid min-w-0 gap-8 border-t border-[var(--qe-muted)]/20 pt-8 lg:grid-cols-[minmax(0,1.1fr)_minmax(16rem,0.9fr)] lg:gap-12">
+          <p className="text-secondary text-lg leading-relaxed sm:text-xl">
             {stat.summary}
           </p>
 
@@ -122,12 +122,12 @@ export default function ResultModal({ stat, index, onClose }: ResultModalProps) 
             {stat.details.map((detail, detailIndex) => (
               <li
                 key={detail}
-                className="border border-[var(--color-muted)]/20 bg-[var(--color-surface)]/35 px-4 py-4"
+                className="border border-[var(--qe-muted)]/20 bg-[var(--qe-surface)]/35 px-4 py-4"
               >
-                <span className="font-mono text-xs text-[var(--color-accent)]">
+                <span className="text-accent font-mono text-xs">
                   {String(detailIndex + 1).padStart(2, '0')}
                 </span>
-                <p className="mt-1 break-words text-base leading-relaxed text-[var(--color-text)]">
+                <p className="text-primary mt-1 break-words text-base leading-relaxed">
                   {detail}
                 </p>
               </li>
@@ -135,7 +135,7 @@ export default function ResultModal({ stat, index, onClose }: ResultModalProps) 
           </ol>
         </div>
 
-        <p className="relative z-10 mt-10 border-l border-[var(--color-accent)] pl-4 text-sm leading-relaxed text-[var(--color-muted)]">
+        <p className="text-secondary relative z-10 mt-10 border-l border-[var(--qe-accent)] pl-4 text-sm leading-relaxed">
           Presented from the public Puro company profile without unsupported performance figures.
         </p>
       </div>

@@ -78,7 +78,7 @@ export default function CrewModal({ division, onClose }: CrewModalProps) {
       onMouseDown={(event) => {
         if (event.target === event.currentTarget) onClose();
       }}
-      className="fixed inset-0 z-[120] flex items-center justify-center overflow-hidden bg-[color-mix(in_srgb,var(--color-base)_94%,transparent)] p-3 sm:p-6"
+      className="fixed inset-0 z-[120] flex items-center justify-center overflow-hidden bg-[color-mix(in_srgb,var(--qe-base)_94%,transparent)] p-3 sm:p-6"
     >
       <div
         ref={panelRef}
@@ -88,14 +88,14 @@ export default function CrewModal({ division, onClose }: CrewModalProps) {
         data-lenis-prevent-touch
         className="modal-scroll-surface relative max-h-[calc(100dvh-1.5rem)] w-full max-w-6xl min-w-0 overflow-y-auto border border-[var(--qe-muted)]/20 bg-[var(--qe-base)] [transform-style:preserve-3d] sm:max-h-[calc(100dvh-3rem)]"
       >
-        <header className="sticky top-0 z-20 flex min-w-0 items-start justify-between gap-6 border-b border-[var(--color-muted)]/20 bg-[var(--color-base)]/95 px-5 py-5 backdrop-blur sm:px-8 sm:py-6">
+        <header className="sticky top-0 z-20 flex min-w-0 items-start justify-between gap-6 border-b border-[var(--qe-muted)]/20 bg-[var(--qe-base)]/95 px-5 py-5 backdrop-blur sm:px-8 sm:py-6">
           <div className="min-w-0">
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--color-accent)]">
+            <p className="text-accent text-xs font-semibold uppercase tracking-[0.22em]">
               Operations group · {division.images.length} photographs
             </p>
             <h2
               id={titleId}
-              className="mt-2 break-words text-3xl font-semibold leading-tight text-[var(--color-text)] sm:text-5xl"
+              className="text-primary mt-2 break-words text-3xl font-semibold leading-tight sm:text-5xl"
             >
               {division.name}
             </h2>
@@ -105,29 +105,29 @@ export default function CrewModal({ division, onClose }: CrewModalProps) {
             type="button"
             onClick={onClose}
             aria-label={`Close ${division.name} gallery`}
-            className="flex h-12 w-12 shrink-0 items-center justify-center border border-[var(--color-muted)]/30 bg-[var(--color-base)] text-2xl text-[var(--color-text)] transition-colors hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--color-text)]"
+            className="text-primary-interactive flex h-12 w-12 shrink-0 items-center justify-center border border-[var(--qe-muted)]/30 bg-[var(--qe-base)] text-2xl transition-colors hover:border-[var(--qe-accent)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--qe-text)]"
           >
             <span aria-hidden="true">×</span>
           </button>
         </header>
 
         <div className="px-5 pb-10 pt-8 sm:px-8 sm:pb-14">
-          <div className="grid min-w-0 gap-8 border-b border-[var(--color-muted)]/20 pb-8 md:grid-cols-[minmax(0,1.2fr)_minmax(15rem,0.8fr)]">
-            <p className="max-w-2xl text-lg leading-relaxed text-[var(--color-muted)] sm:text-xl">
+          <div className="grid min-w-0 gap-8 border-b border-[var(--qe-muted)]/20 pb-8 md:grid-cols-[minmax(0,1.2fr)_minmax(15rem,0.8fr)]">
+            <p className="text-secondary max-w-2xl text-lg leading-relaxed sm:text-xl">
               {division.blurb}
             </p>
             <div className="min-w-0">
-              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[var(--color-text)]">
+              <p className="text-primary text-sm font-semibold uppercase tracking-[0.18em]">
                 On-site contribution
               </p>
-              <p className="mt-3 text-base leading-relaxed text-[var(--color-muted)]">
+              <p className="text-secondary mt-3 text-base leading-relaxed">
                 {division.management}
               </p>
               <ul className="mt-5 flex flex-wrap gap-2">
                 {division.capabilities.map((capability) => (
                   <li
                     key={capability}
-                    className="border border-[var(--color-muted)]/25 px-3 py-1.5 text-sm text-[var(--color-muted)]"
+                    className="text-secondary border border-[var(--qe-muted)]/25 px-3 py-1.5 text-sm"
                   >
                     {capability}
                   </li>

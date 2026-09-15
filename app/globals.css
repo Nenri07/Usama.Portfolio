@@ -1,50 +1,8 @@
 @import "tailwindcss";
-
-/* ── Design tokens (Requirement 7.1, 7.2) ───────────────────────────── */
-:root {
-  /* Primitive palette values deliberately do NOT use Tailwind's --color-*
-     namespace. Mapping --color-text to var(--color-text), for example, creates
-     an invalid custom-property cycle at computed-value time. */
-  --qe-base: #0A0E1A;
-  --qe-surface: #0F1424;
-  --qe-text: #F2F2F0;
-  --qe-muted: #9BA1AE;
-  --qe-accent: #6E1423;
-
-  /* Compatibility aliases for existing arbitrary-value utilities and inline
-     styles. These point one-way to primitives and are never self-referential. */
-  --color-base: var(--qe-base);
-  --color-surface: var(--qe-surface);
-  --color-text: var(--qe-text);
-  --color-muted: var(--qe-muted);
-  --color-accent: var(--qe-accent);
-  --space-block: 24px;
-}
-
-/* Tailwind v4 semantic colors map directly to the non-colliding primitives. */
-@theme inline {
-  --color-base: var(--qe-base);
-  --color-surface: var(--qe-surface);
-  --color-text: var(--qe-text);
-  --color-muted: var(--qe-muted);
-  --color-accent: var(--qe-accent);
-
-  /* Aliases for the adapted perspective slider's shadcn-style utilities. */
-  --color-background: var(--qe-base);
-  --color-foreground: var(--qe-text);
-  --color-muted-foreground: var(--qe-muted);
-
-  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system,
-    "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
-  /* Premium editorial display face for headings (h1, h2).
-     `--font-display` is emitted by next/font on <html>; alias it to a Tailwind
-     font token with serif fallbacks. */
-  --font-display-family: var(--font-display), Georgia, "Times New Roman", serif;
-
-  /* borderRadius none = 0px (Requirement 7.3) */
-  --radius-none: 0px;
-}
+/* Authoritative theme: palette primitives, @theme mapping, font tokens, and
+   the literal-fallback semantic utility classes. Imported once, right after
+   Tailwind, so its unlayered classes reliably win in production. */
+@import "./theme.css";
 
 /* ── Base element styles ────────────────────────────────────────────── */
 html {
@@ -110,67 +68,9 @@ h1 {
   font-size: clamp(32px, 8vw, 72px);
 }
 
-/* Utility: opt any element into the premium display face. */
-.font-display {
-  font-family: var(--font-display-family);
-}
-
-/* ── Fail-safe text semantics ──────────────────────────────────────── */
-/* Critical copy uses these unlayered semantic classes instead of relying on
-   generated arbitrary-value utilities. Every declaration has a literal
-   fallback, so labels remain readable even if a compatibility alias is lost
-   during production CSS chunking. */
-.text-primary,
-.reveal-heading {
-  color: var(--qe-text, #F2F2F0);
-}
-
-.text-secondary {
-  color: var(--qe-muted, #9BA1AE);
-}
-
-.text-accent {
-  color: var(--qe-accent, #6E1423);
-}
-
-.reveal-heading {
-  opacity: 1;
-  visibility: visible;
-  transform: none;
-  clip-path: none;
-  overflow: visible;
-}
-
-.text-primary-interactive {
-  color: var(--qe-text, #F2F2F0);
-}
-
-.text-primary-interactive:hover,
-.text-primary-interactive:focus-visible {
-  color: var(--qe-accent, #6E1423);
-}
-
-.button-on-accent {
-  color: var(--qe-text, #F2F2F0);
-  background-color: var(--qe-accent, #6E1423);
-}
-
-.button-on-accent:hover,
-.button-on-accent:focus-visible {
-  color: var(--qe-text, #F2F2F0);
-  background-color: color-mix(in srgb, var(--qe-accent, #6E1423) 88%, white);
-}
-
-.button-outline {
-  color: var(--qe-text, #F2F2F0);
-  border-color: color-mix(in srgb, var(--qe-text, #F2F2F0) 22%, transparent);
-}
-
-.button-outline:hover,
-.button-outline:focus-visible {
-  color: var(--qe-text, #F2F2F0);
-  border-color: color-mix(in srgb, var(--qe-text, #F2F2F0) 52%, transparent);
-}
+/* Semantic text/surface/button classes and .font-display now live in
+   theme.css (imported above), so critical colour never depends on a
+   Tailwind arbitrary-value utility. */
 
 /* ── Progressive image loading ─────────────────────────────────────── */
 .safe-image-frame {
@@ -323,6 +223,34 @@ h1 {
 
   .crew-pile:hover .crew-pile-card {
     transform: var(--pile-rest);
+  }
+}
+
+/* ── Card entrance + hover (Part E) ─────────────────────────────────── */
+/* Transform-only lift. Content is fully visible at rest; the lift only
+   enhances it. Only enabled on fine pointers so touch never gets a stuck
+   hover, and disabled entirely under reduced motion. */
+.card-lift {
+  transition:
+    transform 420ms cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 300ms ease;
+  will-change: transform;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .card-lift:hover {
+    transform: translate3d(0, -6px, 0);
+    border-color: color-mix(in srgb, var(--qe-accent, #6E1423) 55%, transparent);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card-lift {
+    transition: none;
+  }
+
+  .card-lift:hover {
+    transform: none;
   }
 }
 

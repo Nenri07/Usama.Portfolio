@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { ScrollTrigger, registerScrollTrigger } from '@/lib/gsapSetup';
+import { gsap, ScrollTrigger, registerScrollTrigger } from '@/lib/gsapSetup';
 
 /**
  * Options for the shared scroll-reveal hook (Req 4.9, 9.1).
@@ -127,4 +127,64 @@ export function useReveal(
   }, [node, disabled, start]);
 
   return refCallback;
+}
+
+/**
+ * Transform-only, visible-by-default entrance reveal for cards and section
+ * blocks (Part E). The element is fully visible and readable at rest; when it
+ * crosses the viewport threshold this applies a small upward settle plus a
+ * gentle fade of a decorative starting offset — but ONLY as an enhancement.
+ *
+ * CRITICAL: the animation must never gate readability. We do NOT set the start
+ * state in static CSS. The hidden-ish start (a small y-offset and reduced
+ * opacity) is applied by JS immediately before the tween runs, inside the
+ * ScrollTrigger `onEnter`, so if ScrollTrigger never fires or GSAP fails, the
+ * element simply stays in its natural, fully-visible DOM state. Under reduced
+ * motion the hook does nothing.
+ *
+ * Returns a ref callback to attach to the element to reveal.
+ */
+export function useCardReveal(options: {
+  index?: number;
+  disabled?: boolean;
+  start?: string;
+  /** Base per-item stagger seconds. Default 0.06. */
+  stagger?: number;
+} = {}): (node: Element | null) => void {
+  const { index = 0, disabled = false, start = 'top 88%', stagger = 0.06 } = options;
+
+  return useReveal({
+    start,
+    once: true,
+    disabled,
+    onReveal: (el) => {
+      const node = el as HTMLElement;
+      try {
+        gsap.fromTo(
+          node,
+          { y: 24, opacity: 0.001 },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 0.7,
+            ease: 'power3.out',
+            delay: index * stagger,
+            overwrite: true,
+            // Guarantee the element is left in a fully visible state.
+            onComplete: () => {
+              try {
+                gsap.set(node, { clearProps: 'opacity,transform' });
+              } catch {
+                node.style.opacity = '1';
+                node.style.transform = 'none';
+              }
+            },
+          },
+        );
+      } catch {
+        node.style.opacity = '1';
+        node.style.transform = 'none';
+      }
+    },
+  });
 }

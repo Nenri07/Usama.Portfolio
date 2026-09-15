@@ -190,13 +190,13 @@ export default function ProjectModal({ project, index, onClose }: ProjectModalPr
         className="fixed inset-0 z-[100] flex items-stretch justify-center p-3 sm:p-6"
         style={{
           backgroundColor:
-            'color-mix(in srgb, var(--color-base) 95%, transparent)',
+            'color-mix(in srgb, var(--qe-base, #0A0E1A) 95%, transparent)',
         }}
       >
         <div
           ref={panelRef}
           tabIndex={-1}
-          className="relative flex max-h-full w-full min-w-0 max-w-6xl flex-col overflow-hidden border border-[var(--color-muted)]/20 bg-[var(--color-base)] [transform-style:preserve-3d] will-change-transform"
+          className="relative flex max-h-full w-full min-w-0 max-w-6xl flex-col overflow-hidden border border-[var(--qe-muted)]/20 bg-[var(--qe-base)] [transform-style:preserve-3d] will-change-transform"
           style={{ perspective: '1200px' }}
         >
           <button
@@ -206,7 +206,7 @@ export default function ProjectModal({ project, index, onClose }: ProjectModalPr
             data-cursor
             data-cursor-label="Close"
             aria-label="Close service details"
-            className="absolute right-4 top-4 z-20 flex h-12 w-12 items-center justify-center border border-[var(--color-muted)]/25 bg-[var(--color-base)]/80 text-2xl text-[var(--color-muted)] backdrop-blur transition-colors hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--color-text)]"
+            className="text-secondary absolute right-4 top-4 z-20 flex h-12 w-12 items-center justify-center border border-[var(--qe-muted)]/25 bg-[var(--qe-base)]/80 text-2xl backdrop-blur transition-colors hover:border-[var(--qe-accent)] hover:text-[var(--qe-accent)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--qe-text)]"
           >
             <span aria-hidden="true">&times;</span>
           </button>
@@ -222,42 +222,42 @@ export default function ProjectModal({ project, index, onClose }: ProjectModalPr
             <div className="lg:sticky lg:top-20 lg:self-start">
               <span
                 aria-hidden="true"
-                className="mb-6 flex h-10 w-10 items-center justify-center border border-[var(--color-accent)] text-[var(--color-accent)]"
+                className="text-accent mb-6 flex h-10 w-10 items-center justify-center border border-[var(--qe-accent)]"
               >
                 <span
                   className="block h-3 w-3"
-                  style={{ backgroundColor: 'var(--color-accent)' }}
+                  style={{ backgroundColor: 'var(--qe-accent, #6E1423)' }}
                 />
               </span>
 
-              <p className="mb-4 font-mono text-xs uppercase tracking-[0.2em] text-[var(--color-accent)]">
+              <p className="text-accent mb-4 font-mono text-xs uppercase tracking-[0.2em]">
                 Service {String(itemIndex + 1).padStart(2, '0')} · {project.category}
               </p>
 
-              <h2 className="break-words text-4xl font-semibold leading-[1.05] tracking-tight text-[var(--color-text)] sm:text-6xl">
+              <h2 className="text-primary break-words text-4xl font-semibold leading-[1.05] tracking-tight sm:text-6xl">
                 {project.title}
               </h2>
 
-              <p className="mt-6 max-w-md text-base leading-relaxed text-[var(--color-muted)] sm:text-lg">
+              <p className="text-secondary mt-6 max-w-md text-base leading-relaxed sm:text-lg">
                 {project.summary}
               </p>
 
               <ul className="mt-8 flex flex-wrap gap-3">
-                <li className="border border-[var(--color-accent)]/40 px-4 py-2 text-sm text-[var(--color-text)]">
+                <li className="text-primary border border-[var(--qe-accent)]/40 px-4 py-2 text-sm">
                   {project.category}
                 </li>
                 {project.client ? (
-                  <li className="border border-[var(--color-muted)]/25 px-4 py-2 text-sm text-[var(--color-muted)]">
+                  <li className="text-secondary border border-[var(--qe-muted)]/25 px-4 py-2 text-sm">
                     {project.client}
                   </li>
                 ) : null}
-                <li className="border border-[var(--color-muted)]/25 px-4 py-2 text-sm text-[var(--color-muted)]">
+                <li className="text-secondary border border-[var(--qe-muted)]/25 px-4 py-2 text-sm">
                   {project.location}
                 </li>
                 {tagServices.map((service) => (
                   <li
                     key={service}
-                    className="border border-[var(--color-muted)]/25 px-4 py-2 text-sm text-[var(--color-muted)]"
+                    className="text-secondary border border-[var(--qe-muted)]/25 px-4 py-2 text-sm"
                   >
                     {service}
                   </li>
@@ -294,14 +294,14 @@ export default function ProjectModal({ project, index, onClose }: ProjectModalPr
               ))}
 
               <div>
-                <h3 className="text-sm uppercase tracking-[0.2em] text-[var(--color-accent)]">
+                <h3 className="text-accent text-sm uppercase tracking-[0.2em]">
                   Scope
                 </h3>
                 <ul className="mt-5 flex flex-wrap gap-3">
                   {project.services.map((service) => (
                     <li
                       key={service}
-                      className="border border-[var(--color-muted)]/25 px-4 py-2 text-sm text-[var(--color-muted)]"
+                      className="text-secondary border border-[var(--qe-muted)]/25 px-4 py-2 text-sm"
                     >
                       {service}
                     </li>
@@ -310,19 +310,19 @@ export default function ProjectModal({ project, index, onClose }: ProjectModalPr
               </div>
 
               <div>
-                <h3 className="text-sm uppercase tracking-[0.2em] text-[var(--color-accent)]">
+                <h3 className="text-accent text-sm uppercase tracking-[0.2em]">
                   Delivery Notes
                 </h3>
                 <dl className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2">
                   {project.facts.map((fact) => (
                     <NumberCard
                       key={fact.label}
-                      className="border-t border-[var(--color-muted)]/25 bg-[var(--color-surface)]/40 px-4 pb-5 pt-4"
+                      className="border-t border-[var(--qe-muted)]/25 bg-[var(--qe-surface)]/40 px-4 pb-5 pt-4"
                     >
-                      <dt className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--color-accent)]">
+                      <dt className="text-accent text-xs font-semibold uppercase tracking-[0.16em]">
                         {fact.label}
                       </dt>
-                      <dd className="mt-2 text-xl font-semibold leading-tight text-[var(--color-text)] sm:text-2xl">
+                      <dd className="text-primary mt-2 text-xl font-semibold leading-tight sm:text-2xl">
                         {fact.value}
                       </dd>
                     </NumberCard>

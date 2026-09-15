@@ -1,0 +1,160 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   Puro — Authoritative theme stylesheet.
+
+   This is the ONE place palette primitives, Tailwind @theme mapping, font
+   tokens, and the semantic utility classes live. It is imported exactly once,
+   from app/globals.css, immediately after `@import "tailwindcss"`.
+
+   WHY THIS FILE EXISTS
+   Critical text colours used to be expressed through Tailwind v4
+   arbitrary-value utilities such as `text-[var(--color-text)]`. When production
+   CSS chunking split the alias definition away from the utility, or a token
+   became self-referential, the colour resolved to nothing and text rendered
+   invisible/black. To make that failure impossible:
+
+     1. Primitives (`--qe-*`) are the single source of truth. They use literal
+        hex values and NEVER reference the Tailwind `--color-*` namespace.
+     2. The `--color-*` aliases and the `@theme inline` mapping point ONE WAY at
+        the primitives. They are never self-referential.
+     3. Every semantic class below declares its colour with a LITERAL HEX
+        FALLBACK, e.g. `color: var(--qe-text, #F2F2F0)`. If an alias is ever
+        lost, the literal keeps the text readable.
+
+   Critical readable text must use the semantic classes in this file, not a
+   Tailwind arbitrary-value colour utility and not a hover/scroll reveal.
+   ═════════════════════════════════════════════════════════════════════════ */
+
+/* ── Palette primitives (single source of truth) ────────────────────────── */
+:root {
+  /* Dark navy / maroon system. Literal hex only — no --color-* references. */
+  --qe-base: #0A0E1A;
+  --qe-surface: #0F1424;
+  --qe-text: #F2F2F0;
+  --qe-muted: #9BA1AE;
+  --qe-accent: #6E1423;
+
+  /* Cinema accents used by the /film stage backdrop. Decorative only; they
+     must never become the colour of readable body text. */
+  --qe-cinema-amber: #E7A14C;
+  --qe-cinema-teal: #1C6E73;
+  --qe-cinema-deep: #05070F;
+
+  /* One-way compatibility aliases for existing arbitrary-value utilities and
+     inline styles. These point at primitives and are never self-referential. */
+  --color-base: var(--qe-base);
+  --color-surface: var(--qe-surface);
+  --color-text: var(--qe-text);
+  --color-muted: var(--qe-muted);
+  --color-accent: var(--qe-accent);
+
+  --space-block: 24px;
+}
+
+/* ── Tailwind v4 semantic colour + font mapping (one-way) ────────────────── */
+@theme inline {
+  --color-base: var(--qe-base);
+  --color-surface: var(--qe-surface);
+  --color-text: var(--qe-text);
+  --color-muted: var(--qe-muted);
+  --color-accent: var(--qe-accent);
+
+  /* Aliases for the adapted perspective slider's shadcn-style utilities. */
+  --color-background: var(--qe-base);
+  --color-foreground: var(--qe-text);
+  --color-muted-foreground: var(--qe-muted);
+
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --font-display-family: var(--font-display), Georgia, "Times New Roman", serif;
+
+  /* borderRadius none = 0px (square-edged premium system). */
+  --radius-none: 0px;
+}
+
+/* ── Semantic text utilities (literal-fallback, unlayered) ───────────────── */
+/* Unlayered so they win over Tailwind's layered utilities without !important,
+   and so production chunking cannot strip them behind a lost @layer. */
+
+.text-primary,
+.reveal-heading {
+  color: var(--qe-text, #F2F2F0);
+}
+
+.text-secondary {
+  color: var(--qe-muted, #9BA1AE);
+}
+
+.text-accent {
+  color: var(--qe-accent, #6E1423);
+}
+
+/* Text that sits on top of the maroon accent fill. */
+.text-on-accent {
+  color: var(--qe-text, #F2F2F0);
+}
+
+/* Interactive primary text: readable at rest, maroon on hover/focus. */
+.text-primary-interactive {
+  color: var(--qe-text, #F2F2F0);
+}
+
+.text-primary-interactive:hover,
+.text-primary-interactive:focus-visible {
+  color: var(--qe-accent, #6E1423);
+}
+
+/* ── Surfaces + borders (literal-fallback) ───────────────────────────────── */
+.surface {
+  background-color: var(--qe-surface, #0F1424);
+  color: var(--qe-text, #F2F2F0);
+}
+
+.surface-alt {
+  background-color: var(--qe-base, #0A0E1A);
+  color: var(--qe-text, #F2F2F0);
+}
+
+.border-subtle {
+  border-color: color-mix(in srgb, var(--qe-muted, #9BA1AE) 24%, transparent);
+}
+
+/* ── Buttons (literal-fallback) ──────────────────────────────────────────── */
+.button-on-accent {
+  color: var(--qe-text, #F2F2F0);
+  background-color: var(--qe-accent, #6E1423);
+}
+
+.button-on-accent:hover,
+.button-on-accent:focus-visible {
+  color: var(--qe-text, #F2F2F0);
+  background-color: color-mix(in srgb, var(--qe-accent, #6E1423) 88%, white);
+}
+
+.button-outline {
+  color: var(--qe-text, #F2F2F0);
+  border-color: color-mix(in srgb, var(--qe-text, #F2F2F0) 22%, transparent);
+}
+
+.button-outline:hover,
+.button-outline:focus-visible {
+  color: var(--qe-text, #F2F2F0);
+  border-color: color-mix(in srgb, var(--qe-text, #F2F2F0) 52%, transparent);
+}
+
+/* ── Heading / display helpers ───────────────────────────────────────────── */
+/* Opt any element into the premium editorial display face. */
+.font-display {
+  font-family: var(--font-display-family, Georgia, "Times New Roman", serif);
+}
+
+/* A display heading that is permanently in its final readable state. Motion
+   elsewhere may enhance the surrounding section, but this text never depends on
+   opacity/visibility/transform/clip to become visible. */
+.reveal-heading {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  clip-path: none;
+  overflow: visible;
+}

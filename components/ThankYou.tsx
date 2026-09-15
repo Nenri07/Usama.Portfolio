@@ -245,14 +245,14 @@ export default function ThankYou() {
 
         <h2
           data-thank-copy
-          className="mt-7 max-w-full break-words font-display text-[clamp(4.25rem,15vw,11rem)] font-semibold leading-[0.78] tracking-[-0.045em] text-[var(--qe-text)] [text-shadow:0_2px_28px_var(--qe-base)]"
+          className="text-primary mt-7 max-w-full break-words font-display text-[clamp(4.25rem,15vw,11rem)] font-semibold leading-[0.78] tracking-[-0.045em] [text-shadow:0_2px_28px_var(--qe-base)]"
         >
           Thank You.
         </h2>
 
         <p
           data-thank-copy
-          className="mt-8 max-w-2xl bg-[color-mix(in_srgb,var(--qe-base)_78%,transparent)] px-4 py-2 text-base leading-relaxed text-[var(--qe-text)] backdrop-blur-sm sm:text-xl"
+          className="text-primary mt-8 max-w-2xl bg-[color-mix(in_srgb,var(--qe-base)_78%,transparent)] px-4 py-2 text-base leading-relaxed backdrop-blur-sm sm:text-xl"
         >
           Reliable cleaning, hospitality and façade services begin with understanding your requirements.
         </p>
@@ -260,7 +260,7 @@ export default function ThankYou() {
         <div data-thank-copy className="mt-10 flex flex-wrap items-center justify-center gap-5">
           <a
             href={buildMailto(contact.email)}
-            className="inline-flex min-h-14 items-center border border-[var(--qe-accent)] bg-[var(--qe-accent)] px-7 py-3 text-base font-semibold text-[var(--qe-text)] transition-colors hover:bg-[color-mix(in_srgb,var(--qe-accent)_86%,white)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--qe-text)]"
+            className="button-on-accent inline-flex min-h-14 items-center border border-[var(--qe-accent)] px-7 py-3 text-base font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--qe-text)]"
           >
             Start a conversation
           </a>
@@ -270,7 +270,7 @@ export default function ThankYou() {
               event.preventDefault();
               scrollToTarget(0);
             }}
-            className="inline-flex min-h-14 items-center gap-3 border-b border-[var(--qe-accent)] px-2 py-3 text-sm font-semibold uppercase tracking-[0.18em] text-[var(--qe-text)] transition-colors hover:text-[var(--qe-accent)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--qe-text)]"
+            className="text-primary-interactive inline-flex min-h-14 items-center gap-3 border-b border-[var(--qe-accent)] px-2 py-3 text-sm font-semibold uppercase tracking-[0.18em] transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--qe-text)]"
           >
             Return to the beginning <span aria-hidden="true">↑</span>
           </a>

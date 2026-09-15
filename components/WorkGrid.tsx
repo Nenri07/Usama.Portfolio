@@ -45,7 +45,7 @@ export default function WorkGrid() {
       <div className="mx-auto w-full max-w-7xl">
         {/* Section heading — heading ≥32px, sans-serif, square, no shadow. */}
         <header className="mb-12">
-          <h2 className="text-4xl font-semibold tracking-tight text-[var(--color-text)] sm:text-5xl">
+          <h2 className="text-primary text-4xl font-semibold tracking-tight sm:text-5xl">
             Selected Work
           </h2>
           <span
