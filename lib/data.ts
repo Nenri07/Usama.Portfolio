@@ -1,332 +1,288 @@
-// Static content module for the Puro Cleaning & Disinfecting site.
-// All page content is hardcoded here (Req 1.4, 3.1, 3.3, 4.1, 4.3, 5.1, 5.5, 6.1, 6.3).
-// Sequential image paths are derived from index (see lib/format.ts resolveImagePath /
-// imagePathForIndex) unless a Project defines an explicit `image` override (Req 4.2).
-//
-// NO revenue, cost, or net-profit figures appear in any data model — only
-// Public_Metric counts (visitors, winners, staff, days, activations) (Req 4.5, 5.5, 8.6).
+// Public, source-backed content for Puro Cleaning Services W.L.L.
+// The company profile PDF is the factual source for services, clients, standards,
+// and the curated work imagery mapped below. No financial or private data is exposed.
 
-// Public brand identity used by metadata and visible company lockups.
 export const brand = {
-  name: 'Puro Cleaning & Disinfecting',
-  description: 'Professional operations and on-site delivery in Qatar.',
+  name: 'Puro Cleaning Services W.L.L.',
+  description:
+    'Cleaning, housekeeping, hospitality and façade services delivered with a focus on quality, hygiene and safety in Qatar.',
   logo: '/PURO-logo.png',
 } as const;
 
-/**
- * A single project card in the Work grid (Req 4.3, 4.4).
- *
- * `services` is the required highlight list. `visitors`/`winners`/`staff`/`days`
- * are OPTIONAL Public_Metric counts. `image` is an OPTIONAL explicit path that
- * overrides the sequential mapping (Req 4.2). `stat` is retained as an optional
- * legacy field so existing components keep compiling until the section tasks
- * (14.x) migrate them to `services`/counts.
- */
+export interface WorkImage {
+  src: string;
+  alt: string;
+}
+
+export interface WorkFact {
+  label: string;
+  value: string;
+}
+
+/** A neutral service/work record used by the hero, work list, and detail modal. */
 export interface Project {
   title: string;
-  venue: string;
-  year: string;
+  category: string;
+  client?: string;
+  location: string;
+  summary: string;
   services: string[];
-  visitors?: string;
-  winners?: string;
-  staff?: string;
-  days?: string;
-  image?: string;
-  /** @deprecated legacy summary line; superseded by services + counts (Req 4.3, 4.4). */
-  stat?: string;
-  // NO revenue / cost / profit fields (Req 4.5).
+  image: string;
+  images: WorkImage[];
+  facts: WorkFact[];
 }
 
-/** A single statistic block in the Results section (Req 5.1). */
+/** A source-backed operating principle shown in the former numeric-results area. */
 export interface StatItem {
-  target: number;
-  suffix: string;
+  kicker: string;
   label: string;
+  summary: string;
+  details: string[];
 }
 
-/** A single role-based team card (Req 6.1–6.4). `name` is optional (Req 6.2, 6.3). */
+/** A role-based card retained for legacy team-grid compatibility. */
 export interface TeamMember {
   role: string;
   name?: string;
   image: string;
 }
 
-/**
- * Contact details for the Contact section.
- * `phone` is the public Qatar display number; `whatsapp` carries the required
- * international country code used only to construct the wa.me destination.
- */
 export const contact = {
   email: 'info@puroqatar.com',
   phone: '70981603',
   whatsapp: '97470981603',
-};
+} as const;
 
-/** Trusted-by clients/venues/partners, rendered as text in EXACT order (Req 3.1, 3.3). */
+/** Centralized curated photographs extracted directly from the Puro profile. */
+export const portfolioAssets = {
+  mallLobby: [
+    '/puro/work/mall-lobby-cleaning-01.webp',
+    '/puro/work/mall-lobby-cleaning-02.webp',
+  ],
+  externalWindows: ['/puro/work/facade-cleaning-01.webp'],
+  facade: ['/puro/work/facade-cleaning-02.webp'],
+  pestControl: [
+    '/puro/work/pest-control-01.webp',
+    '/puro/work/pest-control-02.webp',
+    '/puro/work/pest-control-03.webp',
+    '/puro/work/pest-control-04.webp',
+    '/puro/work/pest-control-05.webp',
+  ],
+} as const;
+
+/** Public client names reproduced from the profile's client and contract lists. */
 export const clients = [
-  'Qatari Diar',
-  'Lusail',
-  'Qatar Foundation',
-  'LULU',
-  'Lagoona Mall',
-  'Doha Festival City',
-  'Qatar Racing Club',
-  'FIFA World Cup 2022',
+  'Primary Health Care Corporation (PHCC)',
+  'Ministry of Defense — Qatar Armed Forces',
+  'Mesaimeer City Real Estate Company W.L.L.',
+  'Doha Marketing Services Company (Honda)',
+  'Al Fardan Properties',
+  'Ali Bin Ali Group',
+  'Gulf Times',
+  'Nasser Bin Khalid Holdings (NBK)',
+  'Qatar Automobiles Company (Mitsubishi)',
+  'SNC-Lavalin Profac Gulf Management',
+  'The Blue Group (Sports Corner)',
+  'Qatar Distribution Company (QDC)',
 ] as const;
 
-/**
- * Backwards-compatible alias for the old `wordmarks` export so the existing
- * Marquee compiles until task 14.2 migrates it to `clients`.
- * @deprecated use `clients`.
- */
-export const wordmarks = clients;
-
-/**
- * Results statistics: Public_Metric values only, no financial figures (Req 5.1, 5.5).
- */
-export const results: StatItem[] = [
-  { target: 3.75, suffix: 'M', label: 'Peak visitors' },
-  { target: 13, suffix: '+', label: 'Activations' },
-  { target: 3, suffix: '', label: 'FIFA World Cup 2022 activations' },
-  { target: 7000, suffix: '+', label: 'Prize winners' },
-  { target: 12000, suffix: '', label: 'Balloons across 8 Qatar landmarks' },
-];
-
-/**
- * Backwards-compatible alias for the old `numbers` export so the existing
- * Numbers/StatBlock components compile until task 14.4 migrates them to `results`.
- * @deprecated use `results`.
- */
-export const numbers = results;
-
-/**
- * Work-grid projects: EXACTLY 13 entries, in definition order, mapped sequentially
- * to img-000.png through img-012.png unless an explicit `image` is set (Req 4.1, 4.2, 4.3, 1.4).
- */
 export const projects: Project[] = [
   {
-    title: 'Formula 1 & MotoGP Fan Zone',
-    venue: 'Lusail Circuit & Boulevard',
-    year: '2023–24',
-    services: [
-      'Carnival Games',
-      'Slot Car Racing',
-      'Henna Artists',
-      'Face Painters',
-      'Hospitality',
-      'Branding',
+    title: 'DFC Mall Lobby Cleaning',
+    category: 'Cleaning & Housekeeping',
+    client: 'DFC Mall',
+    location: 'Qatar',
+    summary:
+      'A dedicated mall-lobby cleaning assignment documented in the Puro company profile, focused on public circulation and floor presentation.',
+    services: ['Lobby cleaning', 'Public-area cleaning', 'Floor care'],
+    image: portfolioAssets.mallLobby[0],
+    images: [
+      { src: portfolioAssets.mallLobby[0], alt: 'Puro team member cleaning a DFC mall lobby' },
+      { src: portfolioAssets.mallLobby[1], alt: 'Puro team member carrying out floor care in a DFC mall lobby' },
     ],
-    days: '10',
-  },
-  {
-    title: 'Hello Asia',
-    venue: 'Lusail Boulevard',
-    year: '2024',
-    services: ['25 VIP Hostesses', '16 Carnival Games', 'Train', 'Soft Play Area'],
-    visitors: '3.75M',
-    staff: '90',
-    days: '30',
-  },
-  {
-    title: 'Flower Festival',
-    venue: 'Lusail Boulevard',
-    year: '2023',
-    services: ['12 Carnival Games', '15 Arcade Games', '4 Giant Inflatables'],
-    visitors: '40,000',
-    staff: '76',
-    days: '3',
-  },
-  {
-    title: 'Eid Festival',
-    venue: 'Lusail Boulevard',
-    year: '2023',
-    services: ['16 Carnival Games', '20 Arcade Games', '2 Giant Inflatables', 'Full F&B'],
-    visitors: '100,000',
-    days: '8',
-  },
-  {
-    title: 'Darb al Lusail Parade',
-    venue: 'Lusail Boulevard',
-    year: '2023',
-    services: ['80 Entertainment Artists', '30 Management Staff'],
-    visitors: '40,000',
-    staff: '110',
-    days: '3',
-  },
-  {
-    title: 'Eid ul Adha Festival',
-    venue: 'Abu Sidra Mall (LULU)',
-    year: '2023',
-    services: [
-      '9 Shows',
-      '15 Roaming Parade Characters',
-      'Arts & Craft',
-      'Face Painting',
-      'Henna',
+    facts: [
+      { label: 'Setting', value: 'Mall lobby' },
+      { label: 'Delivery', value: 'Cleaning service' },
     ],
-    visitors: '30,000',
-    days: '3',
   },
   {
-    title: "ALJAM'A Celebration Week",
-    venue: 'Education City, Qatar Foundation',
-    year: '2022–23',
-    services: ['8 Universities', 'Multi-day celebration'],
-    visitors: '2,000',
-    winners: '230',
-    days: '5',
+    title: 'External Window Cleaning',
+    category: 'Specialist Cleaning',
+    location: 'Qatar',
+    summary:
+      'Puro documents external window cleaning among its specialist services, supported by dedicated equipment for exterior glass care.',
+    services: ['External window cleaning', 'Exterior glass care', 'Specialist equipment'],
+    image: portfolioAssets.externalWindows[0],
+    images: [
+      { src: portfolioAssets.externalWindows[0], alt: 'Puro team cleaning exterior glazing with specialist equipment' },
+    ],
+    facts: [
+      { label: 'Focus', value: 'Exterior glass' },
+      { label: 'Approach', value: 'Dedicated equipment' },
+    ],
   },
   {
-    title: 'Qatar Custom Show',
-    venue: 'Qatar Racing Club',
-    year: '2022–23',
-    services: ['6 Carnival Games', 'Building Block City', 'Bouncy Castle Inflatables'],
-    visitors: '3,000',
-    winners: '420',
-    days: '3',
+    title: 'Façade Cleaning',
+    category: 'Building Exterior Care',
+    location: 'Qatar',
+    summary:
+      'Façade cleaning is listed as a core Puro service for commercial properties, delivered alongside site safety controls.',
+    services: ['Façade cleaning', 'Building exterior care', 'Site safety controls'],
+    image: portfolioAssets.facade[0],
+    images: [
+      { src: portfolioAssets.facade[0], alt: 'Puro team carrying out façade cleaning on a commercial building' },
+    ],
+    facts: [
+      { label: 'Scope', value: 'Building façades' },
+      { label: 'Standard', value: 'HSE-led delivery' },
+    ],
   },
   {
-    title: 'Building Block City',
-    venue: 'Lagoona Mall',
-    year: '2022',
-    services: ['Building Block City'],
-    days: '90',
-  },
-  {
-    title: 'FIFA World Cup Fan Zone',
-    venue: 'Lagoona Mall',
-    year: '2022',
-    services: ['4 Carnival Games', 'Soft Building Block City'],
-    visitors: '5,000',
-    winners: '450',
-    days: '30',
-  },
-  {
-    title: 'FIFA World Cup Fan Zone',
-    venue: 'Doha Festival City Arena',
-    year: '2022',
-    services: ['4 Carnival Games'],
-    visitors: '3,000',
-    winners: '250',
-    days: '30',
-  },
-  {
-    title: 'Eid in Qatar',
-    venue: 'Corniche',
-    year: '2022',
-    services: ['7 Carnival Games', 'Soft Building Block City', 'Inflatable Jumping Castles'],
-    visitors: '3,000',
-    winners: '200',
-    days: '3',
-  },
-  {
-    title: 'Qatar International Food Festival',
-    venue: 'Al Bidda Park & Corniche',
-    year: '2021',
-    services: ['9 Carnival Games'],
-    visitors: '40,000',
-    winners: '5,500',
-    days: '19',
+    title: 'Pest Control Services',
+    category: 'Cleaning Support',
+    location: 'Qatar',
+    summary:
+      'The Puro profile includes insect and rodent control activity, with pest-control delivery also identified in its documented contract scope.',
+    services: ['Pest control', 'Insect control', 'Rodent control'],
+    image: portfolioAssets.pestControl[0],
+    images: portfolioAssets.pestControl.map((src, index) => ({
+      src,
+      alt: `Puro pest-control service activity ${index + 1}`,
+    })),
+    facts: [
+      { label: 'Scope', value: 'Insect and rodent control' },
+      { label: 'Delivery', value: 'Cleaning support service' },
+    ],
   },
 ];
 
-/**
- * Team roster: role-based cards with NO invented names (Req 6.1–6.3).
- * Images are sourced from public/work (Req 6.4); `name` is left undefined so real
- * names can be filled in later without a code change.
- */
+/** Source-backed service standards replace unsupported event-result metrics. */
+export const results: StatItem[] = [
+  {
+    kicker: 'Quality',
+    label: 'Quality Assurance',
+    summary:
+      'Puro identifies quality assurance as a crucial part of achieving its service and business objectives.',
+    details: [
+      'Consistent application across cleaning and hygiene operations',
+      'Service delivery aligned with client requirements',
+      'Training and staff involvement support the operating standard',
+    ],
+  },
+  {
+    kicker: 'Environment',
+    label: 'Low-Impact Cleaning',
+    summary:
+      'The profile commits to environmentally responsible liquids, systems and practices that reduce impact while maintaining sanitary spaces.',
+    details: [
+      'Environmentally friendly cleaning liquids and systems',
+      'Microfiber methods that reduce unnecessary chemical use',
+      'Energy, water and resource conservation in service delivery',
+    ],
+  },
+  {
+    kicker: 'Safety',
+    label: 'HSE-Led Delivery',
+    summary:
+      'Puro describes safety training, inspections and protective controls as part of its project delivery approach.',
+    details: [
+      'Task-appropriate safety training',
+      'Periodic tools and equipment inspection',
+      'PPE, warning controls and site supervision',
+    ],
+  },
+  {
+    kicker: 'Service',
+    label: 'Tailored Operations',
+    summary:
+      'Cleaning and hospitality solutions are planned around each client’s requirements and operating environment.',
+    details: [
+      'Cleaning and housekeeping services',
+      'Hospitality and support services',
+      'Indoor, façade and specialist cleaning scopes',
+    ],
+  },
+];
+
 export const team: TeamMember[] = [
-  { role: 'Creative Director', image: '/work/img-020.png' },
-  { role: 'Activation Lead', image: '/work/img-021.png' },
-  { role: 'Operations Manager', image: '/work/img-022.png' },
-  { role: 'Production Lead', image: '/work/img-023.png' },
-  { role: 'Talent & Staffing Manager', image: '/work/img-024.png' },
-  { role: 'Hospitality Lead', image: '/work/img-025.png' },
+  { role: 'Service Coordination', image: '/team/organizers/01.jpeg' },
+  { role: 'Hospitality Support', image: '/team/hostesses/01.jpeg' },
+  { role: 'Field Operations', image: '/team/play-area/01.jpeg' },
+  { role: 'Service Support', image: '/team/waiters/01.jpeg' },
+  { role: 'Cleaning Operations', image: '/team/cleaning/01.jpeg' },
 ];
 
-/**
- * A single division in the division-wise Team showcase.
- *
- * Cards are photo + division only — NO invented individual names (Req 6.2, 6.3).
- * `images` holds the real staff photo paths under public/team/<slug>/.
- */
 export interface TeamDivision {
-  /** URL-safe slug that matches the public/team/<slug>/ folder. */
   slug: string;
-  /** Display label for the division heading. */
   name: string;
-  /** One short, factual line — no fluff, no financials. */
   blurb: string;
-  /** Responsibilities directly supported by the division blurb and project services. */
   capabilities: string[];
-  /** Conservative description of how this crew contributes on site. */
   management: string;
-  /** Real staff photo paths: /team/<slug>/NN.jpeg. */
   images: string[];
 }
 
-/**
- * Build the sequential, zero-padded 2-digit photo paths for a division folder.
- * @example teamImagePaths('cleaning', 3)
- *   // ['/team/cleaning/01.jpeg', '/team/cleaning/02.jpeg', '/team/cleaning/03.jpeg']
- */
 function teamImagePaths(slug: string, count: number): string[] {
   return Array.from(
     { length: count },
-    (_, i) => `/team/${slug}/${String(i + 1).padStart(2, '0')}.jpeg`,
+    (_, index) => `/team/${slug}/${String(index + 1).padStart(2, '0')}.jpeg`,
   );
 }
 
 /**
- * Division-wise team showcase, in display order. Each entry maps to real staff
- * photos under public/team/<slug>/ (Req 6.1, 6.4). No financial figures and no
- * invented names anywhere (Req 6.2, 6.3, 8.6).
+ * Existing lower-page photography is retained as an editorial operations
+ * gallery. Labels describe source-backed service functions without assigning
+ * names, departments, or project claims to individual photographs.
  */
 export const divisions: TeamDivision[] = [
   {
     slug: 'organizers',
-    name: 'Organizers & Providers',
-    blurb: 'The core crew that plans, sets up and runs each activation on the ground.',
-    capabilities: ['On-site planning', 'Activation setup', 'Live event operations'],
-    management: 'Coordinates practical planning, setup and live delivery across each activation.',
+    name: 'Service Coordination',
+    blurb: 'An editorial view of the people behind planning, supervision and on-site coordination.',
+    capabilities: ['Project coordination', 'Site supervision', 'Work planning'],
+    management: 'Supports practical scheduling, team direction and consistent service delivery.',
     images: teamImagePaths('organizers', 13),
   },
   {
     slug: 'hostesses',
-    name: 'Hostesses',
-    blurb: 'VIP hostesses welcoming and guiding guests across our activations.',
-    capabilities: ['Guest welcome', 'Guest guidance', 'VIP hosting'],
-    management: 'Supports guest arrival, wayfinding and hosted touchpoints throughout the event.',
+    name: 'Hospitality Support',
+    blurb: 'People-focused support for hospitality and client-facing service environments.',
+    capabilities: ['Hospitality services', 'Front-of-house support', 'Client service'],
+    management: 'Supports organised, attentive delivery across hospitality service touchpoints.',
     images: teamImagePaths('hostesses', 20),
   },
   {
     slug: 'play-area',
-    name: 'Play Area & Activities',
-    blurb: 'The team operating carnival games, soft play and family activities.',
-    capabilities: ['Carnival games', 'Soft play', 'Family activities'],
-    management: 'Operates staffed activity areas, games and family play zones on site.',
+    name: 'Field Operations',
+    blurb: 'A broader field gallery representing coordinated operational support on site.',
+    capabilities: ['Operational support', 'Site readiness', 'Service continuity'],
+    management: 'Helps teams prepare service areas and maintain dependable on-site operations.',
     images: teamImagePaths('play-area', 14),
   },
   {
     slug: 'waiters',
-    name: 'Waiters',
-    blurb: 'Hospitality and F&B service staff.',
-    capabilities: ['Hospitality service', 'Food and beverage service', 'Guest support'],
-    management: 'Supports hospitality and food-and-beverage service during live events.',
+    name: 'Service Support',
+    blurb: 'Hospitality and support personnel contributing to organised service delivery.',
+    capabilities: ['Hospitality staffing', 'Service support', 'Client-facing delivery'],
+    management: 'Supports day-to-day hospitality requirements with coordinated on-site service.',
     images: teamImagePaths('waiters', 4),
   },
   {
     slug: 'cleaning',
-    name: 'Cleaning Crew',
-    blurb: 'Keeping every venue spotless before, during and after each event.',
-    capabilities: ['Venue readiness', 'Live-event upkeep', 'Post-event reset'],
-    management: 'Maintains venue presentation before opening, during operation and after close.',
+    name: 'Cleaning Operations',
+    blurb: 'The operational focus at the centre of Puro’s cleaning and housekeeping services.',
+    capabilities: ['Cleaning & housekeeping', 'Public-area care', 'Service checks'],
+    management: 'Maintains cleaning routines, presentation standards and practical site readiness.',
     images: teamImagePaths('cleaning', 3),
   },
 ];
 
-/**
- * General "Our Team" gallery: mixed team & event images used for the showcase
- * strip. Real photos under public/team/gallery/ (36 images).
- */
 export const teamGallery: string[] = teamImagePaths('gallery', 36);
+
+/** Decorative ending-plane images, kept centralized with all other work assets. */
+export const closingImages = [
+  portfolioAssets.mallLobby[0],
+  portfolioAssets.facade[0],
+  portfolioAssets.pestControl[0],
+  portfolioAssets.mallLobby[1],
+  portfolioAssets.externalWindows[0],
+] as const;

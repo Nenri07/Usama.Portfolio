@@ -14,9 +14,9 @@ import { prefersReducedMotion } from '@/lib/motion';
 const CHAPTERS = [
   { id: 'top', label: 'Intro' },
   { id: 'trusted-by', label: 'Clients' },
-  { id: 'work', label: 'Events' },
-  { id: 'numbers', label: 'Results' },
-  { id: 'team', label: 'Crew' },
+  { id: 'work', label: 'Work' },
+  { id: 'numbers', label: 'Standards' },
+  { id: 'team', label: 'Operations' },
   { id: 'contact', label: 'Contact' },
   { id: 'thank-you', label: 'End' },
 ] as const;

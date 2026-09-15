@@ -9,8 +9,8 @@ import SafeImage from './SafeImage';
 import { brand } from '@/lib/data';
 
 /**
- * TeamGalleryStrip — the "Our Team" showcase for general team & event photos
- * (Req 6.1, 6.4). A dense, 3D-consistent grid of the `teamGallery` images.
+ * TeamGalleryStrip — an editorial gallery for operations photography
+ * (Req 6.1, 6.4). A dense, 3D-consistent grid of the supplied images.
  *
  * Reveal: uses the SHARED `useReveal` hook (GSAP + ScrollTrigger). On reveal
  * tiles rise + rotateX from a sunken tilted state to flat, staggered — the same

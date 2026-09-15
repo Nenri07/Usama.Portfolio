@@ -15,8 +15,8 @@ interface BrandLogo3DProps {
 
 /**
  * Optimized local brand mark with progressive, non-blocking depth motion.
- * The unanimated DOM is the final visible state; reduced-motion and touch users
- * receive the same sharp logo without continuous motion or pointer listeners.
+ * The unanimated DOM is the final visible state; reduced-motion users receive
+ * the same sharp logo without idle motion, shine, or pointer listeners.
  */
 export default function BrandLogo3D({
   className,
@@ -62,13 +62,15 @@ export default function BrandLogo3D({
         };
       }
 
+      // Keep the mark alive without competing with the periodic surface shine.
+      // This is depth-only breathing: no perpetual vertical drift or broad spin.
       idle = gsap.to(float, {
-        y: -3,
-        z: 8,
-        rotationY: 2,
-        rotationZ: 0.8,
-        duration: 2.8,
-        delay: 0.45,
+        z: 2,
+        rotationX: -0.2,
+        rotationY: 0.35,
+        scale: 1.004,
+        duration: 4.8,
+        delay: 0.8,
         repeat: -1,
         yoyo: true,
         ease: 'sine.inOut',
@@ -81,11 +83,11 @@ export default function BrandLogo3D({
         const y = ((event.clientY - bounds.top) / bounds.height - 0.5) * 2;
 
         gsap.to(tilt, {
-          rotationX: -y * 9,
-          rotationY: x * 12,
-          x: x * 3,
-          y: y * 2,
-          z: 12,
+          rotationX: -y * 6,
+          rotationY: x * 8,
+          x: x * 2,
+          y: y * 1.5,
+          z: 6,
           duration: 0.42,
           ease: 'power2.out',
           overwrite: 'auto',
@@ -146,7 +148,7 @@ export default function BrandLogo3D({
         >
           <span
             ref={tiltRef}
-            className="block h-full w-full [transform-style:preserve-3d] will-change-transform"
+            className="relative block h-full w-full [transform-style:preserve-3d] will-change-transform"
           >
             <SafeImage
               src={brand.logo}
@@ -160,6 +162,7 @@ export default function BrandLogo3D({
               fallbackColor="transparent"
               className="bg-transparent"
             />
+            <span aria-hidden="true" className="brand-logo-shine" />
           </span>
         </span>
       </span>

@@ -31,7 +31,7 @@ export default function HeroSlider({ onCardClick }: HeroSliderProps) {
         src: resolveImagePath(project, i),
         number: String(i + 1).padStart(2, '0'),
         title: project.title,
-        desc: `${project.year} · ${project.venue}`,
+        desc: `${project.client ? `${project.client} · ` : ''}${project.category} · ${project.location}`,
       })),
     [],
   );

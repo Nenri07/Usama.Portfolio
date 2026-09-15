@@ -1,5 +1,5 @@
 /**
- * Pure formatting helpers for Puro Cleaning & Disinfecting.
+ * Pure formatting helpers for Puro Cleaning Services W.L.L.
  *
  * Every function here is pure: it has no side effects and its output depends
  * solely on its inputs. This keeps them trivially unit- and property-testable
@@ -7,31 +7,16 @@
  */
 
 /**
- * Zero-pad a number to a 3-digit string.
- * @example zeroPad3(0)  // '000'
- * @example zeroPad3(12) // '012'
+ * Resolve the explicitly curated primary image for a source-backed work item.
+ * The optional index is retained for existing card call sites; there is no
+ * sequential legacy work-image fallback.
  */
-export function zeroPad3(n: number): string {
-  return String(n).padStart(3, "0");
-}
-
-/**
- * Build the public path for the work image at a given zero-based index.
- * @example imagePathForIndex(0)  // '/work/img-000.png'
- * @example imagePathForIndex(12) // '/work/img-012.png'
- */
-export function imagePathForIndex(i: number): string {
-  return `/work/img-${zeroPad3(i)}.png`;
-}
-
-/**
- * Resolve the image path for a project: prefer an explicit `image` override,
- * otherwise fall back to the sequential path for its definition index (Req 4.2).
- * @example resolveImagePath({ image: '/work/custom.png' }, 3) // '/work/custom.png'
- * @example resolveImagePath({}, 3)                            // '/work/img-003.png'
- */
-export function resolveImagePath(project: { image?: string }, i: number): string {
-  return project.image ?? imagePathForIndex(i);
+export function resolveImagePath(
+  project: { image: string },
+  _index?: number,
+): string {
+  void _index;
+  return project.image;
 }
 
 /**

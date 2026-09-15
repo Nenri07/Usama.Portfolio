@@ -108,7 +108,7 @@ function CrewRow({ division, index, onSelect }: CrewRowProps) {
 
       <div className={clsx('min-w-0', reverse && 'lg:order-1')}>
         <p className="text-accent font-mono text-sm">
-          Division {String(index + 1).padStart(2, '0')}
+          Operations group {String(index + 1).padStart(2, '0')}
         </p>
         <h3 className="text-primary mt-4 break-words text-3xl font-semibold leading-tight sm:text-5xl">
           {division.name}
@@ -135,7 +135,7 @@ function CrewRow({ division, index, onSelect }: CrewRowProps) {
           aria-haspopup="dialog"
           className="text-primary-interactive mt-8 inline-flex min-h-12 items-center gap-4 border-b border-[var(--qe-accent)] pb-2 text-base font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--qe-text)]"
         >
-          View crew
+          View gallery
           <span aria-hidden="true" className="text-accent">↗</span>
           <span className="sr-only">— {division.images.length} photographs</span>
         </button>

@@ -6,7 +6,7 @@ import ResultModal from './ResultModal';
 import RevealHeading from './RevealHeading';
 import { results } from '@/lib/data';
 
-/** Interactive public-results section with one on-demand evidence dialog. */
+/** Interactive presentation of source-backed Puro service standards. */
 export default function Numbers() {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
@@ -23,7 +23,7 @@ export default function Numbers() {
         <header className="mb-12 grid min-w-0 gap-6 md:grid-cols-[minmax(0,1fr)_minmax(16rem,0.6fr)] md:items-end">
           <div>
             <RevealHeading className="text-primary text-4xl font-semibold tracking-tight sm:text-5xl">
-              By the Numbers
+              Service Standards
             </RevealHeading>
             <span
               aria-hidden="true"
@@ -31,16 +31,16 @@ export default function Numbers() {
             />
           </div>
           <p className="text-secondary text-base leading-relaxed md:text-right">
-            Public scale markers from the documented activation portfolio.
-            Open any card for its available supporting record.
+            Principles documented in Puro&apos;s company profile, presented without
+            unsupported performance metrics.
           </p>
         </header>
 
-        <div className="grid min-w-0 grid-cols-1 gap-5 md:grid-cols-2 lg:gap-6 xl:grid-cols-5">
-          {results.map((stat, index) => (
+        <div className="grid min-w-0 grid-cols-1 gap-5 md:grid-cols-2 lg:gap-6 xl:grid-cols-4">
+          {results.map((standard, index) => (
             <StatBlock
-              key={stat.label}
-              stat={stat}
+              key={standard.label}
+              stat={standard}
               index={index}
               onSelect={() => setSelectedIndex(index)}
             />

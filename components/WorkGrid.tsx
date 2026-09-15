@@ -3,37 +3,19 @@ import WorkCard from './WorkCard';
 import { projects } from '@/lib/data';
 
 /**
- * WorkGrid — the Work section: an asymmetric grid of exactly 13 WorkCards
- * (Req 4.1, 4.2).
+ * WorkGrid — an optional asymmetric grid for the current source-backed work
+ * records. The active page uses WorkList; this remains a compatible fallback.
  *
- * Server component: it only maps static `projects` data to WorkCard (a
- * `'use client'` component) children, which keeps page.tsx a server component
- * while the interactive/animated work lives in WorkCard.
+ * Server component: it maps static `projects` data to WorkCard client children
+ * while keeping all visible content available without interaction.
  *
- * Layout (Req 4.1 — "asymmetric grid in which some cells span two grid units"):
- * a responsive CSS grid — 2 cols (base) → 3 (md) → 4 (lg) — with fixed-height
- * auto-rows so cells tile predictably. `spanForIndex(i)` promotes a few featured
- * cards to 2-unit spans (2 cols and/or 2 rows) while the total stays 13 cells.
- * `grid-flow-dense` backfills the gaps the larger cells leave, so the 13 cards
- * tile without giant holes.
- *
- * Visual system: dark base, ≥24px gaps (`gap-6`), no box-shadow, border-radius 0
- * (Req 7.1–7.3).
+ * Layout uses a responsive dense grid and promotes a few early records to
+ * larger spans when enough columns are available.
  */
 
 /**
- * Featured-cell span map (Req 4.1). Returns Tailwind span utilities for a
- * subset of indices; all other cards occupy a single 1×1 cell.
- *
- * Chosen so the featured cards are the marquee projects:
- *   - 0  Formula 1 & MotoGP Fan Zone  → 2×2 hero cell (biggest)
- *   - 1  Hello Asia (3.75M visitors)  → 2 cols wide
- *   - 6  ALJAM'A Celebration Week     → 2 rows tall
- *   - 9  FIFA World Cup Fan Zone      → 2 cols wide
- *
- * Spans only apply at md/lg where the grid has enough columns; on the 2-col base
- * the col-span-2 cells simply fill the row, which still reads cleanly. With
- * `grid-flow-dense` the remaining 1×1 cards backfill around them.
+ * Featured-cell span map. Early source-backed records receive the larger
+ * editorial treatments; remaining records use the standard cell.
  */
 export function spanForIndex(i: number): string {
   switch (i) {

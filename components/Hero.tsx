@@ -4,11 +4,12 @@ import { useEffect, useRef } from 'react';
 import SafeImage from './SafeImage';
 import { gsap } from '@/lib/gsapSetup';
 import { prefersReducedMotion, splitText, parallax } from '@/lib/motion';
+import { projects } from '@/lib/data';
 
 /**
  * Hero — the first section (Req 2).
  *
- * - Full-bleed background via SafeImage for `/work/img-000.png` with
+ * - Full-bleed background via SafeImage using the first curated Puro work image,
  *   object-cover, covering 100% of the section (Req 2.1). On load failure or a
  *   >3s timeout SafeImage swaps to a solid `--color-base` fallback while the
  *   foreground (headline, subheadline, scroll cue) stays visible (Req 2.2).
@@ -32,10 +33,10 @@ import { prefersReducedMotion, splitText, parallax } from '@/lib/motion';
  * everything renders in its final visible state.
  */
 
-const HEADLINE = 'We turn Qatar into the moment.';
-// Single-line positioning statement, ≤120 chars, no wrapping (Req 2.4).
+const HEADLINE = 'Cleaning built around every environment.';
+// Single-line positioning statement, ≤120 chars, no wrapping.
 const SUBHEADLINE =
-  'Event activations that fill boulevards, malls, and stadiums across Qatar.';
+  'Cleaning, hospitality and façade services focused on quality, hygiene and safety.';
 
 export default function Hero() {
   const headlineRef = useRef<HTMLHeadingElement>(null);
@@ -105,7 +106,7 @@ export default function Hero() {
           container is the ONLY element the parallax translates (Req 2.6). */}
       <div ref={bgRef} className="absolute inset-0 -z-10 will-change-transform">
         <SafeImage
-          src="/work/img-000.png"
+          src={projects[0].image}
           alt=""
           variant="full"
           sizes="100vw"

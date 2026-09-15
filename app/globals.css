@@ -216,6 +216,95 @@ h1 {
   }
 }
 
+/* The polish pass is masked to the transparent logo silhouette. The narrow
+   stripe crosses for 1.2s, then remains fully idle for the rest of each cycle. */
+.brand-logo-shine {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: block;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0;
+  -webkit-mask-image: url("/PURO-logo.png");
+  mask-image: url("/PURO-logo.png");
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  animation: brand-logo-shine-opacity 10s linear 3s infinite;
+}
+
+.brand-logo-shine::before {
+  position: absolute;
+  inset-block: -35%;
+  left: -45%;
+  width: 40%;
+  content: "";
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgb(247 250 255 / 0%) 22%,
+    rgb(247 250 255 / 72%) 47%,
+    rgb(229 238 248 / 88%) 52%,
+    rgb(247 250 255 / 52%) 58%,
+    rgb(247 250 255 / 0%) 78%,
+    transparent 100%
+  );
+  transform: translate3d(0, 0, 0) rotate(14deg);
+  animation: brand-logo-shine-sweep 10s linear 3s infinite;
+  will-change: transform;
+}
+
+@keyframes brand-logo-shine-opacity {
+  0%,
+  2% {
+    opacity: 0;
+  }
+
+  4% {
+    opacity: 0.12;
+  }
+
+  6% {
+    opacity: 0.18;
+  }
+
+  9% {
+    opacity: 0.1;
+  }
+
+  12%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes brand-logo-shine-sweep {
+  0% {
+    transform: translate3d(0, 0, 0) rotate(14deg);
+    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  12%,
+  100% {
+    transform: translate3d(390%, 0, 0) rotate(14deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .brand-logo-shine,
+  .brand-logo-shine::before {
+    animation: none;
+  }
+
+  .brand-logo-shine {
+    opacity: 0;
+  }
+}
+
 /* Editorial crew previews keep their layered depth inside a contained frame. */
 .crew-pile-card {
   transform: var(--pile-rest);

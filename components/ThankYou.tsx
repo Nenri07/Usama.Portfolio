@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useRef } from 'react';
-import { brand, contact } from '@/lib/data';
+import { brand, closingImages, contact } from '@/lib/data';
 import { buildMailto } from '@/lib/format';
 import { gsap, ScrollTrigger, registerScrollTrigger } from '@/lib/gsapSetup';
 import { prefersReducedMotion } from '@/lib/motion';
@@ -10,27 +10,27 @@ import SafeImage from './SafeImage';
 
 const ENDING_PLANES = [
   {
-    src: '/work/img-001.png',
+    src: closingImages[0],
     className: 'left-[-4%] top-[15%] w-[34vw] sm:left-[2%] sm:w-[22vw]',
     transform: 'translateZ(-170px) rotateY(28deg) rotateZ(-5deg)',
   },
   {
-    src: '/work/img-004.png',
+    src: closingImages[1],
     className: 'right-[-5%] top-[12%] w-[32vw] sm:right-[3%] sm:w-[21vw]',
     transform: 'translateZ(-120px) rotateY(-30deg) rotateZ(4deg)',
   },
   {
-    src: '/work/img-007.png',
+    src: closingImages[2],
     className: 'bottom-[7%] left-[5%] w-[30vw] sm:left-[16%] sm:w-[18vw]',
     transform: 'translateZ(-80px) rotateY(20deg) rotateZ(6deg)',
   },
   {
-    src: '/work/img-010.png',
+    src: closingImages[3],
     className: 'bottom-[5%] right-[3%] w-[31vw] sm:right-[15%] sm:w-[19vw]',
     transform: 'translateZ(-60px) rotateY(-22deg) rotateZ(-6deg)',
   },
   {
-    src: '/work/img-012.png',
+    src: closingImages[4],
     className: 'left-1/2 top-[4%] hidden w-[16vw] md:block',
     transform: 'translateX(-50%) translateZ(-230px) rotateX(8deg)',
   },
@@ -254,7 +254,7 @@ export default function ThankYou() {
           data-thank-copy
           className="mt-8 max-w-2xl bg-[color-mix(in_srgb,var(--qe-base)_78%,transparent)] px-4 py-2 text-base leading-relaxed text-[var(--qe-text)] backdrop-blur-sm sm:text-xl"
         >
-          Professional operations and on-site delivery start with one clear conversation.
+          Reliable cleaning, hospitality and façade services begin with understanding your requirements.
         </p>
 
         <div data-thank-copy className="mt-10 flex flex-wrap items-center justify-center gap-5">

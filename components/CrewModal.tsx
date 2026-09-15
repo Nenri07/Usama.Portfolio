@@ -91,7 +91,7 @@ export default function CrewModal({ division, onClose }: CrewModalProps) {
         <header className="sticky top-0 z-20 flex min-w-0 items-start justify-between gap-6 border-b border-[var(--color-muted)]/20 bg-[var(--color-base)]/95 px-5 py-5 backdrop-blur sm:px-8 sm:py-6">
           <div className="min-w-0">
             <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--color-accent)]">
-              Crew division · {division.images.length} photographs
+              Operations group · {division.images.length} photographs
             </p>
             <h2
               id={titleId}
@@ -104,7 +104,7 @@ export default function CrewModal({ division, onClose }: CrewModalProps) {
             ref={closeRef}
             type="button"
             onClick={onClose}
-            aria-label={`Close ${division.name} crew gallery`}
+            aria-label={`Close ${division.name} gallery`}
             className="flex h-12 w-12 shrink-0 items-center justify-center border border-[var(--color-muted)]/30 bg-[var(--color-base)] text-2xl text-[var(--color-text)] transition-colors hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--color-text)]"
           >
             <span aria-hidden="true">×</span>
@@ -145,12 +145,12 @@ export default function CrewModal({ division, onClose }: CrewModalProps) {
                 <button
                   type="button"
                   onClick={() => setViewerIndex(index)}
-                  aria-label={`Open ${division.name} crew photograph ${index + 1} in cinematic viewer`}
+                  aria-label={`Open ${division.name} gallery photograph ${index + 1} in cinematic viewer`}
                   className="block aspect-[4/5] w-full overflow-hidden focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--qe-text)]"
                 >
                   <SafeImage
                     src={src}
-                    alt={`${division.name} crew photograph ${index + 1}`}
+                    alt={`${division.name} gallery photograph ${index + 1}`}
                     variant="full"
                     sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
                     fallbackColor="var(--qe-surface)"
@@ -172,7 +172,7 @@ export default function CrewModal({ division, onClose }: CrewModalProps) {
         <CinematicImageViewer
           images={division.images.map((src, index) => ({
             src,
-            alt: `${division.name} crew photograph ${index + 1}`,
+            alt: `${division.name} gallery photograph ${index + 1}`,
           }))}
           initialIndex={viewerIndex}
           title={division.name}

@@ -27,7 +27,7 @@ interface NavLink {
 
 const LINKS: NavLink[] = [
   { label: 'Work', target: 'work' },
-  { label: 'Team', target: 'team' },
+  { label: 'Operations', target: 'team' },
   { label: 'Contact', target: 'contact' },
 ];
 
