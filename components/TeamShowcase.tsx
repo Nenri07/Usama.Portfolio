@@ -5,7 +5,7 @@ import clsx from 'clsx';
 import { gsap } from '@/lib/gsapSetup';
 import { prefersReducedMotion } from '@/lib/motion';
 import { useReveal } from '@/lib/reveal';
-import { divisions, type TeamDivision } from '@/lib/data';
+import { divisions, teamGroups, type TeamDivision } from '@/lib/data';
 import CrewModal from './CrewModal';
 import SafeImage from './SafeImage';
 
@@ -36,10 +36,12 @@ type PileStyle = CSSProperties & {
 interface CrewRowProps {
   division: TeamDivision;
   index: number;
+  /** Human-readable capability label for this crew's group (never "operations NN"). */
+  groupLabel: string;
   onSelect: (division: TeamDivision) => void;
 }
 
-function CrewRow({ division, index, onSelect }: CrewRowProps) {
+function CrewRow({ division, index, groupLabel, onSelect }: CrewRowProps) {
   const reduced = prefersReducedMotion();
   const reverse = index % 2 === 1;
   const previewImages = division.images.slice(0, 4);
@@ -107,9 +109,7 @@ function CrewRow({ division, index, onSelect }: CrewRowProps) {
       </div>
 
       <div className={clsx('min-w-0', reverse && 'lg:order-1')}>
-        <p className="text-accent font-mono text-sm">
-          Operations group {String(index + 1).padStart(2, '0')}
-        </p>
+        <p className="text-accent font-mono text-sm">{groupLabel}</p>
         <h3 className="text-primary mt-4 break-words text-3xl font-semibold leading-tight sm:text-5xl">
           {division.name}
         </h3>
@@ -155,17 +155,50 @@ export default function TeamShowcase() {
     setSelectedDivision(null);
   }, []);
 
+  // Continuous row index across both groups so the left/right alternation
+  // rhythm carries through the whole showcase.
+  let rowIndex = 0;
+
   return (
     <>
       <div className="min-w-0">
-        {divisions.map((division, index) => (
-          <CrewRow
-            key={division.slug}
-            division={division}
-            index={index}
-            onSelect={openDivision}
-          />
-        ))}
+        {teamGroups.map((group) => {
+          const groupDivisions = divisions.filter((division) => division.group === group.id);
+          if (groupDivisions.length === 0) return null;
+
+          return (
+            <section
+              key={group.id}
+              aria-label={group.name}
+              className="min-w-0 border-t border-[var(--qe-accent)]/40 pt-10 first:border-t-0 first:pt-0"
+            >
+              <header className="mb-2 min-w-0">
+                <p className="text-accent font-mono text-xs uppercase tracking-[0.22em]">
+                  {group.kicker}
+                </p>
+                <h3 className="text-primary mt-3 break-words text-2xl font-semibold leading-tight sm:text-3xl">
+                  {group.name}
+                </h3>
+                <p className="text-secondary mt-3 max-w-2xl text-base leading-relaxed">
+                  {group.blurb}
+                </p>
+              </header>
+
+              {groupDivisions.map((division) => {
+                const index = rowIndex++;
+                return (
+                  <CrewRow
+                    key={division.slug}
+                    division={division}
+                    index={index}
+                    groupLabel={group.name}
+                    onSelect={openDivision}
+                  />
+                );
+              })}
+            </section>
+          );
+        })}
       </div>
 
       {selectedDivision ? (

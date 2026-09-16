@@ -22,12 +22,13 @@ export default function Team() {
 
         <div className="mb-10 grid min-w-0 gap-6 md:grid-cols-[minmax(0,1fr)_minmax(16rem,0.65fr)] md:items-end">
           <p className="text-secondary max-w-2xl text-base leading-relaxed sm:text-lg">
-            An editorial view of the people and field support behind Puro&apos;s
-            coordinated cleaning, hospitality and site services.
+            An editorial view of the two distinct crews behind Puro — the
+            guest-facing Events &amp; Hospitality team and the Cleaning &amp;
+            Facilities crew.
           </p>
           <p className="text-secondary text-sm leading-relaxed md:text-right">
-            The existing gallery is grouped around source-backed delivery themes;
-            no individual names or unsupported project assignments are claimed.
+            Each capability is grouped and labelled separately; no individual
+            names or unsupported project assignments are claimed.
           </p>
         </div>
 

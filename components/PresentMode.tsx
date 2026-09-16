@@ -37,6 +37,7 @@ const SLIDES: { id: string; label: string }[] = [
   { id: 'work', label: 'Projects' },
   { id: 'certificates', label: 'Certificates' },
   { id: 'services', label: 'Services' },
+  { id: 'events', label: 'Events' },
   { id: 'team', label: 'Team' },
   { id: 'thank-you', label: 'Thank You' },
 ];

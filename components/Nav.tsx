@@ -30,6 +30,7 @@ const LINKS: NavLink[] = [
   { label: 'Projects', target: 'work' },
   { label: 'Certificates', target: 'certificates' },
   { label: 'Services', target: 'services' },
+  { label: 'Events', target: 'events' },
   { label: 'Team', target: 'team' },
   { label: 'Contact', target: 'contact' },
 ];

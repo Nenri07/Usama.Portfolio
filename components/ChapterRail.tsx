@@ -16,6 +16,7 @@ const CHAPTERS = [
   { id: 'work', label: 'Projects' },
   { id: 'certificates', label: 'Certificates' },
   { id: 'services', label: 'Services' },
+  { id: 'events', label: 'Events' },
   { id: 'team', label: 'Operations' },
   { id: 'contact', label: 'Contact' },
   { id: 'thank-you', label: 'End' },

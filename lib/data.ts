@@ -427,7 +427,40 @@ export interface TeamDivision {
   capabilities: string[];
   management: string;
   images: string[];
+  /**
+   * Which capability this crew belongs to. Puro runs two distinct, clearly
+   * separated crews: an EVENTS & HOSPITALITY side (hostesses + event/activity
+   * staff who worked prestige venues) and a CLEANING & FACILITIES side (the
+   * source-backed Puro cleaning/support crew). Hostesses are event hospitality
+   * staff — never labelled as cleaners/janitors.
+   */
+  group: 'events' | 'cleaning';
 }
+
+/** Human-readable copy for each crew group, shown as its own labelled block. */
+export interface TeamGroup {
+  id: 'events' | 'cleaning';
+  name: string;
+  kicker: string;
+  blurb: string;
+}
+
+export const teamGroups: TeamGroup[] = [
+  {
+    id: 'events',
+    name: 'Events & Hospitality',
+    kicker: 'Guest-facing · Activations',
+    blurb:
+      'The events and hospitality crew — VIP hostesses, organizers and activity staff who have worked prestige venues including Al Shaqab, the Sheraton, St. Regis, the FIFA World Cup and the Arab Cup. This is a distinct guest-facing capability, separate from the cleaning crew.',
+  },
+  {
+    id: 'cleaning',
+    name: 'Cleaning & Facilities',
+    kicker: 'On-site · Support',
+    blurb:
+      'The cleaning and facilities crew behind Puro’s source-backed cleaning, housekeeping and support contracts across Qatar. Distinct from the events team, focused on venue readiness and day-to-day service delivery.',
+  },
+];
 
 function teamImagePaths(slug: string, count: number): string[] {
   return Array.from(
@@ -442,49 +475,286 @@ function teamImagePaths(slug: string, count: number): string[] {
  * names, departments, or project claims to individual photographs.
  */
 export const divisions: TeamDivision[] = [
-  {
-    slug: 'organizers',
-    name: 'Service Coordination',
-    blurb: 'An editorial view of the people behind planning, supervision and on-site coordination.',
-    capabilities: ['Project coordination', 'Site supervision', 'Work planning'],
-    management: 'Supports practical scheduling, team direction and consistent service delivery.',
-    images: teamImagePaths('organizers', 13),
-  },
+  // ── EVENTS & HOSPITALITY crew ──────────────────────────────────────────
+  // Guest-facing event staff. Hostesses are VIP event hospitality staff who
+  // worked the prestige venues named in `eventProjects` — explicitly NOT
+  // cleaners/janitors and never grouped with the cleaning crew.
   {
     slug: 'hostesses',
-    name: 'Hospitality Support',
-    blurb: 'People-focused support for hospitality and client-facing service environments.',
-    capabilities: ['Hospitality services', 'Front-of-house support', 'Client service'],
-    management: 'Supports organised, attentive delivery across hospitality service touchpoints.',
+    name: 'VIP Hostesses',
+    blurb:
+      'VIP event hostesses who welcome, guide and host guests. The hostess team has staffed prestige venues including Al Shaqab, the Sheraton, St. Regis, the FIFA World Cup and the Arab Cup.',
+    capabilities: ['VIP hosting', 'Guest welcome & guidance', 'Prestige-venue hospitality'],
+    management:
+      'Provides polished, guest-facing hospitality at high-profile events and five-star venues — a hospitality role, distinct from cleaning.',
     images: teamImagePaths('hostesses', 20),
+    group: 'events',
+  },
+  {
+    slug: 'organizers',
+    name: 'Event Organizers & Providers',
+    blurb: 'The crew that plans, sets up and runs each activation on the ground.',
+    capabilities: ['On-site planning', 'Activation setup', 'Live event operations'],
+    management:
+      'Coordinates practical planning, setup and live delivery across each event activation.',
+    images: teamImagePaths('organizers', 13),
+    group: 'events',
   },
   {
     slug: 'play-area',
-    name: 'Field Operations',
-    blurb: 'A broader field gallery representing coordinated operational support on site.',
-    capabilities: ['Operational support', 'Site readiness', 'Service continuity'],
-    management: 'Helps teams prepare service areas and maintain dependable on-site operations.',
+    name: 'Activities & Play Area Crew',
+    blurb: 'The team operating carnival games, soft play and family activities at events.',
+    capabilities: ['Carnival games', 'Soft play', 'Family activities'],
+    management: 'Operates staffed activity areas, games and family play zones on site.',
     images: teamImagePaths('play-area', 14),
+    group: 'events',
+  },
+  // ── CLEANING & FACILITIES crew ─────────────────────────────────────────
+  // Puro's source-backed cleaning/support crew. Separate from the events side.
+  {
+    slug: 'cleaning',
+    name: 'Cleaning & Facilities Crew',
+    blurb:
+      'The operational crew at the centre of Puro’s source-backed cleaning, housekeeping and support contracts across Qatar.',
+    capabilities: ['Cleaning & housekeeping', 'Public-area care', 'Venue readiness'],
+    management:
+      'Maintains cleaning routines, presentation standards and practical site readiness across Puro’s contracts.',
+    images: teamImagePaths('cleaning', 3),
+    group: 'cleaning',
   },
   {
     slug: 'waiters',
-    name: 'Service Support',
-    blurb: 'Hospitality and support personnel contributing to organised service delivery.',
-    capabilities: ['Hospitality staffing', 'Service support', 'Client-facing delivery'],
-    management: 'Supports day-to-day hospitality requirements with coordinated on-site service.',
+    name: 'Support & Service Staff',
+    blurb:
+      'The support and service staff who back Puro’s cleaning and facilities operations with hands-on hospitality and F&B service.',
+    capabilities: ['Support services', 'Food & beverage service', 'On-site assistance'],
+    management:
+      'Provides day-to-day support and service alongside the cleaning crew across Puro’s facilities engagements.',
     images: teamImagePaths('waiters', 4),
-  },
-  {
-    slug: 'cleaning',
-    name: 'Cleaning Operations',
-    blurb: 'The operational focus at the centre of Puro’s cleaning and housekeeping services.',
-    capabilities: ['Cleaning & housekeeping', 'Public-area care', 'Service checks'],
-    management: 'Maintains cleaning routines, presentation standards and practical site readiness.',
-    images: teamImagePaths('cleaning', 3),
+    group: 'cleaning',
   },
 ];
 
 export const teamGallery: string[] = teamImagePaths('gallery', 36);
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Events & Hospitality — the events showcase (distinct from Puro cleaning).
+
+   This ADDITIVE capability surfaces the top events/activations the events &
+   hospitality crew (VIP hostesses + organizers + activity staff) delivered.
+
+   TWO fact tiers, both non-fabricated:
+     1. `metricsSource: 'record'` — activations transcribed VERBATIM from the
+        approved Qasim events record (venue, year, services and any
+        visitor/staff/day counts). No numbers are invented.
+     2. `metricsSource: 'venue'` — the prestige venues the user named where the
+        hostess/hospitality team served (Al Shaqab, Sheraton, St. Regis, FIFA
+        World Cup, Arab Cup). These carry NO invented dates/metrics — only a
+        neutral description of the hospitality engagement.
+
+   Imagery reuses the real `/team/*` photographs (these are the actual event
+   crew photos), so no external assets are introduced.
+   ───────────────────────────────────────────────────────────────────────── */
+export interface EventProject {
+  slug: string;
+  /** Event / activation name. */
+  title: string;
+  /** Client or venue. */
+  venue: string;
+  /** Year(s) — only when present in the record; omitted for named venues. */
+  year?: string;
+  /** Short, neutral description. */
+  summary: string;
+  /** Source-backed highlight list (services / scope). */
+  services: string[];
+  /** Optional Public_Metric counts — ONLY when present verbatim in the record. */
+  visitors?: string;
+  winners?: string;
+  staff?: string;
+  days?: string;
+  /** Mapped image (reused existing team/event photograph). */
+  image: string;
+  /** Whether metrics come from the approved record or this is a named venue. */
+  metricsSource: 'record' | 'venue';
+}
+
+/**
+ * The prestige venues where the VIP hostess / hospitality team served. These
+ * are NAMED-ONLY engagements — factual venue names with NO invented dates,
+ * visitor counts or other metrics. Used for the hostess capability copy and
+ * the named-venue cards in the Events showcase.
+ */
+export const hostessVenues: readonly string[] = [
+  'Al Shaqab',
+  'Sheraton (5-star Hotel)',
+  'St. Regis',
+  'FIFA World Cup',
+  'Arab Cup',
+];
+
+export const eventProjects: EventProject[] = [
+  // ── Strongest activations — metrics transcribed VERBATIM from the approved
+  //    Qasim events record. No number is invented; only counts present in the
+  //    source appear below. ──────────────────────────────────────────────────
+  {
+    slug: 'hello-asia',
+    title: 'Hello Asia',
+    venue: 'Lusail Boulevard',
+    year: '2024',
+    summary:
+      'A flagship Lusail Boulevard activation staffed with VIP hostesses, carnival games, a train and a soft-play area.',
+    services: ['25 VIP Hostesses', '16 Carnival Games', 'Train', 'Soft Play Area'],
+    visitors: '3.75M',
+    staff: '90',
+    days: '30',
+    image: '/team/hostesses/06.jpeg',
+    metricsSource: 'record',
+  },
+  {
+    slug: 'formula-1-motogp-fan-zone',
+    title: 'Formula 1 & MotoGP Fan Zone',
+    venue: 'Lusail Circuit & Boulevard',
+    year: '2023–24',
+    summary:
+      'A motorsport fan-zone activation spanning the Lusail Circuit and Boulevard, blending games, live artists, hospitality and branding.',
+    services: [
+      'Carnival Games',
+      'Slot Car Racing',
+      'Henna Artists',
+      'Face Painters',
+      'Hospitality',
+      'Branding',
+    ],
+    days: '10',
+    image: '/team/organizers/02.jpeg',
+    metricsSource: 'record',
+  },
+  {
+    slug: 'eid-festival',
+    title: 'Eid Festival',
+    venue: 'Lusail Boulevard',
+    year: '2023',
+    summary:
+      'An Eid festival activation on Lusail Boulevard with carnival and arcade games, giant inflatables and full F&B.',
+    services: ['16 Carnival Games', '20 Arcade Games', '2 Giant Inflatables', 'Full F&B'],
+    visitors: '100,000',
+    days: '8',
+    image: '/team/play-area/01.jpeg',
+    metricsSource: 'record',
+  },
+  {
+    slug: 'darb-al-lusail-parade',
+    title: 'Darb al Lusail Parade',
+    venue: 'Lusail Boulevard',
+    year: '2023',
+    summary:
+      'A large parade activation on Lusail Boulevard with a full roster of entertainment and management staff.',
+    services: ['80 Entertainment Artists', '30 Management Staff'],
+    visitors: '40,000',
+    staff: '110',
+    days: '3',
+    image: '/team/organizers/01.jpeg',
+    metricsSource: 'record',
+  },
+  {
+    slug: 'flower-festival',
+    title: 'Flower Festival',
+    venue: 'Lusail Boulevard',
+    year: '2023',
+    summary:
+      'A Lusail Boulevard festival activation featuring carnival games, arcade games and giant inflatables.',
+    services: ['12 Carnival Games', '15 Arcade Games', '4 Giant Inflatables'],
+    visitors: '40,000',
+    staff: '76',
+    days: '3',
+    image: '/team/play-area/02.jpeg',
+    metricsSource: 'record',
+  },
+  {
+    slug: 'fifa-fan-zone-lagoona',
+    title: 'FIFA World Cup Fan Zone',
+    venue: 'Lagoona Mall',
+    year: '2022',
+    summary:
+      'A FIFA World Cup fan-zone activation at Lagoona Mall with carnival games and a soft building-block city.',
+    services: ['4 Carnival Games', 'Soft Building Block City'],
+    visitors: '5,000',
+    winners: '450',
+    days: '30',
+    image: '/team/play-area/03.jpeg',
+    metricsSource: 'record',
+  },
+  {
+    slug: 'fifa-fan-zone-festival-city',
+    title: 'FIFA World Cup Fan Zone',
+    venue: 'Doha Festival City Arena',
+    year: '2022',
+    summary:
+      'A FIFA World Cup fan-zone activation at the Doha Festival City Arena centred on carnival games.',
+    services: ['4 Carnival Games'],
+    visitors: '3,000',
+    winners: '250',
+    days: '30',
+    image: '/team/play-area/04.jpeg',
+    metricsSource: 'record',
+  },
+  {
+    slug: 'qatar-international-food-festival',
+    title: 'Qatar International Food Festival',
+    venue: 'Al Bidda Park & Corniche',
+    year: '2021',
+    summary:
+      'A carnival-games activation at the Qatar International Food Festival across Al Bidda Park and the Corniche.',
+    services: ['9 Carnival Games'],
+    visitors: '40,000',
+    winners: '5,500',
+    days: '19',
+    image: '/team/organizers/03.jpeg',
+    metricsSource: 'record',
+  },
+  // ── Prestige venues the hostess / hospitality team served (NAMED-ONLY — no
+  //    invented dates or metrics, just a neutral hospitality description). ─────
+  {
+    slug: 'al-shaqab',
+    title: 'Al Shaqab',
+    venue: 'Al Shaqab',
+    summary:
+      'Event hostess and hospitality staffing at Al Shaqab — a prestige guest-facing engagement for the events team.',
+    services: ['VIP hostesses', 'Guest hospitality', 'Event support'],
+    image: '/team/hostesses/01.jpeg',
+    metricsSource: 'venue',
+  },
+  {
+    slug: 'sheraton',
+    title: 'Sheraton (5-Star Hotel)',
+    venue: 'Sheraton Grand Doha',
+    summary:
+      'Event hostess and hospitality staffing at the five-star Sheraton — polished, guest-facing service by the hospitality team.',
+    services: ['VIP hostesses', 'Five-star hospitality', 'Front-of-house support'],
+    image: '/team/hostesses/02.jpeg',
+    metricsSource: 'venue',
+  },
+  {
+    slug: 'st-regis',
+    title: 'St. Regis',
+    venue: 'The St. Regis Doha',
+    summary:
+      'Event hostess and hospitality staffing at the St. Regis — luxury guest-facing hospitality delivered by the events crew.',
+    services: ['VIP hostesses', 'Luxury hospitality', 'Guest guidance'],
+    image: '/team/hostesses/03.jpeg',
+    metricsSource: 'venue',
+  },
+  {
+    slug: 'arab-cup',
+    title: 'Arab Cup',
+    venue: 'Arab Cup, Qatar',
+    summary:
+      'Event hostess and hospitality staffing during the Arab Cup — tournament guest-facing hospitality by the events team.',
+    services: ['VIP hostesses', 'Event hospitality', 'Guest guidance'],
+    image: '/team/hostesses/04.jpeg',
+    metricsSource: 'venue',
+  },
+];
 
 /* ─────────────────────────────────────────────────────────────────────────
    Services — the verified Puro service lines from the company profile.

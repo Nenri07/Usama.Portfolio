@@ -91,7 +91,8 @@ export default function CrewModal({ division, onClose }: CrewModalProps) {
         <header className="sticky top-0 z-20 flex min-w-0 items-start justify-between gap-6 border-b border-[var(--qe-muted)]/20 bg-[var(--qe-base)]/95 px-5 py-5 backdrop-blur sm:px-8 sm:py-6">
           <div className="min-w-0">
             <p className="text-accent text-xs font-semibold uppercase tracking-[0.22em]">
-              Operations group · {division.images.length} photographs
+              {division.group === 'events' ? 'Events & Hospitality' : 'Cleaning & Facilities'} ·{' '}
+              {division.images.length} photographs
             </p>
             <h2
               id={titleId}
