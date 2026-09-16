@@ -364,6 +364,43 @@ export const contractCards: ContractCard[] = contracts.map((contract) => ({
   image: imageForContract(contract),
 }));
 
+/* ─────────────────────────────────────────────────────────────────────────
+   Hero deck — a single mixed carousel of BOTH capabilities, kept strictly
+   separated by source so imagery never blends (the client's repeated
+   complaint):
+
+     • Event cards use ONLY their own `/qasim/<NN>-<slug>/*` photographs and,
+       when clicked, open the EVENT detail.
+     • Cleaning cards use ONLY `/puro/work/*` photographs (via `contractCards`)
+       and, when clicked, open the CONTRACT detail.
+
+   Every card carries a visible capability tag ("Events & Hospitality" vs
+   "Cleaning & Facilities") and an `onClick` kind so the hero can route to the
+   correct modal. Events lead (the strongest, most visual work), then the
+   cleaning engagements follow.
+   ───────────────────────────────────────────────────────────────────────── */
+
+export const CAPABILITY_LABEL = {
+  events: 'Events & Hospitality',
+  cleaning: 'Cleaning & Facilities',
+} as const;
+
+export interface HeroCard {
+  /** Which capability this card belongs to (drives the tag + click target). */
+  kind: 'event' | 'cleaning';
+  /** Index into `qasimProjects` (event) or `contractCards` (cleaning). */
+  index: number;
+  /** Human capability tag shown on the card. */
+  capability: string;
+  /** Card face image — always from the matching capability's own asset set. */
+  image: WorkImage;
+  /** Primary line (event title / client name). */
+  title: string;
+  /** Secondary line (venue·period for events, scope·duration for cleaning). */
+  subtitle: string;
+}
+
+
 /** Source-backed service standards replace unsupported event-result metrics. */
 export const results: StatItem[] = [
   {
@@ -757,6 +794,245 @@ export const eventProjects: EventProject[] = [
 ];
 
 /* ─────────────────────────────────────────────────────────────────────────
+   Qasim events — the 16 real event/activation projects.
+
+   ⚠️ SOURCE PRIVACY: the raw deck under `public/qasim-khalid-projects/` embeds
+   PRIVATE financial data (revenue / cost / net_profit) in its image FILENAMES
+   and in MANIFEST.csv. That folder is git-ignored and NEVER served. The app
+   references ONLY the sanitized copies produced by
+   `scripts/normalize-qasim-images.mjs` at `public/qasim/<NN>-<slug>/<NN>.webp`.
+
+   Only PUBLIC metrics (period, visitors, staff, winners, games, etc.) are
+   transcribed below — no financial figures appear anywhere. Each project's
+   images map ONLY to its own normalized `/qasim/<NN>-<slug>/*` folder, so event
+   imagery never mixes with the cleaning (`/puro/work/*`) photography.
+   ───────────────────────────────────────────────────────────────────────── */
+export interface QasimProject {
+  no: number;
+  slug: string;
+  title: string;
+  venue: string;
+  /** Human period label (e.g. "2023–24", "Jan 2024"), when supplied. */
+  period?: string;
+  /** Public metric chips — visitor/staff/winner/game counts only, NO QAR. */
+  metrics: string[];
+  /** Primary image (first normalized image in this project's own folder). */
+  image: string;
+  /** Full normalized gallery for this project (its own folder only). */
+  images: WorkImage[];
+}
+
+/**
+ * How many normalized images exist per project, keyed by project number. These
+ * match the output of `scripts/normalize-qasim-images.mjs` (see its COUNTS log)
+ * and drive the `/qasim/<NN>-<slug>/<NN>-NN.webp` gallery arrays below.
+ */
+const QASIM_IMAGE_COUNTS: Record<number, number> = {
+  1: 1, 2: 7, 3: 12, 4: 7, 5: 3, 6: 12, 7: 3, 8: 5,
+  9: 5, 10: 4, 11: 3, 12: 2, 13: 3, 14: 11, 15: 5, 16: 23,
+};
+
+/** Build the normalized image list for one Qasim project (its own folder). */
+function qasimImages(no: number, slug: string, title: string): WorkImage[] {
+  const nn = String(no).padStart(2, '0');
+  const count = QASIM_IMAGE_COUNTS[no] ?? 0;
+  return Array.from({ length: count }, (_, index) => ({
+    src: `/qasim/${nn}-${slug}/${nn}-${String(index + 1).padStart(2, '0')}.webp`,
+    alt: `${title} — ${nn === '13' ? 'event activation' : 'event'} photograph ${index + 1}`,
+  }));
+}
+
+/** Raw, source-backed public data for each of the 16 events (NO financials). */
+const QASIM_SOURCE: Omit<QasimProject, 'image' | 'images'>[] = [
+  {
+    no: 1,
+    slug: 'formula-1-motogp-fan-zone',
+    title: 'Formula 1 & MotoGP Fan Zone Activation',
+    venue: 'Lusail Circuit & Boulevard',
+    period: '2023–24',
+    metrics: ['10 days'],
+  },
+  {
+    no: 2,
+    slug: 'hello-asia',
+    title: 'Hello Asia',
+    venue: 'Lusail Boulevard',
+    period: 'Jan 2024',
+    metrics: ['30 days', '3.75M visitors', '90 staff', '25 VIP hostesses', '16 carnival games'],
+  },
+  {
+    no: 3,
+    slug: 'flower-festival',
+    title: 'Flower Festival',
+    venue: 'Lusail Boulevard',
+    period: 'May 2023',
+    metrics: ['3 days', '40,000 visitors', '76 staff', '12 carnival games', '15 arcade games', '4 giant inflatables'],
+  },
+  {
+    no: 4,
+    slug: 'eid-festival',
+    title: 'Eid Festival',
+    venue: 'Lusail Boulevard',
+    period: 'March 2023',
+    metrics: ['8 days', '100,000 visitors', '16 carnival games', '20 arcade games', '2 giant inflatables', 'full F&B'],
+  },
+  {
+    no: 5,
+    slug: 'darb-al-lusail-parade',
+    title: 'Darb Al Lusail Parade',
+    venue: 'Lusail Boulevard',
+    period: 'March 2023',
+    metrics: ['3 days', '40,000 visitors', '80 entertainment artists', '30 management staff'],
+  },
+  {
+    no: 6,
+    slug: 'eid-ul-adha-festival',
+    title: 'Eid ul Adha Festival',
+    venue: 'Abu Sidra Mall (LULU)',
+    period: '2023',
+    metrics: ['3 days', '30,000 visitors', '9 shows', '15 roaming parade characters', 'face painting', 'henna'],
+  },
+  {
+    no: 7,
+    slug: 'aljama-celebration-week-2023',
+    title: "ALJAM'A Celebration Week",
+    venue: 'Education City, Qatar Foundation',
+    period: '2023',
+    metrics: ['3 days', '8 universities', '1,500 visitors', '190 winners'],
+  },
+  {
+    no: 8,
+    slug: 'qatar-custom-show-2023',
+    title: 'Qatar Custom Show',
+    venue: 'Qatar Racing Club',
+    period: '2023',
+    metrics: ['3 days', '2,000 visitors', '200 winners', '6 carnival games', 'building block city', 'bouncy castles'],
+  },
+  {
+    no: 9,
+    slug: 'building-block-city',
+    title: 'Building Block City',
+    venue: 'Lagoona Mall',
+    metrics: ['3 months'],
+  },
+  {
+    no: 10,
+    slug: 'aljama-celebration-week-2022',
+    title: "ALJAM'A Celebration Week",
+    venue: 'Education City, Qatar Foundation',
+    period: '2022',
+    metrics: ['5-day celebration', '8 universities', '2,000 visitors', '230 winners'],
+  },
+  {
+    no: 11,
+    slug: 'fifa-fan-zone-lagoona',
+    title: 'Fan Zone Activation, FIFA World Cup 2022',
+    venue: 'Lagoona Mall',
+    metrics: ['30 days', '5,000 visitors', '450 winners', '4 carnival games', 'soft building block city'],
+  },
+  {
+    no: 12,
+    slug: 'fifa-fan-zone-festival-city',
+    title: 'Fan Zone Activation, FIFA World Cup 2022',
+    venue: 'Doha Festival City Arena',
+    metrics: ['30 days', '3,000 visitors', '250 winners', '4 carnival games'],
+  },
+  {
+    no: 13,
+    slug: 'fifa-balloons-distribution',
+    title: 'FIFA Balloons Distribution',
+    venue: '8 locations (Souq Waqif, Katara, Msheireb, Lusail, The Pearl, Mall of Qatar, Villaggio, DFC)',
+    period: '2022',
+    metrics: ['4 days', '12,000 balloons'],
+  },
+  {
+    no: 14,
+    slug: 'eid-in-qatar',
+    title: 'Eid in Qatar',
+    venue: 'Corniche',
+    period: '2022',
+    metrics: ['3 days', '3,000 visitors', '200 winners', '7 carnival games', 'soft building block city', 'jumping castles'],
+  },
+  {
+    no: 15,
+    slug: 'qatar-custom-show-2022',
+    title: 'Qatar Custom Show',
+    venue: 'Qatar Racing Club',
+    period: '2022',
+    metrics: ['3 days', '3,000 visitors', '420 winners', '6 carnival games', 'building block city'],
+  },
+  {
+    no: 16,
+    slug: 'qatar-international-food-festival',
+    title: 'Qatar International Food Festival',
+    venue: 'Al Bidda Park & Corniche',
+    period: '2021',
+    metrics: ['19 days', '40,000 visitors', '5,500 winners', '9 carnival games'],
+  },
+];
+
+/**
+ * The 16 Qasim event projects, each wired to its OWN normalized image folder.
+ * `image` is the project's first normalized photo; `images` is its full
+ * gallery. Projects with no normalized photos fall back to the brand logo so a
+ * card never renders a broken image (only project 1 currently has a single
+ * image; every other project has its own multi-image gallery).
+ */
+export const qasimProjects: QasimProject[] = QASIM_SOURCE.map((project) => {
+  const images = qasimImages(project.no, project.slug, project.title);
+  return {
+    ...project,
+    image: images[0]?.src ?? brand.logo,
+    images,
+  };
+});
+
+/**
+ * The ordered hero deck: 16 event cards (own imagery) followed by every Puro
+ * cleaning engagement (cleaning imagery). Built once from the source-backed
+ * arrays; contains no invented data and no financial figures.
+ */
+/**
+ * Adapt a Qasim EVENT project into the shared `Project` shape so the existing
+ * ProjectModal (galleries, cinematic viewer, accessibility) can present it
+ * without a bespoke modal. Public metrics only — no financial figures.
+ */
+export function qasimProjectAsProject(index: number): Project | null {
+  const event = qasimProjects[index];
+  if (!event) return null;
+  return {
+    title: event.title,
+    category: 'Events & Hospitality',
+    location: event.venue,
+    summary: event.period
+      ? `${event.venue} — ${event.period}.`
+      : `${event.venue}.`,
+    services: event.metrics,
+    image: event.image,
+    images: event.images,
+    facts: [],
+  };
+}
+export const heroCards: HeroCard[] = [
+  ...qasimProjects.map((project, index) => ({
+    kind: 'event' as const,
+    index,
+    capability: CAPABILITY_LABEL.events,
+    image: project.images[0] ?? { src: brand.logo, alt: `${project.title} — event` },
+    title: project.title,
+    subtitle: project.period ? `${project.venue} · ${project.period}` : project.venue,
+  })),
+  ...contractCards.map((contract, index) => ({
+    kind: 'cleaning' as const,
+    index,
+    capability: CAPABILITY_LABEL.cleaning,
+    image: contract.image,
+    title: contract.client,
+    subtitle: `${contract.scope} · ${contract.duration}`,
+  })),
+];
+
+/* ─────────────────────────────────────────────────────────────────────────
    Services — the verified Puro service lines from the company profile.
 
    Names, summaries and key points are drawn only from source-backed content
@@ -957,3 +1233,265 @@ export const closingImages = [
   portfolioAssets.mallLobby[1],
   portfolioAssets.externalWindows[0],
 ] as const;
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Leadership & capacity — source-backed company data transcribed VERBATIM
+   from the provided Puro company documents (management table, workforce
+   summary, transport fleet, machinery list, and the organizational chart).
+
+   Nothing here is invented: names, positions, qualifications, nationalities,
+   experience, counts and org-chart labels are exactly as supplied. No
+   financial data is present in the source and none is added.
+   ───────────────────────────────────────────────────────────────────────── */
+
+/** One row of the "PURO CLEANING SERVICES MANAGEMENT" table. */
+export interface ManagementMember {
+  no: number;
+  position: string;
+  name: string;
+  qualification: string;
+  nationality: string;
+  /** Years of experience, transcribed as supplied (e.g. "30 Years"). */
+  experience: string;
+}
+
+export const management: ManagementMember[] = [
+  {
+    no: 1,
+    position: 'Group Operations Manager',
+    name: 'N. Prabha Kumar',
+    qualification:
+      'Senior, Soft Service FM with Experience in Commercial, Health & Industrial Projects',
+    nationality: 'Indian',
+    experience: '30 Years',
+  },
+  {
+    no: 2,
+    position: 'Facilities Manager',
+    name: 'Thaloppandi Mehaboob Khan',
+    qualification:
+      'Over 20 years experience in hard Services MEP Installations and maintenance',
+    nationality: 'Indian',
+    experience: '20 Years',
+  },
+  {
+    no: 3,
+    position: 'HR & Admin Coordinator',
+    name: 'Muhammad Osman Harun',
+    qualification: 'Over 7 years experience in HR & Administration',
+    nationality: 'Bangladesh',
+    experience: '7 Years',
+  },
+  {
+    no: 4,
+    position: 'HSE Officer',
+    name: 'Tarik Khan',
+    qualification: 'Over 10 Years experience in HSE & Safety Specialist in projects.',
+    nationality: 'Indian',
+    experience: '10 Years',
+  },
+  {
+    no: 5,
+    position: 'Project Coordinator',
+    name: 'Rasel Rana',
+    qualification:
+      'Soft Service Specialist in projects, Health Centers and Deep Cleaning',
+    nationality: 'Bangladesh',
+    experience: '10 Years',
+  },
+  {
+    no: 6,
+    position: 'General Supervisor',
+    name: 'Tharsis Janapriyan',
+    qualification:
+      'Façade Cleaning Service Specialist for High Rise Towers & Villa Projects',
+    nationality: 'Srilankan',
+    experience: '15 Years',
+  },
+  {
+    no: 7,
+    position: 'General Supervisor',
+    name: 'Fasil Puthiyottil Veedu',
+    qualification:
+      'Soft Service Specialist in projects, Health Centers and Deep Cleaning',
+    nationality: 'Indian',
+    experience: '11 Years',
+  },
+  {
+    no: 8,
+    position: 'General Supervisor',
+    name: 'Nassar Thattarthodi',
+    qualification:
+      'Soft Service Specialist in projects, Health Centers and Deep Cleaning',
+    nationality: 'Indian',
+    experience: '8 Years',
+  },
+];
+
+/** A gender split used within the workforce breakdown. */
+export interface GenderSplit {
+  male: number;
+  female: number;
+}
+
+/**
+ * The total workforce and its hospitality / cleaning gender breakdown, exactly
+ * as supplied (total 1005). The sub-totals and grand total are DERIVED from the
+ * splits so any display stays internally consistent with the source figures.
+ */
+export interface Workforce {
+  total: number;
+  hospitality: GenderSplit;
+  cleaning: GenderSplit;
+}
+
+export const workforce: Workforce = {
+  total: 1005,
+  hospitality: { male: 150, female: 75 },
+  cleaning: { male: 658, female: 122 },
+} as const;
+
+/** Sum of a gender split. */
+export function genderTotal(split: GenderSplit): number {
+  return split.male + split.female;
+}
+
+/** Derived workforce sub-totals + grand total (from the source splits). */
+export const workforceTotals = {
+  hospitality: genderTotal(workforce.hospitality),
+  cleaning: genderTotal(workforce.cleaning),
+  derivedTotal: genderTotal(workforce.hospitality) + genderTotal(workforce.cleaning),
+} as const;
+
+/** A counted line item (fleet vehicle or machine). */
+export interface CountedItem {
+  label: string;
+  /** Numeric count, or a non-numeric marker such as "LOT" where supplied. */
+  count: number | string;
+}
+
+/** Transport fleet, transcribed from the supplied vehicle list. */
+export const fleet: CountedItem[] = [
+  { label: 'Ashok Leyland (66-seater)', count: 4 },
+  { label: 'Nissan Civilian (30-seater)', count: 9 },
+  { label: 'Toyota Coaster (26-seater)', count: 4 },
+  { label: 'Nissan Urvan (15-seater)', count: 6 },
+  { label: 'Saloon Cars', count: 5 },
+];
+
+/** Cleaning machinery & equipment, transcribed from the supplied list. */
+export const machinery: CountedItem[] = [
+  { label: 'Auto Scrubber', count: 15 },
+  { label: 'Scrubbing & Polishing', count: 40 },
+  { label: 'Wet & Dry Vacuum', count: 40 },
+  { label: 'Dry Vacuum', count: 70 },
+  { label: 'High Pressure Washer', count: 24 },
+  { label: 'External Window Cleaning', count: 8 },
+  { label: 'Equipment & Tools', count: 'LOT' },
+];
+
+/** Sum only the numeric counts of a CountedItem list (ignores markers like "LOT"). */
+export function sumCounts(items: readonly CountedItem[]): number {
+  return items.reduce(
+    (total, item) => total + (typeof item.count === 'number' ? item.count : 0),
+    0,
+  );
+}
+
+/** Whether a list contains any non-numeric marker (e.g. "LOT"), so a "+" can be shown. */
+export function hasNonNumericCount(items: readonly CountedItem[]): boolean {
+  return items.some((item) => typeof item.count !== 'number');
+}
+
+/** Derived capacity totals used by the Leadership stat cards. */
+export const fleetTotal = sumCounts(fleet);
+export const machineryTotal = sumCounts(machinery);
+
+/**
+ * A node in the organizational chart. Labels are transcribed verbatim from the
+ * supplied chart; the layout may be simplified but names are never changed.
+ */
+export interface OrgNode {
+  label: string;
+  children?: OrgNode[];
+}
+
+/**
+ * The organizational chart hierarchy, transcribed from the supplied chart:
+ * M.D → G.M. Operations → (secretary/coordinator + reception) → the department
+ * managers, each expanded with their own sub-nodes.
+ */
+export const orgChart: OrgNode = {
+  label: 'M.D',
+  children: [
+    {
+      label: 'G.M. Operations',
+      children: [
+        { label: 'G.M. Secretary' },
+        {
+          label: 'G.M. Coordinator',
+          children: [{ label: 'Receptionist' }, { label: 'Secretaries' }],
+        },
+        {
+          label: 'Financial Manager',
+          children: [
+            { label: 'Accounting Dept' },
+            { label: 'Cashier' },
+            { label: 'Store Keeper' },
+            { label: 'Purchasing Officer' },
+          ],
+        },
+        {
+          label: 'Sales-Marketing Manager',
+          children: [
+            { label: 'Salesman 1' },
+            { label: 'Salesman 2' },
+            { label: 'Salesman 3' },
+          ],
+        },
+        {
+          label: 'Business Development',
+        },
+        {
+          label: 'Operations Manager',
+          children: [
+            { label: 'Project Manager' },
+            { label: 'Project Coordinator' },
+            { label: 'Training Dept' },
+            { label: 'Estimating External' },
+            { label: 'Estimating Internal' },
+            { label: 'Tender Dept' },
+            { label: 'Technical Officer' },
+            { label: 'Work Plan Staff' },
+            { label: 'Bus 1' },
+            { label: 'Bus 2' },
+            { label: 'Bus 3' },
+            { label: 'Windows Team 1' },
+            { label: 'Windows Team 2' },
+            { label: 'Supervisors' },
+            { label: 'Team Leaders' },
+            { label: 'Staff' },
+            { label: 'EHS Department' },
+          ],
+        },
+        {
+          label: 'Facade Cleaning',
+          children: [
+            { label: 'Estimator Supervisor' },
+            { label: 'Operators' },
+          ],
+        },
+        {
+          label: 'H.R. Manager',
+          children: [
+            { label: 'PRO' },
+            { label: 'Payroll Officer' },
+            { label: 'Manpower Officer' },
+            { label: 'Campboss' },
+            { label: 'Drivers' },
+          ],
+        },
+      ],
+    },
+  ],
+};

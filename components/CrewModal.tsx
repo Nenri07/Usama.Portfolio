@@ -22,6 +22,13 @@ export default function CrewModal({ division, onClose }: CrewModalProps) {
   const viewerOpen = viewerIndex != null;
   const titleId = `crew-dialog-${division.slug}`;
 
+  // Honest, neutral capability label for INDIVIDUAL photos — we never caption a
+  // single ambiguous photo with a specific job title (e.g. "Hostess"/"Cleaner").
+  // Photos only carry their correct capability group.
+  const groupLabel =
+    division.group === 'events' ? 'Events & Hospitality' : 'Cleaning & Facilities';
+  const photoCaption = `On-site — ${groupLabel}`;
+
   useAccessibleDialog({
     open: true,
     onClose,
@@ -146,12 +153,12 @@ export default function CrewModal({ division, onClose }: CrewModalProps) {
                 <button
                   type="button"
                   onClick={() => setViewerIndex(index)}
-                  aria-label={`Open ${division.name} gallery photograph ${index + 1} in cinematic viewer`}
+                  aria-label={`Open ${photoCaption} photograph ${index + 1} in cinematic viewer`}
                   className="block aspect-[4/5] w-full overflow-hidden focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--qe-text)]"
                 >
                   <SafeImage
                     src={src}
-                    alt={`${division.name} gallery photograph ${index + 1}`}
+                    alt={`${photoCaption} photograph ${index + 1}`}
                     variant="full"
                     sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
                     fallbackColor="var(--qe-surface)"
@@ -173,7 +180,7 @@ export default function CrewModal({ division, onClose }: CrewModalProps) {
         <CinematicImageViewer
           images={division.images.map((src, index) => ({
             src,
-            alt: `${division.name} gallery photograph ${index + 1}`,
+            alt: `${photoCaption} photograph ${index + 1}`,
           }))}
           initialIndex={viewerIndex}
           title={division.name}

@@ -7,8 +7,9 @@
  *   3) Certificates— 10 real documents coverflow + contracts context
  *   4) Services    — verified service lines + folded-in Standards/Activities
  *   5) Events      — Events & Hospitality division showcase
- *   6) Team        — Operations
- *   7) Thank You   — closing screen
+ *   6) Leadership  — named management, workforce/capacity, org chart
+ *   7) Team        — Operations
+ *   8) Thank You   — closing screen
  *
  * De-duplication: the standalone "Trusted By" marquee, "Activities" and
  * "Standards/Numbers" sections were removed as separate full sections. Their
@@ -27,6 +28,7 @@ import WorkList from '@/components/WorkList';
 import Certificates from '@/components/Certificates';
 import Services from '@/components/Services';
 import Events from '@/components/Events';
+import Leadership from '@/components/Leadership';
 import Team from '@/components/Team';
 import Contact from '@/components/Contact';
 import ThankYou from '@/components/ThankYou';
@@ -46,6 +48,9 @@ export default function Home() {
 
         {/* ── Events & Hospitality — the guest-facing division showcase ──── */}
         <Events />
+
+        {/* ── Leadership & Capacity — named managers, workforce, org chart ─ */}
+        <Leadership />
 
         {/* ── Team / Operations ─────────────────────────────────────────── */}
         <Team />

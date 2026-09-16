@@ -598,3 +598,146 @@ article,
     animation: none;
   }
 }
+
+/* ── Certificate lightbox document ─────────────────────────────────── */
+/* The enlarged document eases in when the viewer opens / the certificate
+   changes. Transform/opacity only; readable immediately. Disabled (static)
+   under reduced motion via the JS-applied `-animated` variant class. */
+.cert-lightbox-doc-animated {
+  animation: cert-lightbox-in 420ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes cert-lightbox-in {
+  from { opacity: 0.001; transform: translate3d(0, 14px, 0) scale(0.985); }
+  to { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+}
+
+/* ── Deck-of-cards fan layout + 3D flip ─────────────────────────────── */
+/* Cards are arranged like a fanned hand: the centre card sits highest and
+   upright, the others spread and lower toward both edges in an arc (per-card
+   --fan-rotate / --fan-y / --fan-x set inline from JS). On hover a card lifts
+   flat, rises above its neighbours and FLIPS (rotateY) to a detail back face.
+   All transforms; the text is fully readable at rest.
+
+   Degradation:
+     • The arc only applies at lg+ (`.deck-fan-active`); below that the grid is
+       flat and static (no arc/flip) so small screens never overflow.
+     • Reduced motion removes the arc + flip entirely (handled by omitting the
+       `deck-fan-active` class and the media query below).
+     • Coarse/touch pointers get no hover-flip (hover media query gates it). */
+
+.deck-fan {
+  perspective: 1600px;
+}
+
+.deck-fan-card {
+  --fan-rotate: 0deg;
+  --fan-y: 0px;
+  --fan-x: 0px;
+  position: relative;
+  transform-style: preserve-3d;
+  z-index: 1;
+}
+
+/* Only when the JS marks the fan active (lg screens, motion allowed) do the
+   cards take their arc transform. */
+.deck-fan-active .deck-fan-card {
+  transition:
+    transform 600ms cubic-bezier(0.16, 1, 0.3, 1),
+    z-index 0ms;
+  transform: translate3d(var(--fan-x), var(--fan-y), 0) rotate(var(--fan-rotate));
+  will-change: transform;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .deck-fan-active .deck-fan-card:hover {
+    z-index: 30;
+    /* Rise, straighten and pull slightly forward for the flip. */
+    transform: translate3d(var(--fan-x), calc(var(--fan-y) - 26px), 60px)
+      rotate(0deg);
+  }
+}
+
+/* The flip surface holds the two faces. */
+.deck-fan-flip {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  transform-style: preserve-3d;
+  transition: transform 700ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Downward pointer movement / hover flips to the back face (fine pointers). */
+@media (hover: hover) and (pointer: fine) {
+  .deck-fan-active .deck-fan-card:hover .deck-fan-flip {
+    transform: rotateY(180deg);
+  }
+}
+
+.deck-fan-face {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* Fanned state: faces stack in 3D, so both become absolute and fill the flip
+   box (which is sized by `min-h` on the card), and the back is pre-rotated. */
+.deck-fan-active .deck-fan-face {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+.deck-fan-active .deck-fan-face-back {
+  transform: rotateY(180deg);
+}
+
+/* Fixed heights only in the fanned state, so the two absolute faces have a box
+   to fill. In the flat state the front face sizes to its own content. */
+.deck-fan-active .deck-fan-flip-mgmt {
+  min-height: 16rem;
+}
+
+.deck-fan-active .deck-fan-flip-event {
+  min-height: 30rem;
+}
+
+/* Flat (non-fanned) state: the flip container is a plain block, the FRONT face
+   sits in normal flow and sizes to its content (fully readable, no clipping),
+   and the back face is removed entirely. No motion. */
+.deck-fan:not(.deck-fan-active) .deck-fan-face-back {
+  display: none;
+}
+
+.deck-fan:not(.deck-fan-active) .deck-fan-flip {
+  transition: none;
+  transform: none;
+  height: auto;
+  min-height: 0;
+}
+
+.deck-fan:not(.deck-fan-active) .deck-fan-face {
+  position: relative;
+  height: auto;
+  width: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .deck-fan-card,
+  .deck-fan-active .deck-fan-card,
+  .deck-fan-active .deck-fan-card:hover {
+    transition: none;
+    transform: none;
+  }
+
+  .deck-fan-flip,
+  .deck-fan-active .deck-fan-card:hover .deck-fan-flip {
+    transition: none;
+    transform: none;
+  }
+
+  .deck-fan-face-back {
+    display: none;
+  }
+}

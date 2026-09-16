@@ -1,46 +1,63 @@
 'use client';
 
-import { useEffect, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { animate, stagger } from 'animejs';
 import InfinitePerspectiveSlider, {
   type InfinitePerspectiveSliderItem,
 } from './ui/infinite-perspective-slider';
 import Nav from './Nav';
 import HeroAmbient from './HeroAmbient';
-import { contractCards } from '@/lib/data';
+import { heroCards } from '@/lib/data';
 import { prefersReducedMotion } from '@/lib/motion';
 
 /**
- * HeroSlider — the full-screen hero built on the perspective slider.
+ * HeroSlider â€” the full-screen hero built on the perspective slider.
  *
- * Feeds ALL 32 real client contracts (from `contractCards`) into
- * `InfinitePerspectiveSlider`, one card per engagement, each with its
- * deterministically-mapped work photograph. Clicking a card calls
- * `onCardClick(index)` so the parent (HomeClient) opens the contract-detail
- * modal for `contractCards[index]`.
+ * Feeds the mixed `heroCards` deck into `InfinitePerspectiveSlider`: the 16
+ * Qasim EVENT cards (each backed by its OWN `/qasim/*` photography) followed by
+ * every Puro CLEANING engagement (backed by `/puro/work/*` photography). The
+ * two capabilities never share imagery. Every card shows a visible capability
+ * tag ("Events & Hospitality" vs "Cleaning & Facilities") in its description,
+ * and clicking routes to the correct detail â€” the EVENT gallery for an event
+ * card, the CONTRACT modal for a cleaning card â€” via `onEventClick` /
+ * `onContractClick`.
  *
  * The slider is a CSS-transform carousel (each card is a positioned node with a
- * single transform), so ~32 cards render without jank — no per-frame layout,
- * and the rAF loop suspends when the hero is off-screen or the tab is hidden.
- * It handles drag/wheel scroll, the velocity tilt, per-card SplitText reveal,
- * and reduced-motion degradation internally.
+ * single transform), so the full deck renders without jank â€” no per-frame
+ * layout, and the rAF loop suspends when the hero is off-screen or the tab is
+ * hidden. It handles drag/wheel scroll, the velocity tilt, per-card SplitText
+ * reveal, and reduced-motion degradation internally.
  */
 
 interface HeroSliderProps {
-  onCardClick: (index: number) => void;
+  /** Open the EVENT detail for `qasimProjects[index]`. */
+  onEventClick: (index: number) => void;
+  /** Open the CONTRACT detail for `contractCards[index]`. */
+  onContractClick: (index: number) => void;
 }
 
-export default function HeroSlider({ onCardClick }: HeroSliderProps) {
+export default function HeroSlider({ onEventClick, onContractClick }: HeroSliderProps) {
   const overlayRef = useRef<HTMLDivElement | null>(null);
   const items = useMemo<InfinitePerspectiveSliderItem[]>(
     () =>
-      contractCards.map((contract) => ({
-        src: contract.image.src,
-        number: String(contract.no).padStart(2, '0'),
-        title: contract.client,
-        desc: `${contract.scope} · ${contract.duration}`,
+      heroCards.map((card, i) => ({
+        src: card.image.src,
+        number: String(i + 1).padStart(2, '0'),
+        title: card.title,
+        // Capability tag leads the description so every card is unambiguous.
+        desc: `${card.capability} Â· ${card.subtitle}`,
       })),
     [],
+  );
+
+  const handleCardClick = useCallback(
+    (i: number) => {
+      const card = heroCards[i];
+      if (!card) return;
+      if (card.kind === 'event') onEventClick(card.index);
+      else onContractClick(card.index);
+    },
+    [onEventClick, onContractClick],
   );
 
   // Staggered entrance for the decorative corner labels. Enhancement only:
@@ -79,10 +96,10 @@ export default function HeroSlider({ onCardClick }: HeroSliderProps) {
 
       {/* The curved 3D perspective slider fills the hero. */}
       <div className="absolute inset-0 z-10">
-        <InfinitePerspectiveSlider images={items} onCardClick={onCardClick} />
+        <InfinitePerspectiveSlider images={items} onCardClick={handleCardClick} />
       </div>
 
-      {/* ── Corner labels (reference layout) ─────────────────────────────
+      {/* â”€â”€ Corner labels (reference layout) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
           Kept minimal; maroon used sparingly. pointer-events-none so they
           never block the slider drag; the nav sits above them. */}
       <div ref={overlayRef} className="pointer-events-none absolute inset-0 z-30">
@@ -92,13 +109,13 @@ export default function HeroSlider({ onCardClick }: HeroSliderProps) {
             data-hero-reveal
             className="text-secondary font-mono text-[0.7rem] uppercase tracking-[0.24em]"
           >
-            Cleaning · Hospitality · Façade
+            Cleaning Â· Hospitality Â· FaÃ§ade
           </p>
           <p
             data-hero-reveal
             className="text-primary mt-3 font-display text-2xl font-semibold leading-tight tracking-tight sm:text-3xl"
           >
-            {contractCards.length} client engagements across Qatar.
+            {heroCards.length} projects &amp; engagements across Qatar.
           </p>
         </div>
 

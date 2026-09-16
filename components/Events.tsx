@@ -5,7 +5,8 @@ import SafeImage from './SafeImage';
 import DeckShapes from './DeckShapes';
 import { eventProjects, hostessVenues, type EventProject } from '@/lib/data';
 import { prefersReducedMotion } from '@/lib/motion';
-import { useCardReveal, useTilt } from '@/lib/reveal';
+import { useCardReveal } from '@/lib/reveal';
+import { useDeckFan } from '@/lib/useDeckFan';
 
 /**
  * Events — the "Events & Hospitality" showcase.
@@ -45,80 +46,132 @@ function hasMetrics(event: EventProject): boolean {
   return Boolean(event.visitors || event.staff || event.days || event.winners);
 }
 
-function EventCard({ event, index }: { event: EventProject; index: number }) {
+function EventCard({
+  event,
+  index,
+  count,
+  fanActive,
+  cardStyle,
+}: {
+  event: EventProject;
+  index: number;
+  count: number;
+  fanActive: boolean;
+  cardStyle: (index: number, count: number, columns?: number) => React.CSSProperties;
+}) {
   const reduced = prefersReducedMotion();
   const revealRef = useCardReveal({ index, disabled: reduced });
-  const tiltRef = useTilt({ disabled: reduced, max: 5, lift: 12 });
   const named = event.metricsSource === 'venue';
+  const metrics = hasMetrics(event);
 
   return (
-    <article
+    <li
       ref={revealRef}
-      className="card-lift surface-alt group relative flex min-w-0 flex-col border border-subtle"
+      className="deck-fan-card min-w-0"
+      style={fanActive ? cardStyle(index, count, 3) : undefined}
     >
-      <div
-        ref={tiltRef}
-        className="relative aspect-[4/3] w-full overflow-hidden will-change-transform"
-      >
-        <SafeImage
-          src={event.image}
-          alt={`${event.title} — ${event.venue}`}
-          variant="full"
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          fallbackColor="var(--qe-surface, #0F1424)"
-          loading="lazy"
-          className="transition-transform duration-500 ease-out group-hover:scale-[1.04]"
-        />
-
-        {/* Legibility scrim + title / venue overlay. */}
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0"
-          style={{
-            background:
-              'linear-gradient(180deg, color-mix(in srgb, var(--qe-base, #0A0E1A) 8%, transparent) 0%, color-mix(in srgb, var(--qe-base, #0A0E1A) 84%, transparent) 100%)',
-          }}
-        />
-        <div className="absolute inset-x-0 bottom-0 p-4 sm:p-5">
-          <p className="text-accent font-mono text-[0.7rem] uppercase tracking-[0.2em]">
-            {named ? 'Prestige venue' : 'Activation'}
-            {event.year ? ` · ${event.year}` : ''}
-          </p>
-          <h3 className="text-primary mt-1 break-words text-xl font-semibold leading-tight sm:text-2xl">
-            {event.title}
-          </h3>
-          <p className="text-secondary mt-1 break-words text-sm">{event.venue}</p>
-        </div>
-      </div>
-
-      <div className="flex flex-1 flex-col gap-4 p-5">
-        <p className="text-secondary text-sm leading-relaxed">{event.summary}</p>
-
-        {hasMetrics(event) ? (
-          <div className="grid grid-cols-3 gap-3 border-y border-subtle py-4">
-            <Metric label="Visitors" value={event.visitors} />
-            <Metric label="Staff" value={event.staff} />
-            <Metric label="Winners" value={event.winners} />
-            <Metric label="Days" value={event.days} />
+      <div className="deck-fan-flip deck-fan-flip-event relative w-full">
+        {/* Front face — image, title, summary, services. Readable at rest. */}
+        <article className="deck-fan-face surface-alt group flex min-w-0 flex-col border border-subtle">
+          <div className="relative aspect-[4/3] w-full overflow-hidden">
+            <SafeImage
+              src={event.image}
+              alt={`${event.title} — ${event.venue}`}
+              variant="full"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              fallbackColor="var(--qe-surface, #0F1424)"
+              loading="lazy"
+            />
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0"
+              style={{
+                background:
+                  'linear-gradient(180deg, color-mix(in srgb, var(--qe-base, #0A0E1A) 8%, transparent) 0%, color-mix(in srgb, var(--qe-base, #0A0E1A) 84%, transparent) 100%)',
+              }}
+            />
+            <div className="absolute inset-x-0 bottom-0 p-4 sm:p-5">
+              <p className="text-accent font-mono text-[0.7rem] uppercase tracking-[0.2em]">
+                {named ? 'Prestige venue' : 'Activation'}
+                {event.year ? ` · ${event.year}` : ''}
+              </p>
+              <h3 className="text-primary mt-1 break-words text-xl font-semibold leading-tight sm:text-2xl">
+                {event.title}
+              </h3>
+              <p className="text-secondary mt-1 break-words text-sm">{event.venue}</p>
+            </div>
           </div>
-        ) : null}
 
-        <ul className="mt-auto flex flex-wrap gap-2">
-          {event.services.map((service) => (
-            <li
-              key={service}
-              className="text-secondary border border-subtle px-3 py-1.5 text-xs"
-            >
-              {service}
-            </li>
-          ))}
-        </ul>
+          <div className="flex flex-1 flex-col gap-4 p-5">
+            <p className="text-secondary text-sm leading-relaxed">{event.summary}</p>
+
+            {metrics ? (
+              <div className="grid grid-cols-3 gap-3 border-y border-subtle py-4">
+                <Metric label="Visitors" value={event.visitors} />
+                <Metric label="Staff" value={event.staff} />
+                <Metric label="Winners" value={event.winners} />
+                <Metric label="Days" value={event.days} />
+              </div>
+            ) : null}
+
+            <ul className="mt-auto flex flex-wrap gap-2">
+              {event.services.map((service) => (
+                <li
+                  key={service}
+                  className="text-secondary border border-subtle px-3 py-1.5 text-xs"
+                >
+                  {service}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </article>
+
+        {/* Back face — full services + metrics, revealed only via the fan flip. */}
+        <article
+          aria-hidden="true"
+          className="deck-fan-face deck-fan-face-back surface flex min-w-0 flex-col gap-4 border border-[var(--qe-accent)]/50 p-5"
+        >
+          <div>
+            <p className="text-accent font-mono text-[0.7rem] uppercase tracking-[0.2em]">
+              {named ? 'Prestige venue' : 'Activation'}
+              {event.year ? ` · ${event.year}` : ''}
+            </p>
+            <h3 className="text-primary mt-1 break-words text-xl font-semibold leading-tight">
+              {event.title}
+            </h3>
+            <p className="text-secondary mt-1 break-words text-sm">{event.venue}</p>
+          </div>
+
+          {metrics ? (
+            <div className="grid grid-cols-2 gap-3 border-y border-subtle py-4">
+              <Metric label="Visitors" value={event.visitors} />
+              <Metric label="Staff" value={event.staff} />
+              <Metric label="Winners" value={event.winners} />
+              <Metric label="Days" value={event.days} />
+            </div>
+          ) : null}
+
+          <ul className="mt-auto flex flex-wrap gap-2">
+            {event.services.map((service) => (
+              <li
+                key={service}
+                className="text-secondary border border-subtle px-3 py-1.5 text-xs"
+              >
+                {service}
+              </li>
+            ))}
+          </ul>
+        </article>
       </div>
-    </article>
+    </li>
   );
 }
 
 export default function Events() {
+  const { active, cardStyle } = useDeckFan();
+  const count = eventProjects.length;
+
   return (
     <section
       id="events"
@@ -163,11 +216,22 @@ export default function Events() {
           </ul>
         </div>
 
-        <div className="grid min-w-0 grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
+        <ul
+          className={`deck-fan grid min-w-0 list-none grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6 ${
+            active ? 'deck-fan-active' : ''
+          }`}
+        >
           {eventProjects.map((event, index) => (
-            <EventCard key={event.slug} event={event} index={index} />
+            <EventCard
+              key={event.slug}
+              event={event}
+              index={index}
+              count={count}
+              fanActive={active}
+              cardStyle={cardStyle}
+            />
           ))}
-        </div>
+        </ul>
       </div>
     </section>
   );

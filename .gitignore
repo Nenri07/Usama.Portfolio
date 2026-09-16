@@ -52,3 +52,9 @@ PURO_Portfolio.pdf
 public/puro/work/WhatsApp Image*
 # Source certificate PNGs are optimized to cert-NN.webp; keep sources local.
 public/puro/certificates/[0-9][0-9]_*.png
+
+# Qasim event source deck — image FILENAMES + MANIFEST.csv embed PRIVATE
+# financial data (revenue/cost/net_profit). NEVER commit; the app serves only
+# the sanitized copies produced under public/qasim/ by
+# scripts/normalize-qasim-images.mjs.
+public/qasim-khalid-projects/

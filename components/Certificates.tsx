@@ -12,6 +12,7 @@ import {
 import RevealHeading from './RevealHeading';
 import SafeImage from './SafeImage';
 import DeckShapes from './DeckShapes';
+import CertificateLightbox from './CertificateLightbox';
 import { certificates, contracts, clients, type CertificateItem } from '@/lib/data';
 import { buildMarqueeTrack } from '@/lib/format';
 
@@ -116,6 +117,8 @@ export default function Certificates() {
   const [active, setActive] = useState(0);
   const [reduced, setReduced] = useState(false);
   const [paused, setPaused] = useState(false);
+  // When set, the full-screen document lightbox is open at this index.
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const stageRef = useRef<HTMLDivElement | null>(null);
   const touchStartRef = useRef<{ x: number; y: number; id: number } | null>(null);
   const suppressClickRef = useRef(false);
@@ -146,12 +149,12 @@ export default function Certificates() {
   // Auto-advance loop: off under reduced motion, and while paused
   // (hover/focus within the section) or when there is nothing to cycle.
   useEffect(() => {
-    if (reduced || paused || count <= 1) return;
+    if (reduced || paused || count <= 1 || lightboxIndex != null) return;
     const timer = window.setInterval(() => {
       setActive((current) => wrapIndex(current + 1, count));
     }, AUTO_ADVANCE_MS);
     return () => window.clearInterval(timer);
-  }, [reduced, paused, count]);
+  }, [reduced, paused, count, lightboxIndex]);
 
   // Pause when the tab is hidden; resume on return (handled via `paused`).
   useEffect(() => {
@@ -321,7 +324,7 @@ export default function Certificates() {
                     type="button"
                     aria-label={
                       isCenter
-                        ? `${item.title}: ${item.caption}`
+                        ? `Open ${item.title} full screen`
                         : `Bring ${item.title} to centre`
                     }
                     aria-current={isCenter ? 'true' : undefined}
@@ -330,7 +333,10 @@ export default function Certificates() {
                     data-cursor
                     onClick={() => {
                       if (suppressClickRef.current) return;
-                      if (!isCenter) goTo(index);
+                      // Side card → bring to centre; centre card → open the
+                      // full-screen document lightbox at this index.
+                      if (isCenter) setLightboxIndex(index);
+                      else goTo(index);
                     }}
                     className="cert-coverflow-card absolute left-1/2 top-1/2 h-[min(48vh,30rem)] w-[min(76vw,24rem)] overflow-hidden border border-[var(--qe-muted)]/25 bg-[var(--qe-surface)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--qe-text)]"
                     style={{
@@ -340,6 +346,11 @@ export default function Certificates() {
                     }}
                   >
                     <CertificateCard item={item} />
+                    {isCenter ? (
+                      <span className="pointer-events-none absolute bottom-3 right-3 z-10 border border-[var(--qe-muted)]/25 bg-[var(--qe-base)]/85 px-2.5 py-1.5 font-mono text-[0.6rem] uppercase tracking-[0.16em] text-[var(--qe-text)] backdrop-blur">
+                        Click to enlarge
+                      </span>
+                    ) : null}
                   </button>
                 );
               })}
@@ -456,6 +467,14 @@ export default function Certificates() {
           </div>
         </div>
       </div>
+
+      {lightboxIndex != null ? (
+        <CertificateLightbox
+          items={items}
+          initialIndex={lightboxIndex}
+          onClose={() => setLightboxIndex(null)}
+        />
+      ) : null}
     </section>
   );
 }

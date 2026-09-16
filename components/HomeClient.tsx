@@ -6,7 +6,7 @@ import ProjectModal from './ProjectModal';
 import ContractModal from './ContractModal';
 import PresentMode from './PresentMode';
 import { ProjectSelectionProvider } from './ProjectSelectionContext';
-import { projects, contractCards } from '@/lib/data';
+import { projects, contractCards, qasimProjectAsProject, type Project } from '@/lib/data';
 
 /**
  * HomeClient — the thin client wrapper that owns the selected-project and
@@ -23,6 +23,8 @@ import { projects, contractCards } from '@/lib/data';
 export default function HomeClient({ children }: { children: React.ReactNode }) {
   const [projectIndex, setProjectIndex] = useState<number | null>(null);
   const [contractIndex, setContractIndex] = useState<number | null>(null);
+  const [eventProject, setEventProject] = useState<Project | null>(null);
+  const [eventIndex, setEventIndex] = useState<number | null>(null);
 
   const openProject = useCallback((index: number) => {
     setContractIndex(null);
@@ -32,6 +34,18 @@ export default function HomeClient({ children }: { children: React.ReactNode }) 
   const openContract = useCallback((index: number) => {
     setProjectIndex(null);
     setContractIndex(index);
+  }, []);
+
+  const openEvent = useCallback((index: number) => {
+    setProjectIndex(null);
+    setContractIndex(null);
+    setEventIndex(index);
+    setEventProject(qasimProjectAsProject(index));
+  }, []);
+
+  const closeEvent = useCallback(() => {
+    setEventIndex(null);
+    setEventProject(null);
   }, []);
 
   const closeProject = useCallback(() => setProjectIndex(null), []);
@@ -49,7 +63,7 @@ export default function HomeClient({ children }: { children: React.ReactNode }) 
 
   return (
     <ProjectSelectionProvider value={selection}>
-      <HeroSlider onCardClick={openContract} />
+      <HeroSlider onEventClick={openEvent} onContractClick={openContract} />
 
       {/* Server-rendered sections remain in their original client slot. */}
       {children}
@@ -61,6 +75,13 @@ export default function HomeClient({ children }: { children: React.ReactNode }) 
       />
 
       <ContractModal contract={selectedContract} onClose={closeContract} />
+
+      {/* Qasim EVENT detail — reuses ProjectModal via the adapted shape. */}
+      <ProjectModal
+        project={eventProject}
+        index={eventIndex}
+        onClose={closeEvent}
+      />
 
       {/* Auto-running presentation controller (decoupled, disposable). */}
       <PresentMode />

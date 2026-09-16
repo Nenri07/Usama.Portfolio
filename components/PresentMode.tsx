@@ -38,6 +38,7 @@ const SLIDES: { id: string; label: string }[] = [
   { id: 'certificates', label: 'Certificates' },
   { id: 'services', label: 'Services' },
   { id: 'events', label: 'Events' },
+  { id: 'leadership', label: 'Leadership' },
   { id: 'team', label: 'Team' },
   { id: 'thank-you', label: 'Thank You' },
 ];
